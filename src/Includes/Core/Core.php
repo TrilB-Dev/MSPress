@@ -8,7 +8,7 @@
 namespace MSPress\Includes\Core;
 
 use MSPress\Assets\Assets;
-use MSPress\Includes\Functions\OAuthController;
+use MSPress\Includes\MSGraph\OAuthController;
 use MSPress\Includes\Plugins\Plugins;
 use MSPress\Includes\Settings\Settings;
 
