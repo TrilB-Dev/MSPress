@@ -1,0 +1,229 @@
+.mspress-admin {
+	--mspress-ink: #152238;
+	--mspress-navy: #102a43;
+	--mspress-blue: #2563eb;
+	--mspress-paper: #f6f8fb;
+	--mspress-line: #dce4ed;
+	--mspress-header: #eaf3f7;
+	min-height: 100vh;
+	background: var(--mspress-paper);
+	color: var(--mspress-ink);
+	display: flex;
+	flex-direction: column;
+
+	&.wrap {
+		box-sizing: border-box;
+		max-width: none;
+		margin: 0;
+		width: auto;
+	}
+
+	.mspress-header {
+		background: var(--mspress-header);
+		box-shadow: 0 0.25rem 1rem rgba(16, 42, 67, 0.16);
+		min-height: 150px;
+		overflow: visible;
+		position: relative;
+		z-index: 10;
+
+		.navbar {
+			align-items: flex-start;
+			padding-top: 0;
+		}
+
+		.navbar-collapse {
+			align-self: flex-start;
+			align-items: flex-start;
+		}
+
+		.navbar-nav {
+			align-items: flex-start !important;
+		}
+
+		.navbar-brand,
+		.navbar .nav-link {
+			color: var(--mspress-ink);
+		}
+
+		.navbar-brand {
+			width: 250px;
+			object-fit: contain;
+			margin-left: 35px;
+		}
+
+		.nav-link {
+			border-radius: 999px;
+			font-size: 0.875rem;
+			padding-inline: 0.8rem !important;
+			transition: background-color 140ms ease, color 140ms ease;
+
+			&:hover,
+			&:focus-visible {
+				background: rgba(255, 255, 255, 0.72);
+				color: var(--mspress-blue);
+			}
+		}
+
+		.navbar-toggler {
+			border-color: rgba(21, 34, 56, 0.3);
+		}
+
+		.navbar-toggler-icon {
+			filter: none;
+		}
+	}
+
+	.mspress-shell {
+		width: 100%;
+		max-width: none;
+		margin-inline: 0;
+		position: relative;
+	}
+
+	.mspress-admin-main .mspress-shell {
+		padding-top: 0 !important;
+	}
+
+	.mspress-admin-main {
+		flex: 1 0 auto;
+		min-height: calc(100vh - 10rem);
+	}
+
+	.mspress-page-heading {
+		border-bottom: 1px solid var(--mspress-line);
+		padding-bottom: 1rem;
+	}
+
+	.mspress-sidebar {
+		background: var(--mspress-header);
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		overflow: hidden;
+		min-height: 100%;
+		padding: 1.5rem 0.75rem 1rem;
+		position: relative;
+		z-index: 1;
+	}
+
+	.mspress-sidebar-column {
+		flex: 0 0 350px;
+		max-width: 350px;
+	}
+
+	.mspress-sidebar-group-link {
+		font-family: inherit;
+	}
+
+	.mspress-sidebar-group-heading {
+		font-size: inherit;
+		font-weight: inherit;
+		margin: 0;
+	}
+
+	.mspress-sidebar-group-items {
+		padding-left: 20px;
+	}
+
+	.mspress-sidebar-link,
+	.accordion-button {
+		align-items: center;
+		color: var(--mspress-ink);
+		display: flex;
+		font-size: 1.2rem;
+		font-weight: 600;
+		gap: 0.65rem;
+		text-decoration: none;
+		width: 100%;
+	}
+
+	.mspress-sidebar-link {
+		border-radius: 0.5rem;
+		margin-bottom: 0.25rem;
+		padding: 0.7rem 0.75rem;
+		transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+
+		&:hover,
+		&:focus-visible,
+		&.active {
+			background: #e8f0ff;
+			color: var(--mspress-blue);
+		}
+
+		&:hover { transform: translateX(2px); }
+	}
+
+	.mspress-sidebar .nav-link.active {
+		font-weight: 700;
+	}
+
+	.mspress-sidebar-icon {
+		align-items: center;
+		background: #eaf0f6;
+		border-radius: 0.35rem;
+		display: inline-flex;
+		font-size: 1.15rem;
+		height: 1.65rem;
+		justify-content: center;
+		width: 1.65rem;
+	}
+
+	.accordion {
+		--bs-accordion-border-width: 0;
+		--bs-accordion-btn-focus-box-shadow: none;
+		--bs-accordion-btn-padding-x: 0.75rem;
+		--bs-accordion-btn-padding-y: 0.7rem;
+	}
+
+	.accordion-button {
+		background: transparent;
+		box-shadow: none;
+		color: var(--mspress-ink);
+	}
+
+	.accordion-button:not(.collapsed) {
+		background: #f0f5f8;
+		box-shadow: none;
+		color: var(--mspress-navy);
+	}
+
+	.accordion-body { padding-inline: 0.5rem; }
+
+	.accordion-body .nav-link {
+		border-left: 2px solid transparent;
+		color: var(--bs-secondary-color);
+		font-size: 0.8125rem;
+		padding: 0.55rem 0.75rem;
+
+		&:hover,
+		&:focus-visible,
+		&.active {
+			background: #e8f0ff;
+			border-left-color: var(--mspress-blue);
+			color: var(--mspress-blue);
+		}
+	}
+
+	.mspress-footer {
+		background: #fff;
+	}
+
+	.card,
+	.mspress-inline-form,
+	.mspress-content-toolbar {
+		border-color: var(--mspress-line);
+	}
+}
+
+@media (max-width: 991.98px) {
+	.mspress-admin .mspress-sidebar { position: static !important; }
+	.mspress-admin .mspress-sidebar-column {
+		flex-basis: 100%;
+		max-width: 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mspress-admin .mspress-sidebar-link,
+	.mspress-admin .nav-link { transition: none; }
+}

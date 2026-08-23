@@ -1,0 +1,41 @@
+{
+	"name": "trilbdev/mspress",
+	"description": "A Microsoft 365 plugin for WordPress that integrates with Microsoft services.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"autoload": {
+		"psr-4": {
+			"MSPress\\": "src/"
+		},
+		"exclude-from-classmap": [
+			"src/Includes/Plugins/PluginsInterface.php"
+		],
+		"files": [
+			"src/Includes/Plugins/PluginsInterface.php"
+		]
+	},
+	"minimum-stability": "stable",
+    "require": {
+		"microsoft/microsoft-graph": "^2.56",
+        "paragonie/sodium_compat": "^2.4",
+        "laminas/laminas-httphandlerrunner": "^2.13",
+        "paragonie/random-lib": "^2.0",
+        "ramsey/uuid-doctrine": "^2.1",
+        "symfony/yaml": "^7.3",
+        "defuse/php-encryption": "^2.4"
+    },
+	"config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "tbachert/spi": true
+        }
+    },
+	"require-dev": {
+		"php-stubs/wordpress-stubs": "^6.9",
+		"arts/elementor-stubs": "^4.2",
+		"phpunit/phpunit": "^9.6"
+	},
+	"scripts": {
+		"test": "php ./vendor/bin/phpunit"
+    }
+}

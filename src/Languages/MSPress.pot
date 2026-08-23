@@ -1,0 +1,1507 @@
+# Translation catalog for the MSPress plugin.
+# Copyright (C) 2026 MSPress contributors
+# This file is distributed under the same license as the plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: MSPress 1.0.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: mspress\n"
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:420
+msgid "%d users created"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:422
+msgid "%d users deactivated"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:419
+msgid "%d users processed"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:421
+msgid "%d users updated"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:153
+msgid "3rd Party"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Demo.php:68
+msgid "A demonstration MSPress extension plugin."
+msgstr ""
+
+#: src/Includes/Tools/DataTransfer.php:91
+msgid "A page entry was skipped because it was invalid."
+msgstr ""
+
+#: src/Includes/Settings/SettingsManager.php:118
+msgid "A searchable knowledge base powered by MSPress."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:28
+msgid "A short description for the MSPress knowledge base."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:30
+msgid "A short introduction helps visitors understand what they can find in the Wiki."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:35
+msgid "A short value used to demonstrate Entra plugin setting metadata."
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:35
+msgid "A short value used to demonstrate OneDrive plugin setting metadata."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Settings/Settings.php:35
+msgid "A short value used to demonstrate plugin setting metadata."
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:35
+msgid "A short value used to demonstrate SharePoint plugin setting metadata."
+msgstr ""
+
+#: src/Includes/Tools/DataTransfer.php:78
+msgid "A Wiki entry was skipped because it was invalid."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:154
+msgid "Access"
+msgstr ""
+
+#: src/Admin/Manager/UI/Header.php:44
+msgid "Account"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:357
+msgid "Account Information"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:136
+msgid "Actions"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:171
+msgid "Add Mapping"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:36
+msgid "Administrators"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:35
+msgid "Allow MSPress themes and integrations to expose documentation metadata."
+msgstr ""
+
+#: src/Admin/Manager/Tools/ToolsManager.php:142
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:164
+msgid "Analytics"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:28
+msgid "Analytics data is shown only to users who meet this capability."
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:135
+msgid "Ask for Help"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:194
+msgid "Author"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:158
+#: src/Admin/Manager/Settings/SettingsPlugins.php:334
+msgid "Author:"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:38
+msgid "Authors"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:51
+msgid "Available permalink tokens"
+msgstr ""
+
+#: src/Includes/Settings/SettingsManager.php:120
+msgid "Browse the MSPress knowledge base."
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:78
+msgid "Build, organise, and share a clear home for your knowledge. Start by creating a Wiki or adding your first page."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:210
+msgid "Cancel"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:141
+msgid "Categories"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:32
+#: src/Admin/Manager/Settings/SettingsGeneral.php:33
+msgid "Changing this value flushes the WordPress rewrite rules."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:34
+msgid "Choose a structure that remains readable and stable after publication."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:116
+#: src/Admin/Manager/Settings/SettingsManager.php:163
+msgid "Choose carefully so editors and administrators retain the access they need."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:26
+msgid "Choose the minimum capability required to create MSPress wikis."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:27
+msgid "Choose the minimum capability required to create or edit wiki pages."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:29
+msgid "Choose the minimum capability required to manage MSPress plugins."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:28
+msgid "Choose the minimum capability required to view MSPress analytics."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:115
+#: src/Admin/Manager/Settings/SettingsManager.php:162
+msgid "Choose which navigation and page layout features MSPress displays."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:62
+msgid "Click a token to add it to the pattern. Tokens are inserted with a trailing slash and reappear when removed."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:187
+msgid "Close"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:134
+#: src/Admin/Manager/UI/Header.php:28
+msgid "Community"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:32
+msgid "Configure diagnostic logging from the Tools settings tab."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:114
+#: src/Admin/Manager/Settings/SettingsManager.php:161
+msgid "Configure MSPress names, URL slugs, and permalink settings."
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:134
+msgid "Connect with other people building their knowledge base."
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:55
+msgid "Console logging"
+msgstr ""
+
+#: src/Includes/Functions/OAuthController.php:41
+msgid "Could not retrieve a valid email address from Microsoft."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/FormFieldHelper.php:543
+msgid "Create \"{0}\""
+msgstr ""
+
+#: src/Admin/Manager/Wiki/WikiManager.php:68
+msgid "Create a wiki"
+msgstr ""
+
+#: src/Admin/Manager/Wiki/WikiManager.php:80
+msgid "Create wiki"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:18
+msgid "Create Wikis"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:64
+msgid "Created"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:32
+msgid "Custom Category Slug"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:33
+msgid "Custom Tags Slug"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:47
+#: src/Admin/Manager/UI/Sidebar.php:38
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:103
+msgid "Dashboard"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:45
+msgid "Database manager"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ToolsManager.php:143
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:161
+msgid "Debug"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:32
+#: src/Admin/Manager/Tools/DebugManager.php:48
+msgid "Debug logging"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:27
+msgid "Delete Others' Wiki Pages"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:24
+msgid "Delete Others' Wikis"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:28
+msgid "Delete Published Wiki Pages"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:25
+msgid "Delete Published Wikis"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:26
+msgid "Delete Wiki Pages"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:23
+msgid "Delete Wikis"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Settings/Settings.php:28
+msgid "Demo"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Settings/Settings.php:29
+msgid "Demo plugin settings"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Settings/Settings.php:34
+msgid "Demo text setting"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:380
+msgid "Department"
+msgstr ""
+
+#: src/Admin/Manager/Wiki/WikiManager.php:77
+msgid "Description"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:371
+msgid "Display Name"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:160
+#: src/Admin/Manager/Settings/SettingsPlugins.php:336
+msgid "Docs:"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:133
+#: src/Admin/Manager/UI/Header.php:24
+msgid "Documentation"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:33
+msgid "Download your MSPress content and settings as a JSON file."
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:34
+msgid "Edit Access Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:39
+msgid "Edit Extension Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:30
+msgid "Edit General Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:37
+msgid "Edit Internal Plugin Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:32
+msgid "Edit Layout Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:21
+msgid "Edit Others' Wikis"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:22
+msgid "Edit Published Wikis"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:20
+msgid "Edit Wikis"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:37
+msgid "Editors"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:362
+msgid "Email"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:92
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:93
+msgid "Email Settings"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:152
+#: src/Admin/Manager/Settings/SettingsPlugins.php:328
+msgid "Enable %s"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:55
+msgid "Enable browser console logging"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Settings/Settings.php:42
+msgid "Enable demo setting"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:35
+msgid "Enable Documentation Schema"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:42
+msgid "Enable Entra setting"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:135
+msgid "Enable Graph Mailer"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:48
+msgid "Enable MSPress debug logging"
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:42
+msgid "Enable OneDrive setting"
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:42
+msgid "Enable SharePoint setting"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:45
+msgid "Enable this only while investigating a problem, because logs can grow over time."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:28
+msgid "Entra"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:29
+msgid "Entra plugin settings"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:34
+msgid "Entra text setting"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ToolsManager.php:145
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:163
+msgid "Export"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:42
+msgid "Export MSPress Content"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:33
+msgid "Export MSPress data"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:34
+#: src/Admin/Manager/Tools/ExportManager.php:44
+msgid "Export MSPress JSON"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:44
+msgid "Export or import MSPress content and settings as JSON."
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:44
+msgid "Exports are protected with a WordPress nonce."
+msgstr ""
+
+#: src/Admin/Manager/UI/Header.php:32
+msgid "Extensions"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:272
+msgid "Failed to refresh groups:"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:337
+msgid "Failed to send email via Microsoft Graph: "
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:224
+msgid "Failed to send test email. Check the error logs."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:365
+msgid "First Name"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:146
+msgid "From Email Address"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:154
+msgid "From Name"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:85
+msgid "From TrilB.Dev"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:150
+msgid "General"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:135
+msgid "Get support when you need a hand with your setup."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:387
+msgid "Group mappings saved successfully!"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:129
+msgid "Group to Role Mappings"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ToolsManager.php:144
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:162
+msgid "Import"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:44
+msgid "Import and export"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ImportManager.php:37
+msgid "Import JSON"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:41
+msgid "Import MSPress Content"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ImportManager.php:37
+msgid "Import MSPress JSON"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ImportManager.php:37
+msgid "Importing replaces matching MSPress data with the contents of the file."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:101
+msgid "Incremental Sync"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:212
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:345
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:364
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:381
+msgid "Insufficient permissions"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:375
+msgid "Job Title"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:108
+msgid "Keep things moving"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:35
+msgid "Keep this enabled when search engines and integrations should understand the Wiki structure."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:368
+msgid "Last Name"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:91
+msgid "Last Sync"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:86
+msgid "Latest News"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:151
+msgid "Layout"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:115
+#: src/Admin/Manager/Settings/SettingsManager.php:162
+msgid "Layout settings control the visitor-facing MSPress interface."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:198
+msgid "License"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:266
+msgid "Login with Microsoft"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:263
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:310
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:450
+msgid "Logout"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:111
+msgid "Manage content"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:60
+msgid "Manage Microsoft 365 Groups"
+msgstr ""
+
+#: src/Admin/Manager/Wiki/WikiManager.php:23
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:110
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:137
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:140
+msgid "Manage Wiki"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:45
+msgid "Managed automatically"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:45
+msgid "Manual database changes are not required for normal MSPress operation."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:106
+msgid "Map Microsoft 365 groups to WordPress roles. Users will automatically be assigned the corresponding WordPress role based on their group membership."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:134
+msgid "Microsoft 365 Group"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:103
+msgid "Microsoft 365 Role Management"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:79
+msgid "Microsoft 365 User Synchronization"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Demo.php:68
+msgid "Microsoft Entra integration for MSPress."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:128
+msgid "Microsoft Graph Email Settings"
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Demo.php:68
+msgid "Microsoft OneDrive integration for MSPress."
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Demo.php:68
+msgid "Microsoft SharePoint integration for MSPress."
+msgstr ""
+
+#: src/Includes/Functions/OAuthController.php:73
+msgid "Microsoft sign-in could not be completed. Please try again."
+msgstr ""
+
+#: src/Includes/Functions/OAuthController.php:33
+msgid "Microsoft sign-in was not completed. Please try again."
+msgstr ""
+
+#: src/Admin/Manager/Tools/AnalyticsManager.php:53
+msgid "Most Viewed Wiki Pages"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:292
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:224
+msgid "MS365 connection failed"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:286
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:405
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:218
+msgid "MS365 integration not configured"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:87
+msgid "MS365 Users"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:94
+msgid "MSPress"
+msgstr ""
+
+#: src/Admin/Manager/UI/Sidebar.php:36
+msgid "MSPress admin navigation"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Core/Shortcodes.php:25
+msgid "MSPress Demo"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:28
+msgid "MSPress Description"
+msgstr ""
+
+#: src/Includes/Settings/SettingsManager.php:119
+msgid "MSPress Documentation"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:216
+msgid "MSPress Email Test"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Core/Shortcodes.php:25
+msgid "MSPress Entra"
+msgstr ""
+
+#: src/Admin/Manager/UI/Header.php:50
+msgid "MSPress header navigation"
+msgstr ""
+
+#: src/Includes/Core/Shortcodes.php:72
+msgid "MSPress is active."
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:87
+msgid "MSPress news and updates will appear here soon."
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Core/Shortcodes.php:25
+msgid "MSPress OneDrive"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:34
+msgid "MSPress Permalink"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:27
+msgid "MSPress Root Name"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:31
+msgid "MSPress Root Slug"
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Core/Shortcodes.php:25
+msgid "MSPress SharePoint"
+msgstr ""
+
+#: src/Admin/Manager/Wiki/WikiManager.php:73
+msgid "Name"
+msgstr ""
+
+#: src/Admin/Manager/UI/Sidebar.php:33
+msgid "Navigate"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:159
+msgid "Never"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:143
+msgid "New Wiki"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:333
+msgid "No description provided."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:410
+msgid "No group mappings configured"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:124
+msgid "No published Wiki Pages yet."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:145
+msgid "No role"
+msgstr ""
+
+#: src/Includes/Settings/SettingsManager.php:140
+msgid "No Wiki pages found."
+msgstr ""
+
+#: src/Admin/Manager/Wiki/WikiManager.php:60
+msgid "No wikis have been created yet."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:336
+msgid "Not available"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:385
+msgid "Office Location"
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:28
+msgid "OneDrive"
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:29
+msgid "OneDrive plugin settings"
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:34
+msgid "OneDrive text setting"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:32
+msgid "Open Tools Settings"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:165
+msgid "Optional reply-to email address."
+msgstr ""
+
+#: src/Admin/Manager/Tools/AnalyticsManager.php:53
+msgid "Page"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsImport.php:31
+msgid "Please upload a valid MSPress JSON export."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:191
+msgid "Plugin information"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsPlugins.php:75
+#: src/Includes/Functions/Admin/FunctionsPlugins.php:76
+msgid "Plugin settings saved successfully."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:117
+#: src/Admin/Manager/Settings/SettingsManager.php:164
+msgid "Plugin-specific configuration is available from each plugin settings page when provided."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:152
+msgid "Plugins"
+msgstr ""
+
+#: src/Admin/Manager/UI/Footer.php:25
+msgid "Powered by"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:109
+msgid "Preparing sync..."
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:19
+msgid "Publish Wikis"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:65
+msgid "Published"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:133
+msgid "Read the MSPress guides and product notes."
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:109
+msgid "Recently published or updated"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:114
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:267
+msgid "Refresh MS365 Groups"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:261
+msgid "Refreshing..."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:410
+msgid "Register with Microsoft 365"
+msgstr ""
+
+#: src/Includes/Functions/Helpers/FormFieldHelper.php:546
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:151
+msgid "Remove"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Core/Shortcodes.php:27
+msgid "Render a message from the MSPress Demo plugin."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Core/Shortcodes.php:27
+msgid "Render a message from the MSPress Entra plugin."
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Core/Shortcodes.php:27
+msgid "Render a message from the MSPress OneDrive plugin."
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Core/Shortcodes.php:27
+msgid "Render a message from the MSPress SharePoint plugin."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:162
+msgid "Reply-To Email"
+msgstr ""
+
+#: src/Admin/Manager/UI/Header.php:40
+msgid "Roadmap"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:82
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:83
+msgid "Role Management"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:437
+msgid "Role sync completed: %d users updated, %d errors"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:249
+msgid "Role sync completed!"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:253
+msgid "Role sync failed!"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:212
+msgid "Save"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:198
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:171
+msgid "Save Changes"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:177
+msgid "Save Mappings"
+msgstr ""
+
+#: src/Includes/Settings/SettingsManager.php:138
+msgid "Search"
+msgstr ""
+
+#: src/Includes/Functions/Helpers/FormFieldHelper.php:542
+msgid "Search or create"
+msgstr ""
+
+#: src/Includes/Settings/SettingsManager.php:137
+msgid "Search the Wiki"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:161
+msgid "Select a group..."
+msgstr ""
+
+#: src/Admin/Manager/Tools/ImportManager.php:37
+msgid "Select a JSON export generated by MSPress."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/FormFieldHelper.php:547
+msgid "Select options"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:172
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:191
+msgid "Send Test Email"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:185
+msgid "Sending..."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:116
+#: src/Admin/Manager/Settings/SettingsManager.php:163
+msgid "Set the minimum WordPress capabilities required for MSPress tasks."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:120
+#: src/Admin/Manager/Settings/SettingsPlugins.php:162
+#: src/Admin/Manager/Settings/SettingsPlugins.php:337
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:117
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:147
+msgid "Settings"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:168
+msgid "Settings information"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:119
+msgid "Settings saved successfully."
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:136
+msgid "Share ideas that can make MSPress better."
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:28
+msgid "SharePoint"
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:29
+msgid "SharePoint plugin settings"
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:34
+msgid "SharePoint text setting"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:282
+msgid "Sign in with Microsoft 365"
+msgstr ""
+
+#: src/Admin/Manager/UI/Header.php:36
+msgid "Support"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:30
+msgid "Supporting text shown on Wiki archive and index views."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:111
+msgid "Sync All User Roles"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:98
+msgid "Sync All Users"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:137
+msgid "Sync completed successfully!"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:282
+msgid "Sync completed: %d users processed, %d created, %d updated, %d deactivated"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:141
+msgid "Sync failed:"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:295
+msgid "Sync failed: "
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:61
+msgid "Sync Microsoft 365 Roles"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:417
+msgid "Sync Results"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:122
+msgid "Syncing roles..."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:142
+msgid "Tags"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:136
+msgid "Tell us what you think"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:158
+msgid "Term removed from this Wiki."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:146
+msgid "Term saved."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:222
+msgid "Test email sent successfully!"
+msgstr ""
+
+#: src/Includes/Tools/DataTransfer.php:62
+msgid "The %s export section must be an array."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:149
+msgid "The email address that will appear as the sender. Must be a valid Microsoft 365 email address."
+msgstr ""
+
+#: src/Includes/Tools/DataTransfer.php:54
+msgid "The import data must be an object."
+msgstr ""
+
+#: src/Includes/Tools/ImportValidator.php:24
+msgid "The import file contains invalid JSON."
+msgstr ""
+
+#: src/Includes/Tools/ImportValidator.php:36
+#: src/Includes/Tools/ImportValidator.php:40
+msgid "The import file could not be read."
+msgstr ""
+
+#: src/Includes/Tools/ImportValidator.php:33
+msgid "The import file could not be uploaded."
+msgstr ""
+
+#: src/Includes/Tools/ImportValidator.php:19
+msgid "The import file is empty."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsPlugins.php:44
+msgid "The MSPress plugin state could not be saved."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:157
+msgid "The name that will appear as the sender."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:27
+msgid "The name used for the main MSPress area."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:34
+msgid "The permalink structure used by MSPress content."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsPlugins.php:59
+msgid "The requested MSPress plugin settings were not found."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsPlugins.php:37
+msgid "The requested MSPress plugin was not found."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/PermalinkHelper.php:23
+msgid "The root MSPress slug."
+msgstr ""
+
+#: src/Admin/Manager/Tools/ExportManager.php:45
+msgid "The settings table is managed automatically during plugin activation."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/PermalinkHelper.php:25
+msgid "The tags assigned to the Wiki container."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/PermalinkHelper.php:28
+msgid "The tags assigned to the Wiki page."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:29
+msgid "The title shown on Wiki archive and index views."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsImport.php:35
+msgid "The uploaded file is not valid JSON."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:31
+msgid "The URL slug for the MSPress root."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:32
+msgid "The URL slug used for MSPress categories."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:33
+msgid "The URL slug used for MSPress tags."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/PermalinkHelper.php:24
+msgid "The Wiki categories, from parent to child."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/PermalinkHelper.php:27
+msgid "The Wiki page categories, from parent to child."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/PermalinkHelper.php:29
+msgid "The Wiki page slug."
+msgstr ""
+
+#: src/Includes/Functions/Helpers/PermalinkHelper.php:26
+msgid "The Wiki slug."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:114
+#: src/Admin/Manager/Settings/SettingsManager.php:161
+msgid "These settings affect how MSPress content is identified and linked throughout the site."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:118
+#: src/Admin/Manager/Settings/SettingsManager.php:165
+msgid "Third-party plugin settings are managed through WordPress or the plugin author’s own settings page."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:28
+msgid "This can be used by themes and integrations when describing the MSPress area."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:27
+msgid "This controls editing access to wiki page content."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:217
+msgid "This is a test email sent through Microsoft Graph API."
+msgstr ""
+
+#: src/Includes/Tools/DataTransfer.php:57
+msgid "This MSPress export version is not supported."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:27
+msgid "This name appears in the admin interface and generated titles."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Settings/Settings.php:36
+#: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:36
+#: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:36
+#: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:36
+msgid "This tooltip uses the default question icon."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Settings/Settings.php:44
+#: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:44
+#: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:44
+#: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:44
+msgid "This tooltip uses the info icon and demonstrates a custom icon override."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:118
+msgid "This will sync all users from Microsoft 365. Continue?"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:237
+msgid "This will sync roles for all MS365 users. Continue?"
+msgstr ""
+
+#: src/Includes/Functions/Helpers/FormFieldHelper.php:331
+msgid "Toggle Dropdown"
+msgstr ""
+
+#: src/Admin/Manager/UI/Header.php:55
+msgid "Toggle header navigation"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/Settings/Settings.php:43
+msgid "Toggle the second Demo setting on or off."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:43
+msgid "Toggle the second Entra setting on or off."
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:43
+msgid "Toggle the second OneDrive setting on or off."
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:43
+msgid "Toggle the second SharePoint setting on or off."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:124
+#: src/Includes/Functions/Admin/FunctionsSidebar.php:158
+msgid "Tools"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:83
+msgid "Total Users"
+msgstr ""
+
+#: src/Admin/Manager/Tools/AnalyticsManager.php:52
+msgid "Total Wiki Page Views"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:334
+#: src/Admin/Manager/Settings/SettingsPlugins.php:335
+msgid "Unknown"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:119
+msgid "Updated %s"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:29
+msgid "Use a concise title that makes the documentation area clear to visitors."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:29
+msgid "Use a trusted administrator-level capability for plugin management."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:31
+msgid "Use lowercase letters, numbers, and hyphens for the most reliable URLs."
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:139
+msgid "Use Microsoft Graph API for sending emails"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:40
+msgid "Use MSPress Debug Tools"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:53
+msgid "Use this during frontend troubleshooting and disable it afterward."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:59
+#: src/Includes/Plugins/Entra/Includes/User/Sync.php:60
+msgid "User Sync"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:359
+msgid "Username"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:26
+msgid "Users without this capability cannot create new wikis."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:196
+msgid "Version"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:159
+#: src/Admin/Manager/Settings/SettingsPlugins.php:335
+msgid "Version:"
+msgstr ""
+
+#: src/Admin/Manager/Wiki/WikiManager.php:55
+msgid "View"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:33
+msgid "View Access Settings"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:160
+#: src/Admin/Manager/Settings/SettingsPlugins.php:336
+msgid "View documentation"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:38
+msgid "View Extension Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:29
+msgid "View General Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:36
+msgid "View Internal Plugin Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:31
+msgid "View Layout Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:17
+msgid "View MSPress"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:43
+msgid "View MSPress Analytics"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:35
+msgid "View Plugin Settings"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:117
+#: src/Admin/Manager/Settings/SettingsManager.php:164
+msgid "View the MSPress plugins installed on this site."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:118
+#: src/Admin/Manager/Settings/SettingsManager.php:165
+msgid "View third-party plugins installed on this site."
+msgstr ""
+
+#: src/Admin/Manager/Tools/AnalyticsManager.php:53
+msgid "Views"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:203
+msgid "Welcome %s! You have successfully registered using your Microsoft 365 account."
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:77
+msgid "Welcome to MSPress"
+msgstr ""
+
+#: src/Includes/Plugins/Email/Includes/GraphMailer.php:141
+msgid "When enabled, all WordPress emails will be sent through Microsoft Graph API instead of SMTP."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:28
+msgid "Who can check analytics?"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:26
+msgid "Who can create wikis?"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:29
+msgid "Who can manage plugins?"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsAccess.php:27
+msgid "Who can write wiki pages?"
+msgstr ""
+
+#: src/Includes/Core/PostType.php:15
+msgid "Wiki"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:30
+msgid "Wiki Archive Description"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsGeneral.php:29
+msgid "Wiki Archive Title"
+msgstr ""
+
+#: src/Includes/Core/Taxonomy.php:15
+msgid "Wiki Categories"
+msgstr ""
+
+#: src/Includes/Core/Taxonomy.php:15
+msgid "Wiki Category"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:115
+msgid "Wiki deleted."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:31
+#: src/Includes/Functions/Admin/FunctionsWiki.php:54
+#: src/Includes/Functions/Admin/FunctionsWiki.php:94
+msgid "Wiki Name is required."
+msgstr ""
+
+#: src/Includes/Core/PostType.php:24
+msgid "Wiki Page"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:124
+msgid "Wiki Page deleted."
+msgstr ""
+
+#: src/Includes/Core/PostType.php:24
+msgid "Wiki Pages"
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:102
+msgid "Wiki settings saved."
+msgstr ""
+
+#: src/Includes/Core/Taxonomy.php:23
+msgid "Wiki Tag"
+msgstr ""
+
+#: src/Includes/Core/Taxonomy.php:23
+msgid "Wiki Tags"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:63
+#: src/Admin/Manager/Wiki/WikiManager.php:44
+#: src/Includes/Core/PostType.php:15
+msgid "Wikis"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:135
+msgid "WordPress Role"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:52
+msgid "Write diagnostic information to the browser console."
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:44
+msgid "Write diagnostic information to the WordPress debug log."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsExport.php:26
+msgid "You are not allowed to export MSPress data."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsImport.php:26
+msgid "You are not allowed to import MSPress data."
+msgstr ""
+
+#: src/Admin/Manager/Tools/ToolsManager.php:109
+msgid "You are not authorized to access this MSPress tool."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:23
+msgid "You are not authorized to create a Wiki."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:121
+msgid "You are not authorized to delete this Wiki Page."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:108
+msgid "You are not authorized to delete this Wiki."
+msgstr ""
+
+#: src/Admin/Admin.php:159
+msgid "You are not authorized to load MSPress settings."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsPlugins.php:40
+msgid "You are not authorized to manage external MSPress plugins."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsPlugins.php:29
+msgid "You are not authorized to manage MSPress plugins."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:132
+#: src/Includes/Functions/Admin/FunctionsWiki.php:154
+msgid "You are not authorized to manage Wiki terms."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsPlugins.php:64
+msgid "You are not authorized to save MSPress plugin settings."
+msgstr ""
+
+#: src/Includes/Functions/Admin/FunctionsWiki.php:87
+msgid "You are not authorized to update this Wiki."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:149
+msgid "You are not authorized to view these MSPress settings."
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:76
+msgid "Your knowledge workspace"
+msgstr ""
