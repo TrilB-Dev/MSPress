@@ -10,8 +10,8 @@ namespace MSPress\Includes\Functions\Admin;
 
 use MSPress\Admin\Admin;
 use MSPress\Includes\Functions\Helpers\LoggerHelper;
-use MSPress\Includes\Functions\Helpers\WAMHelper;
-use MSPress\Includes\Functions\Helpers\WASMHelper;
+use MSPress\Includes\Functions\Helpers\MSAMHelper;
+use MSPress\Includes\Functions\Helpers\MSASMHelper;
 use MSPress\Includes\Plugins\AdminMenuProviderInterface;
 use MSPress\Includes\Plugins\AdminSidebarProviderInterface;
 use MSPress\Includes\Plugins\Plugins;
@@ -38,7 +38,7 @@ final class FunctionsSidebar {
 			self::register_wordpress_menu( $menu );
 		}
 
-		foreach ( WAMHelper::filter( self::plugin_wordpress_menus() ) as $menu ) {
+		foreach ( MSAMHelper::filter( self::plugin_wordpress_menus() ) as $menu ) {
 			self::register_wordpress_menu( $menu );
 		}
 	}
@@ -50,7 +50,7 @@ final class FunctionsSidebar {
 	 */
 	public static function get_sidebar_groups(): array {
 		$groups = self::core_sidebar_groups();
-		$menus  = WASMHelper::filter( self::plugin_sidebar_menus() );
+		$menus  = MSASMHelper::filter( self::plugin_sidebar_menus() );
 
 		// Create parents first so children can target a parent in any order.
 		foreach ( $menus as $menu ) {
@@ -229,16 +229,16 @@ final class FunctionsSidebar {
 					}
 
 					if ( 'group' === ( $definition['type'] ?? '' ) ) {
-						$menus[] = WASMHelper::define( $definition['label'] ?? '', $definition['slug'] ?? '', $definition['icon'] ?? '', '', $definition['capability'] ?? '' );
+						$menus[] = MSASMHelper::define( $definition['label'] ?? '', $definition['slug'] ?? '', $definition['icon'] ?? '', '', $definition['capability'] ?? '' );
 						foreach ( $definition['items'] ?? [] as $child ) {
 							if ( is_array( $child ) ) {
-								$menus[] = WASMHelper::define( $child['label'] ?? '', self::sidebar_slug( $child ), $child['icon'] ?? '', $definition['slug'] ?? '', $child['capability'] ?? '' );
+								$menus[] = MSASMHelper::define( $child['label'] ?? '', self::sidebar_slug( $child ), $child['icon'] ?? '', $definition['slug'] ?? '', $child['capability'] ?? '' );
 							}
 						}
 						continue;
 					}
 
-					$menus[] = WASMHelper::define( $definition['label'] ?? '', self::sidebar_slug( $definition ), $definition['icon'] ?? '', $definition['parent'] ?? '', $definition['capability'] ?? '' );
+					$menus[] = MSASMHelper::define( $definition['label'] ?? '', self::sidebar_slug( $definition ), $definition['icon'] ?? '', $definition['parent'] ?? '', $definition['capability'] ?? '' );
 				}
 			} catch ( \Throwable $e ) {
 				LoggerHelper::write_log( sprintf( 'MSPress plugin %s failed to provide sidebar menus: %s', $plugin->get_slug(), $e->getMessage() ) );
