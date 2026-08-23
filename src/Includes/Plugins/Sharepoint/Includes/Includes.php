@@ -1,6 +1,6 @@
 <?php
 /**
- * Demo Wiki Plugin Includes
+ * MSPress SharePoint Plugin Includes
  *
  * @package MSPress
  * @subpackage Plugins\Demo\Includes

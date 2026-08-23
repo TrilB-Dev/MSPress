@@ -115,15 +115,7 @@ final class Assets {
      * @return void
      */
     public function enqueue_frontend(): void {
-        if ( ! is_singular( 'mspress_page' ) ) {
-            return;
-        }
-
-        $assets = apply_filters( 'mspress_base_assets', [], 'frontend' );
-        $this->enqueue_registered( 'frontend', [
-            'styles'  => array_merge( $assets['base']['styles'] ?? [], [ [ 'handle' => 'mspress-public', 'src' => MSPRESS_URL . 'src/Assets/css/public.css' ] ] ),
-            'scripts' => array_merge( $assets['base']['scripts'] ?? [], [ [ 'handle' => 'mspress-public', 'src' => MSPRESS_URL . 'src/Assets/js/public.js', 'in_footer' => true ] ] ),
-        ] );
+        return;
     }
     /**
      * Enqueues the admin assets for the plugin.
@@ -190,12 +182,6 @@ final class Assets {
                     wp_localize_script( $handle, 'mspressSettingsTabs', $settings_config );
                 }
             }
-        }
-        if ( 'mspress-manage' === sanitize_key( $_GET['page'] ?? '' ) && wp_script_is( 'mspress-admin-wiki', 'enqueued' ) ) {
-            wp_localize_script( 'mspress-admin-wiki', 'mspressWikiManager', [
-                'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-                'nonce' => wp_create_nonce( 'mspress_manage_wiki' ),
-            ] );
         }
     }
 }

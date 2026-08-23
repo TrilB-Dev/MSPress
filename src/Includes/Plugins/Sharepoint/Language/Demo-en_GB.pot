@@ -1,14 +1,14 @@
 # Translation catalog for Demo.
-# Copyright (C) 2026 WikiPress contributors
-# This file is distributed under the same license as the WikiPress package.
+# Copyright (C) 2026 MSPress contributors
+# This file is distributed under the same license as the MSPress package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WikiPress 1.0.0\n"
+"Project-Id-Version: MSPress 1.0.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Domain: wikipress\n"
+"X-Domain: mspress\n"
 #: src/includes/Plugins/Demo/Demo.php:68
-msgid "A demonstration WikiPress extension plugin."
+msgid "A demonstration MSPress extension plugin."
 msgstr ""
 
 #: src/includes/Plugins/Demo/Includes/Settings/Settings.php:35
@@ -32,7 +32,7 @@ msgid "Enable demo setting"
 msgstr ""
 
 #: src/includes/Plugins/Demo/Includes/Shortcodes.php:27
-msgid "Render a message from the WikiPress Demo plugin."
+msgid "Render a message from the MSPress Demo plugin."
 msgstr ""
 
 #: src/includes/Plugins/Demo/Includes/Settings/Settings.php:36
@@ -48,5 +48,5 @@ msgid "Toggle the second Demo setting on or off."
 msgstr ""
 
 #: src/includes/Plugins/Demo/Includes/Shortcodes.php:25
-msgid "WikiPress Demo"
+msgid "MSPress Demo"
 msgstr ""

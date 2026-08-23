@@ -1,6 +1,6 @@
-# WikiPress Plugin Template
+# MSPress Plugin Template
 
-Every discovered WikiPress plugin should use this structure:
+Every discovered MSPress plugin should use this structure:
 
 ```text
 PluginName/
@@ -25,7 +25,7 @@ PluginName/
 
 `PluginName.php` must implement `PluginInterface`. The loader discovers direct PHP bootstrap files in each plugin directory and validates that contract at runtime; the `Assets`, `Includes`, settings, and language directories are optional. It calls optional capability methods when the plugin implements their corresponding interfaces, then calls `init()`.
 
-A plugin should use composition for its `Assets`, `Includes`, and `Settings` classes. WikiPress core service classes are final and must not be extended.
+A plugin should use composition for its `Assets`, `Includes`, and `Settings` classes. MSPress core service classes are final and must not be extended.
 
 The required plugin contract is:
 
@@ -49,9 +49,18 @@ Optional capabilities are defined in `PluginsInterface.php`:
 - `RestRouteProviderInterface::register_rest_routes()`
 - `FrontendProviderInterface::register_frontend()`
 - `I18nProviderInterface::load_textdomain()`
+- `DashboardProviderInterface::get_dashboard_statuses()` and
+	`DashboardProviderInterface::get_dashboard_cards()`
+
+Dashboard providers contribute operational information to the MSPress
+dashboard. A status definition should include `label`, `state`, and
+`message`; a card definition should include `title` and `description`.
+Both may also provide `value`, `icon`, `url`, `priority`, and `capability`.
+The `mspress_dashboard_statuses` and `mspress_dashboard_cards` filters are
+available for extensions that do not use the discovered plugin interface.
 
 Plugins that define their own permissions should place them in
-`Includes/Core/Capabilities.php`, extend `WikiPress\Includes\Core\Capabilities`,
+`Includes/Core/Capabilities.php`, extend `MSPress\Includes\Core\Capabilities`,
 and register them from their `Includes` initializer. The core registry merges
 these definitions with core capabilities and installs missing capabilities on
 the administrator role.

@@ -1,6 +1,6 @@
 <?php
 /**
- * TrilB.Dev Plugin - SharePoint File Manager
+ * MSPress SharePoint File Manager
  *
  * Advanced file management system with WordPress media UI integration
  * for SharePoint file and folder navigation, upload, and management

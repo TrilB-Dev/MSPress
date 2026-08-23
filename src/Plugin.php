@@ -7,10 +7,8 @@
 
 namespace MSPress;
 
-use MSPress\Admin\Admin;
-use MSPress\Assets\Assets;
+use MSPress\Includes\Core\Core;
 use MSPress\Includes\Core\WP\I18n;
-use MSPress\Includes\Includes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -36,7 +34,7 @@ final class Plugin {
      * Initialize plugin-owned modules.
      */
     public function initialize(): void {
-        Includes::get_instance()->init();
+        Core::get_instance()->init();
     }
     
     /**

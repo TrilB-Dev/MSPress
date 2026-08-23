@@ -57,8 +57,8 @@ class RoleManager {
     private function add_custom_capabilities() {
         $roles = wp_roles();
         $capabilities = [
-            'manage_ms365_groups' => __('Manage Microsoft 365 Groups', 'trilbdev'),
-            'sync_ms365_roles' => __('Sync Microsoft 365 Roles', 'trilbdev'),
+            'manage_ms365_groups' => __('Manage Microsoft 365 Groups', 'mspress'),
+            'sync_ms365_roles' => __('Sync Microsoft 365 Roles', 'mspress'),
         ];
 
         foreach ($roles->roles as $role_name => $role_info) {
@@ -79,8 +79,8 @@ class RoleManager {
     public function add_admin_menu() {
         add_submenu_page(
             'mspress-ms365',
-            __('Role Management', 'trilbdev'),
-            __('Role Management', 'trilbdev'),
+            __('Role Management', 'mspress'),
+            __('Role Management', 'mspress'),
             'manage_options',
             'mspress-roles',
             [$this, 'admin_page']
@@ -100,40 +100,40 @@ class RoleManager {
 
         ?>
         <div class="wrap">
-            <h1><?php _e('Microsoft 365 Role Management', 'trilbdev'); ?></h1>
+            <h1><?php _e('Microsoft 365 Role Management', 'mspress'); ?></h1>
 
-            <div class="trilbdev-role-notice">
-                <p><?php _e('Map Microsoft 365 groups to WordPress roles. Users will automatically be assigned the corresponding WordPress role based on their group membership.', 'trilbdev'); ?></p>
+            <div class="mspress-role-notice">
+                <p><?php _e('Map Microsoft 365 groups to WordPress roles. Users will automatically be assigned the corresponding WordPress role based on their group membership.', 'mspress'); ?></p>
             </div>
 
-            <div class="trilbdev-role-actions">
+            <div class="mspress-role-actions">
                 <button id="sync-roles" class="btn btn-primary">
-                    <?php _e('Sync All User Roles', 'trilbdev'); ?>
+                    <?php _e('Sync All User Roles', 'mspress'); ?>
                 </button>
                 <button id="refresh-groups" class="btn btn-secondary">
-                    <?php _e('Refresh MS365 Groups', 'trilbdev'); ?>
+                    <?php _e('Refresh MS365 Groups', 'mspress'); ?>
                 </button>
             </div>
 
             <div id="sync-progress" style="display: none;">
-                <div class="trilbdev-progress-bar">
-                    <div class="trilbdev-progress-fill" style="width: 0%"></div>
+                <div class="mspress-progress-bar">
+                    <div class="mspress-progress-fill" style="width: 0%"></div>
                 </div>
-                <p id="sync-status"><?php _e('Syncing roles...', 'trilbdev'); ?></p>
+                <p id="sync-status"><?php _e('Syncing roles...', 'mspress'); ?></p>
             </div>
 
             <form id="group-mappings-form" method="post" action="">
                 <?php wp_nonce_field('mspress_save_group_mappings'); ?>
 
-                <div class="trilbdev-group-mappings">
-                    <h3><?php _e('Group to Role Mappings', 'trilbdev'); ?></h3>
+                <div class="mspress-group-mappings">
+                    <h3><?php _e('Group to Role Mappings', 'mspress'); ?></h3>
 
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th><?php _e('Microsoft 365 Group', 'trilbdev'); ?></th>
-                                <th><?php _e('WordPress Role', 'trilbdev'); ?></th>
-                                <th><?php _e('Actions', 'trilbdev'); ?></th>
+                                <th><?php _e('Microsoft 365 Group', 'mspress'); ?></th>
+                                <th><?php _e('WordPress Role', 'mspress'); ?></th>
+                                <th><?php _e('Actions', 'mspress'); ?></th>
                             </tr>
                         </thead>
                         <tbody id="mappings-tbody">
@@ -142,13 +142,13 @@ class RoleManager {
                                 <td><?php echo esc_html($this->get_group_name($group_id, $ms365_groups)); ?></td>
                                 <td>
                                     <select name="group_mappings[<?php echo esc_attr($group_id); ?>]" class="role-select">
-                                        <option value=""><?php _e('No role', 'trilbdev'); ?></option>
+                                        <option value=""><?php _e('No role', 'mspress'); ?></option>
                                         <?php wp_dropdown_roles($role); ?>
                                     </select>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-secondary remove-mapping">
-                                        <?php _e('Remove', 'trilbdev'); ?>
+                                        <?php _e('Remove', 'mspress'); ?>
                                     </button>
                                 </td>
                             </tr>
@@ -156,9 +156,9 @@ class RoleManager {
                         </tbody>
                     </table>
 
-                    <div class="trilbdev-add-mapping">
+                    <div class="mspress-add-mapping">
                         <select id="new-group-select">
-                            <option value=""><?php _e('Select a group...', 'trilbdev'); ?></option>
+                            <option value=""><?php _e('Select a group...', 'mspress'); ?></option>
                             <?php foreach ($ms365_groups as $group): ?>
                                 <?php if (!isset($group_mappings[$group['id']])): ?>
                                 <option value="<?php echo esc_attr($group['id']); ?>" data-name="<?php echo esc_attr($group['displayName']); ?>">
@@ -168,13 +168,13 @@ class RoleManager {
                             <?php endforeach; ?>
                         </select>
                         <button type="button" id="add-mapping" class="btn btn-secondary">
-                            <?php _e('Add Mapping', 'trilbdev'); ?>
+                            <?php _e('Add Mapping', 'mspress'); ?>
                         </button>
                     </div>
                 </div>
 
                 <p class="submit">
-                    <input type="submit" name="submit" class="btn btn-primary" value="<?php _e('Save Mappings', 'trilbdev'); ?>" />
+                    <input type="submit" name="submit" class="btn btn-primary" value="<?php _e('Save Mappings', 'mspress'); ?>" />
                 </p>
             </form>
 
@@ -234,7 +234,7 @@ class RoleManager {
 
             // Sync roles
             $('#sync-roles').on('click', function() {
-                if (!confirm('<?php _e('This will sync roles for all MS365 users. Continue?', 'trilbdev'); ?>')) return;
+                if (!confirm('<?php _e('This will sync roles for all MS365 users. Continue?', 'mspress'); ?>')) return;
 
                 $('#sync-progress').show();
                 $('#sync-roles').prop('disabled', true);
@@ -246,11 +246,11 @@ class RoleManager {
                     $('#sync-roles').prop('disabled', false);
 
                     if (response.success) {
-                        $('#sync-status').text('<?php _e('Role sync completed!', 'trilbdev'); ?>');
+                        $('#sync-status').text('<?php _e('Role sync completed!', 'mspress'); ?>');
                         $('#ajax-results').html('<div class="notice notice-success"><p>' + response.data.message + '</p></div>');
                         setTimeout(function() { location.reload(); }, 2000);
                     } else {
-                        $('#sync-status').text('<?php _e('Role sync failed!', 'trilbdev'); ?>');
+                        $('#sync-status').text('<?php _e('Role sync failed!', 'mspress'); ?>');
                         $('#ajax-results').html('<div class="notice notice-error"><p>' + response.data.message + '</p></div>');
                     }
                 });
@@ -258,18 +258,18 @@ class RoleManager {
 
             // Refresh groups
             $('#refresh-groups').on('click', function() {
-                $(this).prop('disabled', true).text('<?php _e('Refreshing...', 'trilbdev'); ?>');
+                $(this).prop('disabled', true).text('<?php _e('Refreshing...', 'mspress'); ?>');
 
                 $.post(ajaxurl, {
                     action: 'mspress_get_ms365_groups',
                     nonce: '<?php echo wp_create_nonce('mspress_get_ms365_groups'); ?>'
                 }, function(response) {
-                    $('#refresh-groups').prop('disabled', false).text('<?php _e('Refresh MS365 Groups', 'trilbdev'); ?>');
+                    $('#refresh-groups').prop('disabled', false).text('<?php _e('Refresh MS365 Groups', 'mspress'); ?>');
 
                     if (response.success) {
                         location.reload();
                     } else {
-                        alert('<?php _e('Failed to refresh groups:', 'trilbdev'); ?> ' + response.data.message);
+                        alert('<?php _e('Failed to refresh groups:', 'mspress'); ?> ' + response.data.message);
                     }
                 });
             });
@@ -342,7 +342,7 @@ class RoleManager {
         check_ajax_referer('mspress_sync_roles', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'trilbdev')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'mspress')]);
         }
 
         $result = $this->sync_all_user_roles();
@@ -361,7 +361,7 @@ class RoleManager {
         check_ajax_referer('mspress_get_ms365_groups', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'trilbdev')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'mspress')]);
         }
 
         // Clear cache and refresh groups
@@ -378,13 +378,13 @@ class RoleManager {
         check_ajax_referer('mspress_save_group_mappings', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'trilbdev')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'mspress')]);
         }
 
         $mappings = isset($_POST['group_mappings']) ? $_POST['group_mappings'] : [];
         Settings::set('group_mappings', $mappings);
 
-        wp_send_json_success(['message' => __('Group mappings saved successfully!', 'trilbdev')]);
+        wp_send_json_success(['message' => __('Group mappings saved successfully!', 'mspress')]);
     }
 
     /**
@@ -402,12 +402,12 @@ class RoleManager {
 
         $msgraph = GraphService::get_instance();
         if (!$msgraph) {
-            return ['success' => false, 'message' => __('MS365 integration not configured', 'trilbdev')];
+            return ['success' => false, 'message' => __('MS365 integration not configured', 'mspress')];
         }
 
         $group_mappings = Settings::get('group_mappings', []);
         if (empty($group_mappings)) {
-            return ['success' => false, 'message' => __('No group mappings configured', 'trilbdev')];
+            return ['success' => false, 'message' => __('No group mappings configured', 'mspress')];
         }
 
         // Get all MS365 users
@@ -434,7 +434,7 @@ class RoleManager {
         return [
             'success' => true,
             'message' => sprintf(
-                __('Role sync completed: %d users updated, %d errors', 'trilbdev'),
+                __('Role sync completed: %d users updated, %d errors', 'mspress'),
                 $updated, $errors
             )
         ];

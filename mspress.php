@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: MSPress
- * Plugin URI: https://trilb.dev
+ * Plugin URI: https://github.com/TrilB-Dev/MSPress
  * Description: A Microsoft 365 integration plugin for WordPress, providing seamless access to Microsoft 365 services and features within your WordPress site.
  * Version: 1.0.0
- * Author: MrTrilB
- * Author URI: https://trilb.dev
+ * Author: MSPress
+ * Author URI: https://github.com/TrilB-Dev/MSPress
  * License: GPL-2.0-or-later
  * Requires at least: 6.4
  * Requires PHP: 8.1
@@ -68,7 +68,7 @@ register_deactivation_hook( __FILE__, 'deactivate_mspress' );
  * @since    1.0.0
  */
 
-use MSPRESS\Plugin;
+use MSPress\Plugin;
 
 /**
  * Begins execution of the plugin.

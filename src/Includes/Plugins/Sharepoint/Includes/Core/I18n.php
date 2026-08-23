@@ -2,7 +2,7 @@
 /**
  * Language internationalization (i18n) for the Demo plugin.
  * @package MSPress
- * @subpackage Admin\Wiki\Plugins\Demo\Includes
+ * @subpackage Includes\Plugins\Sharepoint\Includes
  * @since 1.0.0
  * 
  */

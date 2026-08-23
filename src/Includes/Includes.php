@@ -7,15 +7,9 @@
 
 namespace MSPress\Includes;
 
-use MSPress\Admin\Admin;
+use MSPress\Includes\Core\Core;
 use MSPress\Includes\Core\Shortcodes;
-use MSPress\Includes\Core\PostType;
-use MSPress\Includes\Core\Taxonomy;
-use MSPress\Includes\Plugins\Plugins;
 use MSPress\Includes\Settings\Settings;
-use MSPress\Includes\Settings\MigrationService;
-use MSPress\Includes\Functions\OAuthController;
-use MSPress\Assets\Assets;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,39 +23,16 @@ final class Includes {
 	 */
 	private static ?self $instance = null;
 	/**
-	 * The Settings instance.
+	 * The core service coordinator.
 	 *
-	 * @var Settings
+	 * @var Core
 	 */
-	private Settings $settings;
-	/**
-	 * The Shortcodes instance.
-	 *
-	 * @var Shortcodes
-	 */
-	private Shortcodes $shortcodes;
-	/**
-	 * The Assets instance.
-	 *
-	 * @var Assets
-	 */
-	private Assets $assets;
-	/**
-	 * The MSPress plugin registry.
-	 *
-	 * @var Plugins
-	 */
-	private Plugins $plugins;
-	private OAuthController $oauth;
+	private Core $core;
 	/**
 	 * Private constructor to prevent direct instantiation.
 	 */
 	private function __construct() {
-		$this->settings = new Settings();
-		$this->shortcodes = new Shortcodes();
-		$this->assets = new Assets();
-		$this->plugins = Plugins::get_instance();
-		$this->oauth = new OAuthController();
+		$this->core = Core::get_instance();
 	}
 	/**
 	 * Get the singleton instance of the Includes class.
@@ -77,17 +48,7 @@ final class Includes {
 	 * @return void
 	 */
 	public function init(): void {
-		PostType::register();
-		Taxonomy::register();
-		$this->settings->register();
-		MigrationService::run();
-		$this->shortcodes->register();
-		$this->assets->register();
-		if ( is_admin() ) {
-			new Admin( $this->assets );
-		}
-		$this->plugins->init();
-		$this->oauth->register();
+		$this->core->init();
 	}
 	/**
 	 * Get the Settings instance.
@@ -95,7 +56,7 @@ final class Includes {
 	 * @return Settings The Settings instance.
 	 */
 	public function settings(): Settings {
-		return $this->settings;
+		return $this->core->settings();
 	}
 	/**
 	 * Get the Shortcodes instance.
@@ -103,6 +64,6 @@ final class Includes {
 	 * @return Shortcodes The Shortcodes instance.
 	 */
 	public function shortcodes(): Shortcodes {
-		return $this->shortcodes;
+		return $this->core->shortcodes();
 	}
 }

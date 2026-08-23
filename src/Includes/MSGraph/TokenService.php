@@ -6,8 +6,8 @@
  */
 namespace MSPress\Includes\MSGraph;
 
-use MSPress\Includes\Functions as Utils;
 use MSPress\Includes\Functions\Helpers\LoggerHelper as utilities;
+use MSPress\Includes\Functions\Helpers\MS365ConnectionHelper;
 
 final class TokenService {
     /**
@@ -39,10 +39,10 @@ final class TokenService {
             }
 
             $clientId = trim((string) $this->credentials->get_client_id());
-            $tenantId = Utils\Functions::mspress_normalize_tenant_id(trim((string) $this->credentials->get_tenant_id()));
+            $tenantId = MS365ConnectionHelper::normalize_tenant_id(trim((string) $this->credentials->get_tenant_id()));
             $clientSecret = trim((string) $this->credentials->get_client_secret());
 
-            if (empty($tenantId) || !Utils\Functions::mspress_is_valid_tenant_identifier($tenantId)) {
+            if (empty($tenantId) || !MS365ConnectionHelper::is_valid_tenant_identifier($tenantId)) {
                 utilities::write_log('MSGraph getAccessToken error: Tenant ID is missing or invalid after normalization.');
                 return null;
             }

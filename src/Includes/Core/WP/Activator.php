@@ -6,8 +6,6 @@
  */
 namespace MSPress\Includes\Core\WP;
 
-use MSPress\Includes\Settings\MigrationService;
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -36,7 +34,6 @@ final class Activator {
      */
     public static function activate( ?array $callbacks = null ): void {
         Database::install();
-        MigrationService::run();
         foreach ( $callbacks ?? self::$callbacks as $callback ) {
             call_user_func( $callback );
         }

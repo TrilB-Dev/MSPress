@@ -1,9 +1,9 @@
 <?php
 /**
- * TrilB.Dev Plugin - Demo Wiki Plugin Assets
+ * MSPress Entra Plugin Assets
  *
  * @package MSPress
- * @subpackage Admin\Wiki\Plugins\Demo\Assets
+ * @subpackage Includes\Plugins\Entra\Assets
  * @since 1.0.0
  */
 

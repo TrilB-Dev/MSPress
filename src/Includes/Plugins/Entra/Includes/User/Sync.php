@@ -56,8 +56,8 @@ class Sync {
     public function add_admin_menu() {
         add_submenu_page(
             'mspress-ms365',
-            __('User Sync', 'trilbdev'),
-            __('User Sync', 'trilbdev'),
+            __('User Sync', 'mspress'),
+            __('User Sync', 'mspress'),
             'manage_options',
             'mspress-sync',
             [$this, 'admin_page']
@@ -76,57 +76,57 @@ class Sync {
 
         ?>
         <div class="wrap">
-            <h1><?php _e('Microsoft 365 User Synchronization', 'trilbdev'); ?></h1>
+            <h1><?php _e('Microsoft 365 User Synchronization', 'mspress'); ?></h1>
 
-            <div class="trilbdev-sync-stats">
-                <div class="trilbdev-stat-card">
-                    <h3><?php _e('Total Users', 'trilbdev'); ?></h3>
-                    <span class="trilbdev-stat-number"><?php echo $sync_stats['total_users']; ?></span>
+            <div class="mspress-sync-stats">
+                <div class="mspress-stat-card">
+                    <h3><?php _e('Total Users', 'mspress'); ?></h3>
+                    <span class="mspress-stat-number"><?php echo $sync_stats['total_users']; ?></span>
                 </div>
-                <div class="trilbdev-stat-card">
-                    <h3><?php _e('MS365 Users', 'trilbdev'); ?></h3>
-                    <span class="trilbdev-stat-number"><?php echo $sync_stats['ms365_users']; ?></span>
+                <div class="mspress-stat-card">
+                    <h3><?php _e('MS365 Users', 'mspress'); ?></h3>
+                    <span class="mspress-stat-number"><?php echo $sync_stats['ms365_users']; ?></span>
                 </div>
-                <div class="trilbdev-stat-card">
-                    <h3><?php _e('Last Sync', 'trilbdev'); ?></h3>
-                    <span class="trilbdev-stat-date"><?php echo $sync_stats['last_sync']; ?></span>
+                <div class="mspress-stat-card">
+                    <h3><?php _e('Last Sync', 'mspress'); ?></h3>
+                    <span class="mspress-stat-date"><?php echo $sync_stats['last_sync']; ?></span>
                 </div>
             </div>
 
-            <div class="trilbdev-sync-actions">
-                <button id="trilbdev-sync-all" class="btn btn-primary">
-                    <?php _e('Sync All Users', 'trilbdev'); ?>
+            <div class="mspress-sync-actions">
+                <button id="mspress-sync-all" class="btn btn-primary">
+                    <?php _e('Sync All Users', 'mspress'); ?>
                 </button>
-                <button id="trilbdev-sync-incremental" class="btn btn-secondary">
-                    <?php _e('Incremental Sync', 'trilbdev'); ?>
+                <button id="mspress-sync-incremental" class="btn btn-secondary">
+                    <?php _e('Incremental Sync', 'mspress'); ?>
                 </button>
             </div>
 
-            <div id="trilbdev-sync-progress" style="display: none;">
-                <div class="trilbdev-progress-bar">
-                    <div class="trilbdev-progress-fill" style="width: 0%"></div>
+            <div id="mspress-sync-progress" style="display: none;">
+                <div class="mspress-progress-bar">
+                    <div class="mspress-progress-fill" style="width: 0%"></div>
                 </div>
-                <p id="trilbdev-sync-status"><?php _e('Preparing sync...', 'trilbdev'); ?></p>
+                <p id="mspress-sync-status"><?php _e('Preparing sync...', 'mspress'); ?></p>
             </div>
 
-            <div id="trilbdev-sync-results"></div>
+            <div id="mspress-sync-results"></div>
         </div>
 
         <script>
         jQuery(document).ready(function($) {
-            $('#trilbdev-sync-all').on('click', function() {
-                if (confirm('<?php _e('This will sync all users from Microsoft 365. Continue?', 'trilbdev'); ?>')) {
-                    trilbdevStartSync('full');
+            $('#mspress-sync-all').on('click', function() {
+                if (confirm('<?php _e('This will sync all users from Microsoft 365. Continue?', 'mspress'); ?>')) {
+                    mspressStartSync('full');
                 }
             });
 
-            $('#trilbdev-sync-incremental').on('click', function() {
-                trilbdevStartSync('incremental');
+            $('#mspress-sync-incremental').on('click', function() {
+                mspressStartSync('incremental');
             });
 
-            function trilbdevStartSync(type) {
-                $('#trilbdev-sync-progress').show();
-                $('#trilbdev-sync-all, #trilbdev-sync-incremental').prop('disabled', true);
+            function mspressStartSync(type) {
+                $('#mspress-sync-progress').show();
+                $('#mspress-sync-all, #mspress-sync-incremental').prop('disabled', true);
 
                 $.post(ajaxurl, {
                     action: 'mspress_sync_all_users',
@@ -134,13 +134,13 @@ class Sync {
                     nonce: '<?php echo wp_create_nonce('mspress_sync_nonce'); ?>'
                 }, function(response) {
                     if (response.success) {
-                        $('#trilbdev-sync-status').text('<?php _e('Sync completed successfully!', 'trilbdev'); ?>');
-                        $('#trilbdev-sync-results').html(response.data.html);
+                        $('#mspress-sync-status').text('<?php _e('Sync completed successfully!', 'mspress'); ?>');
+                        $('#mspress-sync-results').html(response.data.html);
                         location.reload();
                     } else {
-                        $('#trilbdev-sync-status').text('<?php _e('Sync failed:', 'trilbdev'); ?> ' + response.data.message);
+                        $('#mspress-sync-status').text('<?php _e('Sync failed:', 'mspress'); ?> ' + response.data.message);
                     }
-                    $('#trilbdev-sync-all, #trilbdev-sync-incremental').prop('disabled', false);
+                    $('#mspress-sync-all, #mspress-sync-incremental').prop('disabled', false);
                 });
             }
         });
@@ -156,7 +156,7 @@ class Sync {
         $ms365_users = count($this->get_ms365_users());
 
         $last_sync = Settings::get('last_sync');
-        $last_sync_display = $last_sync ? date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $last_sync) : __('Never', 'trilbdev');
+        $last_sync_display = $last_sync ? date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $last_sync) : __('Never', 'mspress');
 
         return [
             'total_users' => $total_users,
@@ -215,13 +215,13 @@ class Sync {
         $msgraph = GraphService::get_instance();
 
         if (!$msgraph) {
-            return ['success' => false, 'message' => __('MS365 integration not configured', 'trilbdev')];
+            return ['success' => false, 'message' => __('MS365 integration not configured', 'mspress')];
         }
 
         try {
             $graph = $msgraph->get_graph();
             if (!$graph) {
-                return ['success' => false, 'message' => __('MS365 connection failed', 'trilbdev')];
+                return ['success' => false, 'message' => __('MS365 connection failed', 'mspress')];
             }
 
             // Get users from Microsoft Graph
@@ -279,7 +279,7 @@ class Sync {
             return [
                 'success' => true,
                 'message' => sprintf(
-                    __('Sync completed: %d users processed, %d created, %d updated, %d deactivated', 'trilbdev'),
+                    __('Sync completed: %d users processed, %d created, %d updated, %d deactivated', 'mspress'),
                     $synced, $created, $updated, $deactivated
                 ),
                 'stats' => [
@@ -292,7 +292,7 @@ class Sync {
 
         } catch (\Exception $e) {
             LoggerHelper::write_log('User sync error: ' . $e->getMessage());
-            return ['success' => false, 'message' => __('Sync failed: ', 'trilbdev') . $e->getMessage()];
+            return ['success' => false, 'message' => __('Sync failed: ', 'mspress') . $e->getMessage()];
         }
     }
 
@@ -413,13 +413,13 @@ class Sync {
         $stats = $result['stats'];
         ob_start();
         ?>
-        <div class="trilbdev-sync-results">
-            <h3><?php _e('Sync Results', 'trilbdev'); ?></h3>
+        <div class="mspress-sync-results">
+            <h3><?php _e('Sync Results', 'mspress'); ?></h3>
             <ul>
-                <li><?php printf(__('%d users processed', 'trilbdev'), $stats['processed']); ?></li>
-                <li><?php printf(__('%d users created', 'trilbdev'), $stats['created']); ?></li>
-                <li><?php printf(__('%d users updated', 'trilbdev'), $stats['updated']); ?></li>
-                <li><?php printf(__('%d users deactivated', 'trilbdev'), $stats['deactivated']); ?></li>
+                <li><?php printf(__('%d users processed', 'mspress'), $stats['processed']); ?></li>
+                <li><?php printf(__('%d users created', 'mspress'), $stats['created']); ?></li>
+                <li><?php printf(__('%d users updated', 'mspress'), $stats['updated']); ?></li>
+                <li><?php printf(__('%d users deactivated', 'mspress'), $stats['deactivated']); ?></li>
             </ul>
         </div>
         <?php

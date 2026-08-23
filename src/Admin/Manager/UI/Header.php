@@ -22,27 +22,27 @@ final class Header {
 		$links = [
 					[ 
 					'label' => __( 'Documentation', 'mspress' ), 
-					'url' => 'https://trilb.dev/collection/web-extension/wordpress/mspress' 
+					'url' => 'https://github.com/TrilB-Dev/MSPress'
 					],
 					[ 
 					'label' => __( 'Community', 'mspress' ), 
-					'url' => 'https://trilb.dev/community' 
+					'url' => 'https://github.com/TrilB-Dev/MSPress/discussions'
 					],
 					[ 
 					'label' => __( 'Extensions', 'mspress' ), 
-					'url' => 'https://trilb.dev/extensions' 
+					'url' => 'https://github.com/TrilB-Dev/MSPress'
 					],
 					[ 
 					'label' => __( 'Support', 'mspress' ), 
-					'url' => 'https://trilb.dev/support' 
+					'url' => 'https://github.com/TrilB-Dev/MSPress/issues'
 					],
 					[ 
 					'label' => __( 'Roadmap', 'mspress' ), 
-					'url' => 'https://trilb.dev/roadmap' 
+					'url' => 'https://github.com/TrilB-Dev/MSPress/issues'
 					],
 					[ 
 					'label' => __( 'Account', 'mspress' ), 
-					'url' => 'https://trilb.dev/account' 
+					'url' => 'https://github.com/TrilB-Dev/MSPress'
 					],
 			];
 		?>

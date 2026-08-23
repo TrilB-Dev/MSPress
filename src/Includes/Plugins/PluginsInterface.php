@@ -186,7 +186,7 @@ interface AdminSidebarProviderInterface extends PluginInterface {
     /**
      * Return sidebar item and group definitions.
      *
-     * An item uses `type => item` and a `parent` of `manage-wiki`, `settings`,
+    * An item uses `type => item` and a `parent` of `settings`,
      * or `tools`. A group uses `type => group` and an `items` array.
      *
      * @return array<int, array<string, mixed>>
@@ -223,4 +223,30 @@ interface FrontendProviderInterface {
  */
 interface I18nProviderInterface {
     public function load_textdomain(): void;
+}
+
+/**
+ * Provides dashboard cards and connection statuses for an MSPress extension.
+ * @since 1.0.0
+ */
+interface DashboardProviderInterface {
+    /**
+     * Return dashboard status definitions.
+     *
+     * Each status should contain `label`, `state`, and `message`. Optional
+     * values include `icon`, `url`, and `priority`.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function get_dashboard_statuses(): array;
+
+    /**
+     * Return dashboard card definitions.
+     *
+     * Each card should contain `title` and `description`. Optional values
+     * include `value`, `icon`, `url`, and `priority`.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function get_dashboard_cards(): array;
 }

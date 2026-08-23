@@ -44,4 +44,14 @@ npm run i18n:mo
 
 Install the plugin in `wp-content/plugins/` and activate it from the WordPress admin. MSPress registers its own WordPress hooks and does not require another plugin to be installed or active.
 
+MSPress uses a fresh installation. Settings are stored in the WordPress database table `{$wpdb->prefix}mspress_settings`.
+
+Microsoft 365 credentials are encrypted with Defuse PHP Encryption. Define the encryption key in `wp-config.php` before configuring Microsoft 365:
+
+```php
+define( 'MSPRESS_ENCRYPTION_KEY', 'your-defuse-key' );
+```
+
+Do not commit the key or store it in the WordPress database.
+
 The example status shortcode is available as `[ms_press_status]`.

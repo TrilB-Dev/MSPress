@@ -2,7 +2,7 @@
 /**
  * Settings for the Demo plugin.
  * @package MSPress
- * @subpackage Admin\Wiki\Plugins\Demo\Includes
+ * @subpackage Includes\Plugins\Entra\Includes
  * @since 1.0.0
  */
 namespace MSPress\Includes\Plugins\Entra\Includes\Settings;

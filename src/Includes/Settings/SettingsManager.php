@@ -1,10 +1,9 @@
 <?php
 /**
- * SettingsManager class.
+ * SettingsManager class for the MSPress plugin.
  *
- * @package MSPress\Includes\Settings
+ * @package MSPress
  */
-
 namespace MSPress\Includes\Settings;
 
 use MSPress\Includes\Core\WP\Database;
@@ -14,14 +13,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class SettingsManager {
-    /** @var array<string, array<string, mixed>> */
+    /**
+     * Register the settings table with the database.
+     * @var array<int, array<string, mixed>>
+     */
     private static array $registered_groups = [];
-
-    /** @var array<string, string> */
+    /**
+     * Registered keys and their corresponding groups.
+     * @var array<string, string>
+     */
     private static array $registered_keys = [];
-
+    /**
+     * Flag to indicate if the settings table has been registered.
+     * @var bool
+     */
     private static bool $table_registered = false;
-
+    /**
+     * Register the settings table with the database.
+     */
     public static function register(): void {
         if ( self::$table_registered ) {
             return;
@@ -39,32 +48,32 @@ final class SettingsManager {
 
         self::$table_registered = true;
     }
-
+    /**
+     * Install the settings table and populate it with default values.
+     */
     public static function table_name(): string {
         return Database::table_name( 'settings' );
     }
-
+    /**
+     * Install the settings table and populate it with default values.
+     */
     public static function install(): void {
         self::register();
         Database::install();
 
         foreach ( self::registered_defaults() as $group => $settings ) {
             $stored_settings = self::get_group( $group );
-            if ( null === $stored_settings ) {
-                $legacy_settings = self::get_legacy_group( $group );
-                $stored_settings = is_array( $legacy_settings ) ? $legacy_settings : [];
-            }
-
-            self::set_group( $group, array_merge( $settings, $stored_settings ) );
-            self::delete_legacy_group( $group );
+            self::set_group( $group, array_merge( $settings, $stored_settings ?? [] ) );
         }
     }
-
+    /**
+     * Get a setting value by key.
+     *
+     * @param string $key The setting key.
+     * @param mixed  $default The default value if the setting is not found.
+     * @return mixed The setting value or the default.
+     */
     public static function get( string $key, $default = null ) {
-        if ( 'trilbdev_ms365_settings' === $key ) {
-            return self::get_group( 'ms365' ) ?? $default;
-        }
-
         foreach ( self::get_all() as $settings ) {
             if ( is_array( $settings ) && array_key_exists( $key, $settings ) ) {
                 return $settings[ $key ];
@@ -72,14 +81,25 @@ final class SettingsManager {
         }
         return self::registered_default( $key, $default );
     }
-
+    /**
+     * Set a setting value by key.
+     *
+     * @param string $key The setting key.
+     * @param mixed  $value The value to set.
+     * @return bool True on success, false on failure.
+     */
     public static function set( string $key, $value ): bool {
         $group = self::group_for_key( $key );
         $settings = self::get_group( $group ) ?? [];
         $settings[ $key ] = $value;
         return self::set_group( $group, $settings );
     }
-
+    /**
+     * Delete a setting by key.
+     *
+     * @param string $key The setting key.
+     * @return bool True on success, false on failure.
+     */
     public static function delete( string $key ): bool {
         $group = self::group_for_key( $key );
         $settings = self::get_group( $group );
@@ -89,7 +109,12 @@ final class SettingsManager {
         unset( $settings[ $key ] );
         return self::set_group( $group, $settings );
     }
-
+    /**
+     * Check if a setting exists by key.
+     *
+     * @param string $key The setting key.
+     * @return bool True if the setting exists, false otherwise.
+     */
     public static function has( string $key ): bool {
         foreach ( self::get_all() as $settings ) {
             if ( is_array( $settings ) && array_key_exists( $key, $settings ) ) {
@@ -99,7 +124,11 @@ final class SettingsManager {
 
         return false;
     }
-
+    /**
+     * Get all settings as an associative array.
+     *
+     * @return array An associative array of all settings grouped by their respective groups.
+     */
     public static function get_all(): array {
         global $wpdb;
         $rows = $wpdb->get_results( 'SELECT setting_group, setting_value FROM ' . self::table_name(), ARRAY_A );
@@ -110,54 +139,14 @@ final class SettingsManager {
         }
         return $settings;
     }
-
+    /**
+     * Get all settings for a specific group.
+     *
+     * @param string $group The group name.
+     * @return array|null An associative array of settings for the group, or null if the group does not exist.
+     */
     public static function defaults(): array {
         return [
-            'general' => [
-                'root_name' => 'MSPress',
-                'root_description' => __( 'A searchable knowledge base powered by MSPress.', 'mspress' ),
-                'archive_title' => __( 'MSPress Documentation', 'mspress' ),
-                'archive_description' => __( 'Browse the MSPress knowledge base.', 'mspress' ),
-                'root_slug' => 'wiki',
-                'category_slug' => 'wiki-category',
-                'tag_slug' => 'wiki-tag',
-                'permalink' => '%root%/%root_category%/%wiki%/%wiki_category%/%wiki_tag%/%wiki_page%',
-                'enable_schema' => true,
-            ],
-            'layout' => [
-                'show_search' => true,
-                'show_toc' => true,
-                'show_breadcrumbs' => true,
-                'show_last_updated' => true,
-                'show_author' => false,
-                'show_reading_time' => false,
-                'show_feedback' => true,
-                'show_related_pages' => true,
-                'related_pages_count' => 4,
-                'search_placeholder' => __( 'Search the Wiki', 'mspress' ),
-                'search_button_text' => __( 'Search', 'mspress' ),
-                'search_scope' => 'all',
-                'search_no_results_message' => __( 'No Wiki pages found.', 'mspress' ),
-                'search_results_count' => 10,
-                'search_min_chars' => 2,
-                'search_live_results' => true,
-                'show_sidebar' => true,
-                'sidebar_position' => 'left',
-                'sidebar_width' => 280,
-                'sidebar_sticky' => true,
-                'sidebar_show_categories' => true,
-                'sidebar_show_category_count' => false,
-                'sidebar_expand_categories' => true,
-                'sidebar_show_page_count' => false,
-                'page_show_title' => true,
-                'page_show_toc' => true,
-                'page_toc_position' => 'sidebar',
-                'toc_min_level' => 2,
-                'toc_max_level' => 4,
-                'page_show_navigation' => true,
-                'reading_time_wpm' => 200,
-            ],
-            'access' => [],
             'ms365' => [
                 'enabled' => 'off',
                 'client_id' => '',
@@ -177,14 +166,25 @@ final class SettingsManager {
             'tools' => [ 'debug_logging' => false, 'console_logging' => false ],
         ];
     }
-
+    /**
+     * Get all settings for a specific group.
+     *
+     * @param string $group The group name.
+     * @return array|null An associative array of settings for the group, or null if the group does not exist.
+     */
     public static function get_group( string $group ): ?array {
         global $wpdb;
         $value = $wpdb->get_var( $wpdb->prepare( 'SELECT setting_value FROM ' . self::table_name() . ' WHERE setting_group = %s', self::storage_group( $group ) ) );
         $settings = $value === null ? null : maybe_unserialize( $value );
         return is_array( $settings ) ? $settings : null;
     }
-
+    /**
+     * Set all settings for a specific group.
+     *
+     * @param string $group The group name.
+     * @param array  $settings An associative array of settings to store for the group.
+     * @return bool True on success, false on failure.
+     */
     public static function set_group( string $group, array $settings ): bool {
         global $wpdb;
         return false !== $wpdb->replace( self::table_name(), [
@@ -194,7 +194,13 @@ final class SettingsManager {
             'updated_at' => current_time( 'mysql' ),
         ], [ '%s', '%s', '%s', '%s' ] );
     }
-
+    /**
+     * Register a group of settings with default values.
+     *
+     * @param string $group The group name.
+     * @param array  $defaults An associative array of default settings for the group.
+     * @return bool True on success, false on failure.
+     */
     public static function register_group( string $group, array $defaults = [] ): bool {
         $group = self::normalize_group( $group );
         if ( '' === $group ) {
@@ -210,7 +216,14 @@ final class SettingsManager {
         }
         return true;
     }
-
+    /**
+     * Register a setting key with a specific group and default value.
+     *
+     * @param string $key The setting key.
+     * @param string $group The group name.
+     * @param mixed  $default The default value for the setting.
+     * @return bool True on success, false on failure.
+     */
     public static function register_key( string $key, string $group, $default = null ): bool {
         $key = sanitize_key( $key );
         if ( '' === $key || ! self::register_group( $group ) ) {
@@ -222,40 +235,35 @@ final class SettingsManager {
         self::$registered_groups[ $group ][ $key ] = $default;
         return true;
     }
-
+    /**
+     * Normalize the group name for storage in the database.
+     *
+     * @param string $group The group name.
+     * @return string The normalized group name.
+     */
     private static function storage_group( string $group ): string {
         $group = self::normalize_group( $group );
         return str_starts_with( $group, 'mspress_' ) ? $group : 'mspress_' . $group;
     }
-
+    /**
+     * Normalize the group name for internal use.
+     *
+     * @param string $group The group name.
+     * @return string The normalized group name.
+     */
     private static function logical_group( string $group ): string {
         return str_starts_with( $group, 'mspress_' ) ? substr( $group, 10 ) : $group;
     }
-
-    private static function get_legacy_group( string $group ): ?array {
-        global $wpdb;
-        $value = $wpdb->get_var( $wpdb->prepare( 'SELECT setting_value FROM ' . self::table_name() . ' WHERE setting_group = %s', sanitize_key( $group ) ) );
-        return $value === null ? null : maybe_unserialize( $value );
-    }
-
-    private static function delete_legacy_group( string $group ): void {
-        global $wpdb;
-        $wpdb->delete( self::table_name(), [ 'setting_group' => sanitize_key( $group ) ], [ '%s' ] );
-    }
-
+    /**
+     * Determine the group for a given setting key.
+     *
+     * @param string $key The setting key.
+     * @return string The group name associated with the key.
+     */
     private static function group_for_key( string $key ): string {
         $key = sanitize_key( $key );
         if ( isset( self::$registered_keys[ $key ] ) ) {
             return self::$registered_keys[ $key ];
-        }
-        if ( in_array( $key, [ 'create_wikis', 'write_pages', 'view_analytics', 'manage_plugins' ], true ) ) {
-            return 'access';
-        }
-        if ( str_contains( $key, 'layout' ) ) {
-            return 'layout';
-        }
-        if ( str_contains( $key, 'access' ) ) {
-            return 'access';
         }
         if ( str_contains( $key, 'tool' ) ) {
             return 'tools';
@@ -276,7 +284,13 @@ final class SettingsManager {
 
         return $defaults;
     }
-
+    /**
+     * Return the default value for a registered key.
+     *
+     * @param string $key The setting key.
+     * @param mixed  $fallback The fallback value if the key is not registered.
+     * @return mixed The default value for the key, or the fallback if not registered.
+     */
     private static function registered_default( string $key, $fallback ) {
         $key = sanitize_key( $key );
         foreach ( self::registered_defaults() as $settings ) {
@@ -287,7 +301,12 @@ final class SettingsManager {
 
         return $fallback;
     }
-
+    /**
+     * Normalize the group name for internal use.
+     *
+     * @param string $group The group name.
+     * @return string The normalized group name.
+     */
     private static function normalize_group( string $group ): string {
         $group = sanitize_key( $group );
         return str_starts_with( $group, 'mspress_' ) ? substr( $group, 10 ) : $group;

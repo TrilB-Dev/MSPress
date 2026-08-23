@@ -12,6 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class NetworkDiagnosticsHelper {
+    /**
+     * Get the current proxy context based on WordPress constants and environment variables.
+     *
+     * @return string The proxy context description.
+     */
     public static function proxy_context(): string {
         $details = [];
 
@@ -42,7 +47,12 @@ final class NetworkDiagnosticsHelper {
             ? 'Proxy context: no WP proxy constants or proxy env vars detected.'
             : 'Proxy context: ' . implode( ', ', $details );
     }
-
+    /**
+     * Sanitize a proxy value for display, masking sensitive information.
+     *
+     * @param string $value The proxy value to sanitize.
+     * @return string The sanitized proxy value.
+     */
     public static function sanitize_proxy_value( string $value ): string {
         $value = trim( $value );
         if ( '' === $value ) {
@@ -59,7 +69,12 @@ final class NetworkDiagnosticsHelper {
         $masked = preg_replace( '/([^\s:@]+):([^\s:@]+)@/', '***:***@', $value );
         return strlen( (string) $masked ) > 120 ? substr( (string) $masked, 0, 117 ) . '...' : (string) $masked;
     }
-
+    /**
+     * Get the DNS context for a list of hosts, showing resolved IP addresses or unresolved status.
+     *
+     * @param array $hosts The list of hostnames to check.
+     * @return string The DNS context description.
+     */
     public static function dns_context( array $hosts ): string {
         $details = [];
         foreach ( $hosts as $host ) {
@@ -74,7 +89,11 @@ final class NetworkDiagnosticsHelper {
 
         return empty( $details ) ? 'DNS context: no hosts checked.' : 'DNS context: ' . implode( ', ', $details );
     }
-
+    /**
+     * Get the current HTTP hook context, showing which hooks are registered.
+     *
+     * @return string The HTTP hook context description.
+     */
     public static function http_hook_context(): string {
         if ( ! function_exists( 'has_filter' ) ) {
             return 'HTTP hook context: unavailable.';

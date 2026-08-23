@@ -1,12 +1,12 @@
 <?php
 /**
- * TrilB.Dev Plugin - OneDrive File Manager
+ * MSPress OneDrive File Manager
  *
  * Advanced file management system with WordPress media UI integration
  * for OneDrive file and folder navigation, upload, and management
  *
- * @package TrilBDev
- * @subpackage Admin\FileManager
+ * @package MSPress
+ * @subpackage Includes\Plugins\Onedrive
  * @since 1.0.0
  */
 

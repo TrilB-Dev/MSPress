@@ -199,9 +199,9 @@ class Auth {
      * Send welcome email to new users
      */
     private function send_welcome_email($user) {
-        $subject = __('Welcome to ' . get_bloginfo('name'), 'trilbdev');
+        $subject = __('Welcome to ' . get_bloginfo('name'), 'mspress');
         $message = sprintf(
-            __('Welcome %s! You have successfully registered using your Microsoft 365 account.', 'trilbdev'),
+            __('Welcome %s! You have successfully registered using your Microsoft 365 account.', 'mspress'),
             $user->display_name
         );
 
@@ -261,10 +261,10 @@ class Auth {
     public function add_login_logout_menu_items($items, $args) {
         if (is_user_logged_in()) {
             $logout_url = wp_logout_url(home_url());
-            $items .= '<li class="menu-item"><a href="' . esc_url($logout_url) . '">' . __('Logout', 'trilbdev') . '</a></li>';
+            $items .= '<li class="menu-item"><a href="' . esc_url($logout_url) . '">' . __('Logout', 'mspress') . '</a></li>';
         } else {
             $login_url = $this->get_login_url();
-            $items .= '<li class="menu-item"><a href="' . esc_url($login_url) . '">' . __('Login with Microsoft', 'trilbdev') . '</a></li>';
+            $items .= '<li class="menu-item"><a href="' . esc_url($login_url) . '">' . __('Login with Microsoft', 'mspress') . '</a></li>';
         }
         return $items;
     }
@@ -280,7 +280,7 @@ class Auth {
         $atts = shortcode_atts([
             'redirect' => home_url('/profile'),
             'class' => 'mspress-login-btn',
-            'text' => __('Sign in with Microsoft 365', 'trilbdev')
+            'text' => __('Sign in with Microsoft 365', 'mspress')
         ], $atts);
 
         $login_url = add_query_arg('redirect_to', urlencode($atts['redirect']), $this->get_login_url());
@@ -308,7 +308,7 @@ class Auth {
         $atts = shortcode_atts([
             'redirect' => home_url(),
             'class' => 'mspress-logout-btn',
-            'text' => __('Logout', 'trilbdev')
+            'text' => __('Logout', 'mspress')
         ], $atts);
 
         $logout_url = wp_logout_url($atts['redirect']);
@@ -343,53 +343,53 @@ class Auth {
 
         ob_start();
         ?>
-        <div class="trilbdev-profile-container">
-            <div class="trilbdev-profile-header">
-                <div class="trilbdev-profile-avatar">
+        <div class="mspress-profile-container">
+            <div class="mspress-profile-header">
+                <div class="mspress-profile-avatar">
                     <?php echo get_avatar($user->ID, 96); ?>
                 </div>
-                <div class="trilbdev-profile-info">
+                <div class="mspress-profile-info">
                     <h3><?php echo esc_html($user->display_name); ?></h3>
                     <p><?php echo esc_html($user->user_email); ?></p>
                 </div>
             </div>
 
-            <div class="trilbdev-profile-details">
-                <h4><?php _e('Account Information', 'trilbdev'); ?></h4>
-                <dl class="trilbdev-profile-fields">
-                    <dt><?php _e('Username', 'trilbdev'); ?></dt>
+            <div class="mspress-profile-details">
+                <h4><?php _e('Account Information', 'mspress'); ?></h4>
+                <dl class="mspress-profile-fields">
+                    <dt><?php _e('Username', 'mspress'); ?></dt>
                     <dd><?php echo esc_html($user->user_login); ?></dd>
 
-                    <dt><?php _e('Email', 'trilbdev'); ?></dt>
+                    <dt><?php _e('Email', 'mspress'); ?></dt>
                     <dd><?php echo esc_html($user->user_email); ?></dd>
 
-                    <dt><?php _e('First Name', 'trilbdev'); ?></dt>
+                    <dt><?php _e('First Name', 'mspress'); ?></dt>
                     <dd><?php echo esc_html($user->first_name); ?></dd>
 
-                    <dt><?php _e('Last Name', 'trilbdev'); ?></dt>
+                    <dt><?php _e('Last Name', 'mspress'); ?></dt>
                     <dd><?php echo esc_html($user->last_name); ?></dd>
 
-                    <dt><?php _e('Display Name', 'trilbdev'); ?></dt>
+                    <dt><?php _e('Display Name', 'mspress'); ?></dt>
                     <dd><?php echo esc_html($user->display_name); ?></dd>
 
                     <?php if (!empty($ms365_data['job_title'])): ?>
-                    <dt><?php _e('Job Title', 'trilbdev'); ?></dt>
+                    <dt><?php _e('Job Title', 'mspress'); ?></dt>
                     <dd><?php echo esc_html($ms365_data['job_title']); ?></dd>
                     <?php endif; ?>
 
                     <?php if (!empty($ms365_data['department'])): ?>
-                    <dt><?php _e('Department', 'trilbdev'); ?></dt>
+                    <dt><?php _e('Department', 'mspress'); ?></dt>
                     <dd><?php echo esc_html($ms365_data['department']); ?></dd>
                     <?php endif; ?>
 
                     <?php if (!empty($ms365_data['office_location'])): ?>
-                    <dt><?php _e('Office Location', 'trilbdev'); ?></dt>
+                    <dt><?php _e('Office Location', 'mspress'); ?></dt>
                     <dd><?php echo esc_html($ms365_data['office_location']); ?></dd>
                     <?php endif; ?>
                 </dl>
             </div>
 
-            <div class="trilbdev-profile-actions">
+            <div class="mspress-profile-actions">
                 <?php echo $this->logout_shortcode(); ?>
             </div>
         </div>
@@ -407,8 +407,8 @@ class Auth {
 
         $atts = shortcode_atts([
             'redirect' => home_url('/profile'),
-            'class' => 'trilbdev-register-btn',
-            'text' => __('Register with Microsoft 365', 'trilbdev')
+            'class' => 'mspress-register-btn',
+            'text' => __('Register with Microsoft 365', 'mspress')
         ], $atts);
 
         // For Microsoft 365, registration and login are the same process
@@ -433,22 +433,22 @@ class Auth {
 
         ob_start();
         ?>
-        <div class="trilbdev-user-status">
+        <div class="mspress-user-status">
             <?php if ($atts['show_avatar'] === 'true'): ?>
-                <div class="trilbdev-user-avatar">
+                <div class="mspress-user-avatar">
                     <?php echo get_avatar($user->ID, intval($atts['avatar_size'])); ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($atts['show_name'] === 'true'): ?>
-                <div class="trilbdev-user-info">
-                    <span class="trilbdev-user-name"><?php echo esc_html($user->display_name); ?></span>
+                <div class="mspress-user-info">
+                    <span class="mspress-user-name"><?php echo esc_html($user->display_name); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if ($atts['show_logout'] === 'true'): ?>
-                <div class="trilbdev-user-actions">
-                    <?php echo $this->logout_shortcode(['text' => __('Logout', 'trilbdev')]); ?>
+                <div class="mspress-user-actions">
+                    <?php echo $this->logout_shortcode(['text' => __('Logout', 'mspress')]); ?>
                 </div>
             <?php endif; ?>
         </div>

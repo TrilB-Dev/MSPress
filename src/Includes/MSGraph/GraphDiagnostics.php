@@ -8,8 +8,8 @@ namespace MSPress\Includes\MSGraph;
 
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Microsoft\Kiota\Abstractions\ApiException;
-use MSPress\Includes\Functions as Utils;
 use MSPress\Includes\Functions\Helpers\LoggerHelper as utilities;
+use MSPress\Includes\Functions\Helpers\MS365ConnectionHelper;
 use MSPress\Includes\Functions\Helpers\NetworkDiagnosticsHelper;
 
 final class GraphDiagnostics {
@@ -216,11 +216,11 @@ final class GraphDiagnostics {
      */
 	public function test_direct_curl_connection(): array {
 		$trace = [];
-		$tenantId = Utils\Functions::mspress_normalize_tenant_id((string) $this->credentials->get_tenant_id());
+		$tenantId = MS365ConnectionHelper::normalize_tenant_id((string) $this->credentials->get_tenant_id());
 		$clientId = trim((string) $this->credentials->get_client_id());
 		$clientSecret = trim((string) $this->credentials->get_client_secret());
 
-		if ($tenantId === '' || !Utils\Functions::mspress_is_guid($clientId) || $clientSecret === '') {
+		if ($tenantId === '' || !MS365ConnectionHelper::is_guid($clientId) || $clientSecret === '') {
 			return [
 				'success' => false,
 				'message' => 'Invalid credentials for direct cURL test',

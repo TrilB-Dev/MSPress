@@ -4,9 +4,9 @@ namespace MSPress\Includes\MSGraph;
 
 use Microsoft\Graph\GraphServiceClient;
 use League\OAuth2\Client\Provider\GenericProvider;
-use MSPress\Includes\Functions as Utils;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\LoggerHelper as utilities;
+use MSPress\Includes\Functions\Helpers\MS365ConnectionHelper;
 use MSPress\Includes\Settings\Settings;
 
 /**
@@ -154,9 +154,9 @@ class GraphService {
                 return;
             }
 
-            $tenantId = Utils\Functions::mspress_normalize_tenant_id($tenantId);
+            $tenantId = MS365ConnectionHelper::normalize_tenant_id($tenantId);
 
-            if (empty($tenantId) || ! Utils\Functions::mspress_is_valid_tenant_identifier($tenantId)) {
+            if (empty($tenantId) || ! MS365ConnectionHelper::is_valid_tenant_identifier($tenantId)) {
                 $this->connectionError = 'The stored Tenant ID is invalid. Please review the MS365 settings and re-save the credentials.';
                 utilities::write_log('MSGraph Error: ' . $this->connectionError);
                 return;
@@ -168,7 +168,7 @@ class GraphService {
                 return;
             }
 
-            if (! Utils\Functions::mspress_is_guid($clientId)) {
+            if (! MS365ConnectionHelper::is_guid($clientId)) {
                 $this->connectionError = 'The stored Client ID is not a valid GUID. Please copy the Application (client) ID from Azure and save the settings again.';
                 utilities::write_log('MSGraph Error: ' . $this->connectionError);
                 return;

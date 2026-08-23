@@ -58,7 +58,7 @@ final class Database {
             }
         }
 
-        update_option( 'ms_press_db_version', '1.0.0' );
+        update_option( 'mspress_db_version', '1.0.0' );
     }
 
     /**
@@ -69,6 +69,6 @@ final class Database {
      */
     public static function table_name( string $table ): string {
         global $wpdb;
-        return $wpdb->prefix . 'ms_press_' . sanitize_key( $table );
+        return $wpdb->prefix . 'mspress_' . sanitize_key( $table );
     }
 }

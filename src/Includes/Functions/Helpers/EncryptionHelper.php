@@ -47,18 +47,11 @@ final class EncryptionHelper {
         return self::decrypt_with_key( $value, self::runtime_key() );
     }
     /**
-     * Decrypt a value using the legacy encryption key.
+    * Decrypt a value using the configured MSPress encryption key.
      *
      * @param string $value The value to decrypt.
      * @return string|null The decrypted value or null on failure.
      */
-    public static function decrypt_with_legacy_key( string $value ): ?string {
-        if ( ! defined( 'TRILBDEV_ENCRYPTION_KEY' ) ) {
-            return null;
-        }
-
-        return self::decrypt_with_key( $value, (string) constant( 'TRILBDEV_ENCRYPTION_KEY' ) );
-    }
     /**
      * Check if a runtime encryption key is available.
      *

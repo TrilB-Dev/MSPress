@@ -1,5 +1,5 @@
 {
-	"name": "trilbdev/mspress",
+	"name": "mspress/mspress",
 	"description": "A Microsoft 365 plugin for WordPress that integrates with Microsoft services.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",

@@ -107,18 +107,11 @@ final class FunctionsSidebar {
 				'capability' => 'mspress_admin_view',
 			],
 			[
-				'name'       => __( 'Manage Wiki', 'mspress' ),
-				'slug'       => 'mspress-manage',
-				'parent'     => 'mspress',
-				'callback'   => [ $admin, 'render_wikis' ],
-				'capability' => 'mspress_admin_view',
-			],
-			[
 				'name'       => __( 'Settings', 'mspress' ),
 				'slug'       => 'mspress-settings',
 				'parent'     => 'mspress',
 				'callback'   => [ $admin, 'render_settings' ],
-				'capability' => 'mspress_settings_general_view',
+				'capability' => 'mspress_settings_plugins_view',
 			],
 			[
 				'name'       => __( 'Tools', 'mspress' ),
@@ -133,25 +126,13 @@ final class FunctionsSidebar {
 	/** @return array<string, array<string, mixed>> */
 	private static function core_sidebar_groups(): array {
 		return [
-			'manage-wiki' => [
-				'label' => __( 'Manage Wiki', 'mspress' ),
-				'icon'  => 'fa-solid fa-file-lines',
-				'items' => [
-					'mspress-manage'                  => [ 'label' => __( 'Manage Wiki', 'mspress' ), 'icon' => 'fa-solid fa-book-open-lines', 'capability' => 'mspress_admin_view' ],
-					'mspress-manage&wiki=categories' => [ 'label' => __( 'Categories', 'mspress' ), 'icon' => 'fa-book-open-lines-category', 'capability' => 'mspress_edit' ],
-					'mspress-manage&wiki=tags'       => [ 'label' => __( 'Tags', 'mspress' ), 'icon' => 'fa-kit fa-solid-book-open-lines-tag', 'capability' => 'mspress_edit' ],
-					'mspress-manage&wiki=new'        => [ 'label' => __( 'New Wiki', 'mspress' ), 'icon' => 'fa-kit fa-solid-book-open-lines-circle-plus', 'capability' => 'mspress_create' ],
-				],
-			],
 			'settings' => [
 				'label' => __( 'Settings', 'mspress' ),
 				'icon'  => 'fa-solid fa-gear',
 				'items' => [
-					'mspress-settings&tab=general'     => [ 'label' => __( 'General', 'mspress' ), 'icon' => 'fa-solid fa-sliders', 'capability' => 'mspress_settings_general_view' ],
-					'mspress-settings&tab=layout'      => [ 'label' => __( 'Layout', 'mspress' ), 'icon' => 'fa-solid fa-table-columns', 'capability' => 'mspress_settings_layout_view' ],
+					'mspress-settings&tab=connection' => [ 'label' => __( 'Connection', 'mspress' ), 'icon' => 'fa-solid fa-link', 'capability' => 'mspress_settings_connection_view' ],
 					'mspress-settings&tab=plugins'     => [ 'label' => __( 'Plugins', 'mspress' ), 'icon' => 'fa-solid fa-puzzle-piece', 'capability' => 'mspress_settings_plugins_view' ],
 					'mspress-settings&tab=third-party' => [ 'label' => __( '3rd Party', 'mspress' ), 'icon' => 'fa-solid fa-plug', 'capability' => 'mspress_settings_plugins_ext_view' ],
-					'mspress-settings&tab=access'      => [ 'label' => __( 'Access', 'mspress' ), 'icon' => 'fa-solid fa-user-shield', 'capability' => 'mspress_settings_access_view' ],
 				],
 			],
 			'tools' => [
@@ -159,9 +140,6 @@ final class FunctionsSidebar {
 				'icon'  => 'fa-solid fa-toolbox',
 				'items' => [
 					'mspress-tools&tool=debug'     => [ 'label' => __( 'Debug', 'mspress' ), 'icon' => 'fa-solid fa-bug-slash', 'capability' => 'mspress_tools_debug' ],
-					'mspress-tools&tool=import'    => [ 'label' => __( 'Import', 'mspress' ), 'icon' => 'fa-solid fa-file-import', 'capability' => 'mspress_tools_import' ],
-					'mspress-tools&tool=export'    => [ 'label' => __( 'Export', 'mspress' ), 'icon' => 'fa-solid fa-file-export', 'capability' => 'mspress_tools_export' ],
-					'mspress-tools&tool=analytics' => [ 'label' => __( 'Analytics', 'mspress' ), 'icon' => 'fa-solid fa-chart-line', 'capability' => 'mspress_tools_analytics' ],
 				],
 			],
 		];

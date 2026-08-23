@@ -57,7 +57,7 @@ class Demo implements PluginInterface, SettingsProviderInterface, SettingsPagePr
      * @return string The plugin author URI.
      */
     public function get_author_uri(): string {
-        return 'https://trilb.dev';
+            return 'https://github.com/TrilB-Dev/MSPress';
     }
     /**
      * Get the plugin description.
@@ -73,7 +73,7 @@ class Demo implements PluginInterface, SettingsProviderInterface, SettingsPagePr
      * @return string The plugin URI.
      */
     public function get_uri(): string {
-        return 'https://trilb.dev/';
+            return 'https://github.com/TrilB-Dev/MSPress';
     }
     /**
      * Get the plugin license.
