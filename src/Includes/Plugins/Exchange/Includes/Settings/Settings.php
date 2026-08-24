@@ -9,6 +9,7 @@ namespace MSPress\Includes\Plugins\Exchange\Includes\Settings;
 use MSPress\Includes\Settings\Settings as BaseSettings;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
+use MSPress\Includes\Functions\Helpers\FormFieldHelper;
 use MSPress\Includes\MSGraph\GraphService;
 
 final class Settings {
@@ -32,7 +33,7 @@ final class Settings {
             'slug' => 'exchange',
             'label' => __( 'Exchange', 'mspress' ),
             'title' => __( 'Microsoft Exchange email settings', 'mspress' ),
-            'layout' => 'box',
+            'layout' => 'table',
             'fields' => [
                 [
                     'key' => 'account',

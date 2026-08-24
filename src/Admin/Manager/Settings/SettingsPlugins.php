@@ -145,7 +145,7 @@ final class SettingsPlugins {
         $modal_id = SanitizationHelper::key( $plugin->get_slug() );
         $can_edit = $this->can_edit_plugin( $plugin );
         ?>
-        <div class="col-12 col-md-6 col-xl-6 d-flex">
+        <div class="col-12 col-md-6 col-xl-4 d-flex">
             <article class="card mspress-plugin-card shadow-sm h-100 w-100">
                 <div class="card-header d-flex align-items-center gap-2">
                     <?php /* translators: %s is the plugin name. */ ?>
@@ -288,7 +288,9 @@ final class SettingsPlugins {
                     echo '<p class="mspress-plugin-settings-field-description text-secondary mb-3">' . esc_html( (string) $field['description'] ) . '</p>';
                 }
             }
-            if ( 'table' === $layout && 'select' === $type ) {
+            if ( 'custom' === $type && ! empty( $field['render'] ) && is_callable( $field['render'] ) ) {
+                call_user_func( $field['render'], $value, $name, $id );
+            } elseif ( 'table' === $layout && 'select' === $type ) {
                 echo FormFieldHelper::select( $name, (array) ( $field['options'] ?? [] ), $value, [ 'id' => $id, 'attributes' => $field['attributes'] ?? [] ] );
             } elseif ( 'table' === $layout && 'multiselect' === $type ) {
                 echo FormFieldHelper::bootstrap_multiselect( $name, [ 'id' => $id, 'data' => (array) ( $field['options'] ?? [] ), 'selected' => (array) $value, 'dropup_auto' => $field['dropup_auto'] ?? true, 'show_tick' => $field['show_tick'] ?? null, 'selection_indicator' => $field['selection_indicator'] ?? null, 'attributes' => $field['attributes'] ?? [] ] );
@@ -305,8 +307,6 @@ final class SettingsPlugins {
             } elseif ( 'textarea' === $type ) {
                 $textarea_value = is_scalar( $value ) ? (string) $value : wp_json_encode( $value, JSON_PRETTY_PRINT );
                 echo FormFieldHelper::textarea( $name, (string) $textarea_value, [ 'id' => $id, 'rows' => 6 ] );
-            } elseif ( 'custom' === $type && ! empty( $field['render'] ) && is_callable( $field['render'] ) ) {
-                call_user_func( $field['render'], $value, $name, $id );
             }
             echo 'table' === $layout ? '</td></tr>' : '</div></article>';
         }
