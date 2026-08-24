@@ -10,6 +10,7 @@ use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
 use MSPress\Includes\Functions\Helpers\MS365ConnectionHelper;
 use MSPress\Includes\Settings\Settings;
+use MSPress\Includes\MSGraph\GraphService;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -34,6 +35,7 @@ final class SettingsConnection {
         $settings = Settings::get_group( 'ms365', [] ) ?? [];
         $tenant_id = $this->display_credential( $settings['tenant_id'] ?? '' );
         $client_id = $this->display_credential( $settings['client_id'] ?? '' );
+        $callback_url = GraphService::get_callback_url();
         ?>
         <?php settings_errors( 'mspress_connection' ); ?>
         <form class="card mspress-settings-form" method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=mspress-settings&tab=connection' ) ); ?>">
@@ -53,6 +55,13 @@ final class SettingsConnection {
                         <div class="col-12">
                             <?php echo FormFieldHelper::label( 'mspress-ms365-client-secret', __( 'Client secret', 'mspress' ), [ 'description' => __( 'Leave blank to keep the currently stored secret.', 'mspress' ) ] ); ?>
                             <?php echo FormFieldHelper::input( 'mspress_ms365[client_secret]', '', [ 'id' => 'mspress-ms365-client-secret', 'type' => 'password', 'autocomplete' => 'new-password' ] ); ?>
+                        </div>
+                        <div class="col-12">
+                            <?php echo FormFieldHelper::label( 'mspress-ms365-callback-url', __( 'Browser callback URL', 'mspress' ), [ 'description' => __( 'Add this exact URL as a Web redirect URI in your Microsoft Entra app registration.', 'mspress' ) ] ); ?>
+                            <div class="input-group">
+                                <?php echo FormFieldHelper::input( 'mspress_callback_url', $callback_url, [ 'id' => 'mspress-ms365-callback-url', 'type' => 'url', 'readonly' => true, 'class' => 'font-monospace' ] ); ?>
+                                <a class="button button-secondary" href="<?php echo esc_url( $callback_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Open callback', 'mspress' ); ?></a>
+                            </div>
                         </div>
                     </div>
                 </fieldset>

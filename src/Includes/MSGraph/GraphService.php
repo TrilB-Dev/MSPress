@@ -61,6 +61,15 @@ class GraphService {
     private ?\GuzzleHttp\Client $httpClient = null; // For direct HTTP calls
     private ?string $connectionError = null;
 
+    /**
+     * Get the browser callback URL registered for Microsoft OAuth.
+     *
+     * @return string The OAuth callback URL.
+     */
+    public static function get_callback_url(): string {
+        return home_url( '/ms-oauth-callback', 'https' );
+    }
+
     private function __construct() {
         $this->credentials = new CredentialService();
         $this->tokenService = new TokenService($this->credentials);
@@ -179,7 +188,7 @@ class GraphService {
             $this->oauthClient = new GenericProvider([
                 'clientId' => $clientId,
                 'clientSecret' => $clientSecret,
-                'redirectUri' => home_url('/ms-oauth-callback', 'https'),
+                'redirectUri' => self::get_callback_url(),
                 'urlAuthorize' => "https://login.microsoftonline.com/{$tenantId}/oauth2/v2.0/authorize",
                 'urlAccessToken' => "https://login.microsoftonline.com/{$tenantId}/oauth2/v2.0/token",
                 'urlResourceOwnerDetails' => 'https://graph.microsoft.com/v1.0/me',
