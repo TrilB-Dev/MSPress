@@ -19,14 +19,27 @@ if ( ! defined( 'WPINC' ) ) {
  * Plugin path and URL constants.
  */
 
+define( 'MSPRESS_VERSION', '0.4.2-Dev' );
+define( 'MSPRESS_NAME', 'mspress' );
 define( 'MSPRESS_FILE', __FILE__ );
 define( 'MSPRESS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MSPRESS_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSPRESS_BASENAME', plugin_basename( __FILE__ ) );
 define( 'MSPRESS_ROOT', MSPRESS_DIR );
 define( 'MSPRESS_ROOT_URL', MSPRESS_URL );
-define( 'MSPRESS_VERSION', '1.0.0' );
-define( 'MSPRESS_PLUGINS', MSPRESS_ROOT . 'src/Includes/Plugins' );
+define( 'MSPRESS_API', MSPRESS_DIR . 'src/API' );
+define( 'MSPRESS_ASSETS', MSPRESS_DIR . 'src/Assets' );
+define( 'MSPRESS_ASSETS_URL', MSPRESS_URL . 'src/Assets' );
+define( 'MSPRESS_ADMIN', MSPRESS_DIR . 'src/Admin' );
+define( 'MSPRESS_ADMIN_URL', MSPRESS_URL . 'src/Admin' );
+define( 'MSPRESS_LANGUAGES', MSPRESS_DIR . 'src/languages' );
+define( 'MSPRESS_INCLUDES', MSPRESS_DIR . 'src/includes' );
+define( 'MSPRESS_CORE', MSPRESS_INCLUDES . '/Core' );
+define( 'MSPRESS_ELEMENTOR', MSPRESS_INCLUDES . '/Plugins/Elementor' );
+define( 'MSPRESS_ELEMENTOR_URL', MSPRESS_URL . 'src/includes/Plugins/Elementor' );
+define( 'MSPRESS_SETTINGS', MSPRESS_INCLUDES . '/Settings' );
+define( 'MSPRESS_PLUGINS', MSPRESS_INCLUDES . '/Plugins' );
+define( 'MSPRESS_PLUGINS_URL', MSPRESS_URL . 'src/includes/Plugins' );
 
 /**
  * Composer autoloader.
