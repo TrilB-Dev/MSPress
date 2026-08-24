@@ -108,7 +108,10 @@ final class OAuthController {
             wp_safe_redirect( admin_url() );
             exit;
         } catch ( \Throwable $exception ) {
-            $details = $this->format_oauth_error_details( $exception );
+            $last_response = isset( $oauth_service ) && $oauth_service instanceof OAuthService
+                ? $oauth_service->get_last_oauth_response()
+                : null;
+            $details = $this->format_oauth_error_details( $exception, $last_response );
             \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller error: ' . $details );
             wp_die(
                 '<p>' . esc_html( __( 'Microsoft sign-in could not be completed.', 'mspress' ) ) . '</p>' .
@@ -124,7 +127,7 @@ final class OAuthController {
      * @param \Throwable $exception The OAuth exception.
      * @return string Safe diagnostic details.
      */
-    private function format_oauth_error_details( \Throwable $exception ): string {
+    private function format_oauth_error_details( \Throwable $exception, ?array $last_response = null ): string {
         $details = [
             'exception_type' => get_class( $exception ),
             'error_code' => $exception->getCode(),
@@ -139,6 +142,13 @@ final class OAuthController {
             } else {
                 $details['authorization_server_response'] = $response;
             }
+        }
+
+        if ( is_array( $last_response ) ) {
+            $details['authorization_server_http_status'] = $last_response['status'] ?? null;
+            $details['authorization_server_content_type'] = $last_response['content_type'] ?? null;
+            $details['authorization_server_headers'] = $last_response['headers'] ?? [];
+            $details['authorization_server_raw_response'] = $last_response['body'] ?? '';
         }
 
         $safe_details = $this->redact_oauth_error_values( $details );
@@ -163,6 +173,14 @@ final class OAuthController {
                     : $this->redact_oauth_error_values( $item );
             }
             return $sanitized;
+        }
+
+        if ( is_string( $value ) ) {
+            return (string) preg_replace(
+                '/(["\']?(?:access_token|refresh_token|client_secret|id_token|token|code)["\']?\s*[:=]\s*["\'])(.*?)(["\'])/i',
+                '$1[redacted]$3',
+                $value
+            );
         }
 
         return $value;

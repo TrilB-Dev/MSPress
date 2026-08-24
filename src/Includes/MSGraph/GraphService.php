@@ -190,7 +190,7 @@ class GraphService {
                 return;
             }
 
-            $this->oauthClient = new GenericProvider([
+            $this->oauthClient = new DiagnosticGenericProvider([
                 'clientId' => $clientId,
                 'clientSecret' => $clientSecret,
                 'redirectUri' => self::get_callback_url(),

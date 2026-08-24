@@ -144,4 +144,17 @@ final class OAuthService {
     public function get_oauth_client(): GenericProvider {
         return $this->oauthClient;
     }
+
+    /**
+     * Get the last authorization-server response captured by the provider.
+     *
+     * @return array<string, mixed>|null Response diagnostics or null.
+     */
+    public function get_last_oauth_response(): ?array {
+        if ( $this->oauthClient instanceof DiagnosticGenericProvider ) {
+            return $this->oauthClient->get_last_response();
+        }
+
+        return null;
+    }
 }
