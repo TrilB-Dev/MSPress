@@ -7,6 +7,7 @@
 namespace MSPress\Includes\MSGraph;
 
 use Microsoft\Graph\GraphServiceClient;
+use Microsoft\Graph\GraphRequestAdapter;
 use Microsoft\Kiota\Abstractions\Authentication\AllowedHostsValidator;
 use Http\Promise\FulfilledPromise;
 use Http\Promise\RejectedPromise;
@@ -50,9 +51,15 @@ final class GraphClientService {
             }
         };
 
-        return GraphServiceClient::createWithAuthenticationProvider(
-            new \Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider($tokenProvider)
+        $authenticationProvider = new \Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider($tokenProvider);
+        $requestAdapter = new GraphRequestAdapter(
+            $authenticationProvider,
+            null,
+            null,
+            new \GuzzleHttp\Client(TlsTransport::guzzle_options())
         );
+
+        return GraphServiceClient::createWithRequestAdapter($requestAdapter);
     }
     /**
      * Create a Guzzle HTTP client for Microsoft Graph API requests.
@@ -65,6 +72,7 @@ final class GraphClientService {
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
+            ...TlsTransport::guzzle_options(),
         ]);
     }
 }

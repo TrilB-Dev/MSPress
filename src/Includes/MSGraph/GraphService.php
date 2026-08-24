@@ -71,6 +71,7 @@ class GraphService {
     }
 
     private function __construct() {
+        TlsTransport::register_wordpress_hook();
         $this->credentials = new CredentialService();
         $this->tokenService = new TokenService($this->credentials);
         $this->clientService = new GraphClientService($this->tokenService);
@@ -192,6 +193,7 @@ class GraphService {
                 'urlAuthorize' => "https://login.microsoftonline.com/{$tenantId}/oauth2/v2.0/authorize",
                 'urlAccessToken' => "https://login.microsoftonline.com/{$tenantId}/oauth2/v2.0/token",
                 'urlResourceOwnerDetails' => 'https://graph.microsoft.com/v1.0/me',
+                'httpClient' => new \GuzzleHttp\Client(TlsTransport::guzzle_options()),
             ]);
             $this->oauthService = new OAuthService($this->oauthClient, fn() => $this->get_tenant_id());
             $this->graph = $this->clientService->create_graph_client();

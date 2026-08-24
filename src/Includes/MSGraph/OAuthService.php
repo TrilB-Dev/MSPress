@@ -9,6 +9,7 @@ namespace MSPress\Includes\MSGraph;
 use Exception;
 use Http\Promise\FulfilledPromise;
 use Microsoft\Graph\GraphServiceClient;
+use Microsoft\Graph\GraphRequestAdapter;
 use Microsoft\Kiota\Abstractions\Authentication\AccessTokenProvider;
 use Microsoft\Kiota\Abstractions\Authentication\AllowedHostsValidator;
 use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
@@ -86,22 +87,27 @@ final class OAuthService {
             ]);
             utilities::write_log('MSGraph OAuth callback: authorization code exchanged.');
 
-            $graph = GraphServiceClient::createWithAuthenticationProvider(
-                new BaseBearerTokenAuthenticationProvider(
-                    new class($token->getToken()) implements AccessTokenProvider {
-                        public function __construct(private string $token) {
-                        }
-
-                        public function getAuthorizationTokenAsync(string $url, array $additionalAuthenticationContext = []): \Http\Promise\Promise {
-                            return new FulfilledPromise($this->token);
-                        }
-
-                        public function getAllowedHostsValidator(): AllowedHostsValidator {
-                            return new AllowedHostsValidator(['graph.microsoft.com']);
-                        }
+            $authenticationProvider = new BaseBearerTokenAuthenticationProvider(
+                new class($token->getToken()) implements AccessTokenProvider {
+                    public function __construct(private string $token) {
                     }
-                )
+
+                    public function getAuthorizationTokenAsync(string $url, array $additionalAuthenticationContext = []): \Http\Promise\Promise {
+                        return new FulfilledPromise($this->token);
+                    }
+
+                    public function getAllowedHostsValidator(): AllowedHostsValidator {
+                        return new AllowedHostsValidator(['graph.microsoft.com']);
+                    }
+                }
             );
+            $requestAdapter = new GraphRequestAdapter(
+                $authenticationProvider,
+                null,
+                null,
+                new \GuzzleHttp\Client(TlsTransport::guzzle_options())
+            );
+            $graph = GraphServiceClient::createWithRequestAdapter($requestAdapter);
 
             $me = $graph->me()->get()->wait();
             utilities::write_log('MSGraph OAuth callback: Microsoft account retrieved.');
