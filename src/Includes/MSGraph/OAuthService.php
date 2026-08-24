@@ -68,6 +68,7 @@ final class OAuthService {
 
         $storedState = $_SESSION['mspress_oauth_state'] ?? get_option('mspress_oauth_state');
         $context = $_SESSION['mspress_oauth_context'] ?? get_option('mspress_oauth_context', []);
+        utilities::write_log('MSGraph OAuth callback received: state_present=' . ( $state !== '' ? 'yes' : 'no' ) . ', stored_state_present=' . ( $storedState ? 'yes' : 'no' ) . ', context=' . ( is_array( $context ) ? sanitize_key( $context['purpose'] ?? 'generic' ) : 'invalid' ));
         if (!$storedState || $state !== $storedState) {
             unset($_SESSION['mspress_oauth_state'], $_SESSION['mspress_oauth_pkce_code'], $_SESSION['mspress_oauth_context']);
             throw new Exception('Invalid OAuth state');
@@ -78,14 +79,12 @@ final class OAuthService {
             $this->oauthClient->setPkceCode($pkceCode);
         }
 
-        unset($_SESSION['mspress_oauth_state'], $_SESSION['mspress_oauth_pkce_code'], $_SESSION['mspress_oauth_context']);
-        delete_option('mspress_oauth_state');
-        delete_option('mspress_oauth_context');
-
         try {
+            utilities::write_log('MSGraph OAuth callback: exchanging authorization code.');
             $token = $this->oauthClient->getAccessToken('authorization_code', [
                 'code' => $code,
             ]);
+            utilities::write_log('MSGraph OAuth callback: authorization code exchanged.');
             $this->oauthClient->getResourceOwner($token);
 
             $graph = GraphServiceClient::createWithAuthenticationProvider(
@@ -106,6 +105,11 @@ final class OAuthService {
             );
 
             $me = $graph->me()->get()->wait();
+            utilities::write_log('MSGraph OAuth callback: Microsoft account retrieved.');
+
+            unset($_SESSION['mspress_oauth_state'], $_SESSION['mspress_oauth_pkce_code'], $_SESSION['mspress_oauth_context']);
+            delete_option('mspress_oauth_state');
+            delete_option('mspress_oauth_context');
 
             return [
                 'id' => $me->getId(),

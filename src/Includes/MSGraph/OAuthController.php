@@ -54,6 +54,7 @@ final class OAuthController {
 
         try {
             $oauth_service = GraphService::get_instance()->get_oauth_service();
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller: service=' . ( $oauth_service ? 'available' : 'unavailable' ) . ', code_present=' . ( $code !== '' ? 'yes' : 'no' ) . ', state_present=' . ( $state !== '' ? 'yes' : 'no' ) );
             if ( $oauth_service === null ) {
                 wp_die( esc_html__( 'Microsoft sign-in is not configured. Please try again later.', 'mspress' ) );
             }
@@ -61,6 +62,7 @@ final class OAuthController {
             $user_data = $oauth_service->handle_oauth_callback( $code, $state );
             $oauth_context = is_array( $user_data['oauth_context'] ?? null ) ? $user_data['oauth_context'] : [];
             if ( 'exchange_connect' === ( $oauth_context['purpose'] ?? '' ) ) {
+                \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller: Exchange account data received; dispatching persistence action.' );
                 do_action( 'mspress_exchange_oauth_connected', $user_data );
                 wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=third-party&plugin=exchange&exchange_connected=1' ) );
                 exit;
@@ -100,7 +102,8 @@ final class OAuthController {
             wp_safe_redirect( admin_url() );
             exit;
         } catch ( \Throwable $exception ) {
-            wp_die( esc_html__( 'Microsoft sign-in could not be completed. Please try again.', 'mspress' ) );
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller error: ' . $exception->getMessage() );
+            wp_die( esc_html( sprintf( __( 'Microsoft sign-in could not be completed: %s', 'mspress' ), $exception->getMessage() ) ) );
         }
     }
 }

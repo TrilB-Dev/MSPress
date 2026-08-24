@@ -104,20 +104,11 @@ class Auth {
             return;
         }
 
-        // The canonical OAuth controller owns state and PKCE validation.
+        // The canonical OAuth controller owns state, PKCE validation, and sign-in.
+        // This legacy handler must not consume the callback before it can process
+        // Exchange account connections.
         if (get_query_var('mspress_ms_oauth')) {
-            try {
-                $msgraph = GraphService::get_instance();
-                $user_info = $msgraph->handle_oauth_callback($_GET['code'], $_GET['state']);
-
-                if ($user_info) {
-                    $this->login_or_register_user($user_info);
-                }
-            } catch (\Exception $e) {
-                LoggerHelper::write_log('OAuth callback error: ' . $e->getMessage());
-                wp_redirect(home_url('/login?error=oauth_failed'));
-                exit;
-            }
+            return;
         }
     }
 

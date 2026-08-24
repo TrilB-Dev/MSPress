@@ -128,7 +128,9 @@ final class Settings {
 
     public function save_connected_account( array $account ): void {
         $email = sanitize_email( $account['email'] ?? '' );
+        \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence started: email_present=' . ( $email !== '' ? 'yes' : 'no' ) . ', access_token_present=' . ( ! empty( $account['access_token'] ) ? 'yes' : 'no' ) . ', refresh_token_present=' . ( ! empty( $account['refresh_token'] ) ? 'yes' : 'no' ) );
         if ( ! is_email( $email ) ) {
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence skipped: invalid account email.' );
             return;
         }
 
@@ -136,6 +138,7 @@ final class Settings {
         $encrypted_access = EncryptionHelper::encrypt( (string) ( $account['access_token'] ?? '' ) );
         $encrypted_refresh = EncryptionHelper::encrypt( (string) ( $account['refresh_token'] ?? '' ) );
         if ( null === $encrypted_email || null === $encrypted_access || null === $encrypted_refresh ) {
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence skipped: account encryption failed.' );
             return;
         }
 
@@ -149,7 +152,8 @@ final class Settings {
             'refresh_token' => $encrypted_refresh,
             'expires' => absint( $account['expires'] ?? 0 ),
         ];
-        BaseSettings::set_group( 'exchange', $settings );
+        $saved = BaseSettings::set_group( 'exchange', $settings );
+        \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence completed: saved=' . ( $saved ? 'yes' : 'no' ) );
     }
 
     public function import_mailboxes(): void {
