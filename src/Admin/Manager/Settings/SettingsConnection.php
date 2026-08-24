@@ -27,32 +27,34 @@ final class SettingsConnection {
         $client_id = $this->display_credential( $settings['client_id'] ?? '' );
         ?>
         <?php settings_errors( 'mspress_connection' ); ?>
-        <form method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=mspress-settings&tab=connection' ) ); ?>">
+        <form class="card mspress-settings-form" method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=mspress-settings&tab=connection' ) ); ?>">
             <?php wp_nonce_field( 'mspress_save_connection', 'mspress_connection_nonce' ); ?>
             <input type="hidden" name="mspress_connection_save" value="1" />
-            <fieldset <?php disabled( ! $can_edit ); ?>>
-                <div class="mb-4">
-                    <?php echo FormFieldHelper::checkbox( 'mspress_ms365[enabled]', 'on', '', [ 'id' => 'mspress-ms365-enabled', 'checked' => 'on' === ( $settings['enabled'] ?? 'off' ) ] ); ?>
-                    <?php echo FormFieldHelper::label( 'mspress-ms365-enabled', __( 'Enable Microsoft Graph', 'mspress' ), [ 'description' => __( 'Allow MSPress integrations to use the configured application-only Graph connection.', 'mspress' ) ] ); ?>
-                </div>
-                <div class="row g-3">
-                    <div class="col-12 col-xl-6">
-                        <?php echo FormFieldHelper::label( 'mspress-ms365-tenant-id', __( 'Tenant ID or verified domain', 'mspress' ) ); ?>
-                        <?php echo FormFieldHelper::input( 'mspress_ms365[tenant_id]', $tenant_id, [ 'id' => 'mspress-ms365-tenant-id', 'type' => 'text', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
+            <div class="card-body">
+                <fieldset <?php disabled( ! $can_edit ); ?>>
+                    <div class="mb-4">
+                        <?php echo FormFieldHelper::checkbox( 'mspress_ms365[enabled]', 'on', '', [ 'id' => 'mspress-ms365-enabled', 'checked' => 'on' === ( $settings['enabled'] ?? 'off' ) ] ); ?>
+                        <?php echo FormFieldHelper::label( 'mspress-ms365-enabled', __( 'Enable Microsoft Graph', 'mspress' ), [ 'description' => __( 'Allow MSPress integrations to use the configured application-only Graph connection.', 'mspress' ) ] ); ?>
                     </div>
-                    <div class="col-12 col-xl-6">
-                        <?php echo FormFieldHelper::label( 'mspress-ms365-client-id', __( 'Application (client) ID', 'mspress' ) ); ?>
-                        <?php echo FormFieldHelper::input( 'mspress_ms365[client_id]', $client_id, [ 'id' => 'mspress-ms365-client-id', 'type' => 'text', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
+                    <div class="row g-3">
+                        <div class="col-12 col-xl-6">
+                            <?php echo FormFieldHelper::label( 'mspress-ms365-tenant-id', __( 'Tenant ID or verified domain', 'mspress' ) ); ?>
+                            <?php echo FormFieldHelper::input( 'mspress_ms365[tenant_id]', $tenant_id, [ 'id' => 'mspress-ms365-tenant-id', 'type' => 'text', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
+                        </div>
+                        <div class="col-12 col-xl-6">
+                            <?php echo FormFieldHelper::label( 'mspress-ms365-client-id', __( 'Application (client) ID', 'mspress' ) ); ?>
+                            <?php echo FormFieldHelper::input( 'mspress_ms365[client_id]', $client_id, [ 'id' => 'mspress-ms365-client-id', 'type' => 'text', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
+                        </div>
+                        <div class="col-12">
+                            <?php echo FormFieldHelper::label( 'mspress-ms365-client-secret', __( 'Client secret', 'mspress' ), [ 'description' => __( 'Leave blank to keep the currently stored secret.', 'mspress' ) ] ); ?>
+                            <?php echo FormFieldHelper::input( 'mspress_ms365[client_secret]', '', [ 'id' => 'mspress-ms365-client-secret', 'type' => 'password', 'autocomplete' => 'new-password' ] ); ?>
+                        </div>
                     </div>
-                    <div class="col-12">
-                        <?php echo FormFieldHelper::label( 'mspress-ms365-client-secret', __( 'Client secret', 'mspress' ), [ 'description' => __( 'Leave blank to keep the currently stored secret.', 'mspress' ) ] ); ?>
-                        <?php echo FormFieldHelper::input( 'mspress_ms365[client_secret]', '', [ 'id' => 'mspress-ms365-client-secret', 'type' => 'password', 'autocomplete' => 'new-password' ] ); ?>
-                    </div>
-                </div>
-            </fieldset>
-            <?php if ( $can_edit ) : ?>
-                <p class="submit mb-0"><?php echo FormFieldHelper::button( __( 'Save connection', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary' ] ); ?></p>
-            <?php endif; ?>
+                </fieldset>
+                <?php if ( $can_edit ) : ?>
+                    <p class="submit mb-0"><?php echo FormFieldHelper::button( __( 'Save connection', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary' ] ); ?></p>
+                <?php endif; ?>
+            </div>
         </form>
         <?php
     }

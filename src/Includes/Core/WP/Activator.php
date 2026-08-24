@@ -6,6 +6,8 @@
  */
 namespace MSPress\Includes\Core\WP;
 
+use MSPress\Includes\Functions\Helpers\EncryptionHelper;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -33,6 +35,7 @@ final class Activator {
      * @return void
      */
     public static function activate( ?array $callbacks = null ): void {
+        EncryptionHelper::ensure_configured();
         Database::install();
         foreach ( $callbacks ?? self::$callbacks as $callback ) {
             call_user_func( $callback );

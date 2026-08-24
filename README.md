@@ -46,7 +46,7 @@ Install the plugin in `wp-content/plugins/` and activate it from the WordPress a
 
 MSPress uses a fresh installation. Settings are stored in the WordPress database table `{$wpdb->prefix}mspress_settings`.
 
-Microsoft 365 credentials are encrypted with Defuse PHP Encryption. Define the encryption key in `wp-config.php` before configuring Microsoft 365:
+Microsoft 365 credentials are encrypted with Defuse PHP Encryption. On activation, MSPress generates a key and adds it to `wp-config.php` when `MSPRESS_ENCRYPTION_KEY` is not already defined. If the file is not writable, add the key manually:
 
 ```php
 define( 'MSPRESS_ENCRYPTION_KEY', 'your-defuse-key' );

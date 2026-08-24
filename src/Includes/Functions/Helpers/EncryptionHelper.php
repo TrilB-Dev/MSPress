@@ -16,6 +16,77 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class EncryptionHelper {
     /**
+     * Add the MSPress encryption key to wp-config.php when it is not defined.
+     *
+     * @return bool True when the key already exists or was added successfully.
+     */
+    public static function ensure_configured(): bool {
+        if ( defined( 'MSPRESS_ENCRYPTION_KEY' ) ) {
+            return self::has_runtime_key();
+        }
+
+        $config_path = self::config_path();
+        if ( null === $config_path || ! is_readable( $config_path ) || ! is_writable( $config_path ) ) {
+            error_log( 'MSPress: wp-config.php was not found or is not writable; encryption key was not created.' );
+            return false;
+        }
+
+        $config_content = file_get_contents( $config_path );
+        if ( false === $config_content ) {
+            error_log( 'MSPress: could not read wp-config.php; encryption key was not created.' );
+            return false;
+        }
+
+        if ( preg_match( '/define\s*\(\s*[\'\"]MSPRESS_ENCRYPTION_KEY[\'\"]\s*,/i', $config_content ) ) {
+            return true;
+        }
+
+        try {
+            $key = Key::createNewRandomKey()->saveToAsciiSafeString();
+        } catch ( \Throwable $exception ) {
+            error_log( 'MSPress: failed to generate the encryption key: ' . $exception->getMessage() );
+            return false;
+        }
+
+        $new_line = "define( 'MSPRESS_ENCRYPTION_KEY', '" . addslashes( $key ) . "' );" . PHP_EOL;
+        $marker = "/* That's all, stop editing!";
+        $marker_position = strpos( $config_content, $marker );
+
+        if ( false !== $marker_position ) {
+            $updated_content = substr_replace( $config_content, $new_line, $marker_position, 0 );
+        } else {
+            $settings_load = "require_once ABSPATH . 'wp-settings.php';";
+            $settings_position = strpos( $config_content, $settings_load );
+            if ( false === $settings_position ) {
+                error_log( 'MSPress: could not find a safe insertion point in wp-config.php.' );
+                return false;
+            }
+            $updated_content = substr_replace( $config_content, $new_line, $settings_position, 0 );
+        }
+
+        $handle = fopen( $config_path, 'c+' );
+        if ( false === $handle || ! flock( $handle, LOCK_EX ) ) {
+            if ( is_resource( $handle ) ) {
+                fclose( $handle );
+            }
+            error_log( 'MSPress: could not lock wp-config.php; encryption key was not created.' );
+            return false;
+        }
+
+        $success = ftruncate( $handle, 0 ) && rewind( $handle ) && false !== fwrite( $handle, $updated_content );
+        fflush( $handle );
+        flock( $handle, LOCK_UN );
+        fclose( $handle );
+
+        if ( ! $success ) {
+            error_log( 'MSPress: could not write the encryption key to wp-config.php.' );
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Encrypt a value using the runtime encryption key.
      *
      * @param string $value The value to encrypt.
@@ -59,6 +130,26 @@ final class EncryptionHelper {
      */
     public static function has_runtime_key(): bool {
         return null !== self::load_key( self::runtime_key() );
+    }
+
+    /**
+     * Find the active WordPress configuration file.
+     *
+     * @return string|null The configuration path or null when it cannot be found.
+     */
+    private static function config_path(): ?string {
+        $paths = [
+            \ABSPATH . 'wp-config.php',
+            dirname( \ABSPATH ) . '/wp-config.php',
+        ];
+
+        foreach ( $paths as $path ) {
+            if ( file_exists( $path ) ) {
+                return $path;
+            }
+        }
+
+        return null;
     }
     /**
      * Decrypt a value using a specified key.
