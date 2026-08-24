@@ -305,6 +305,8 @@ final class SettingsPlugins {
             } elseif ( 'textarea' === $type ) {
                 $textarea_value = is_scalar( $value ) ? (string) $value : wp_json_encode( $value, JSON_PRETTY_PRINT );
                 echo FormFieldHelper::textarea( $name, (string) $textarea_value, [ 'id' => $id, 'rows' => 6 ] );
+            } elseif ( 'custom' === $type && ! empty( $field['render'] ) && is_callable( $field['render'] ) ) {
+                call_user_func( $field['render'], $value, $name, $id );
             }
             echo 'table' === $layout ? '</td></tr>' : '</div></article>';
         }

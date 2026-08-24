@@ -33,8 +33,7 @@ final class OAuthService {
      * @param string|null $state Optional state parameter for CSRF protection.
      * @return string The authorization URL.
      */
-    public function get_authorization_url($state = null): string {
-        $scopes = 'openid profile email offline_access User.Read';
+    public function get_authorization_url($state = null, array $context = [], string $scopes = 'openid profile email offline_access User.Read'): string {
         $state = $state ?: 'mspress_oauth_' . wp_generate_password(12, false);
 
         $authorizationUrl = $this->oauthClient->getAuthorizationUrl([
@@ -48,7 +47,9 @@ final class OAuthService {
 
         $_SESSION['mspress_oauth_state'] = $state;
         $_SESSION['mspress_oauth_pkce_code'] = $this->oauthClient->getPkceCode();
+        $_SESSION['mspress_oauth_context'] = $context;
         update_option('mspress_oauth_state', $state);
+        update_option('mspress_oauth_context', $context);
 
         return $authorizationUrl;
     }
@@ -66,8 +67,9 @@ final class OAuthService {
         }
 
         $storedState = $_SESSION['mspress_oauth_state'] ?? get_option('mspress_oauth_state');
+        $context = $_SESSION['mspress_oauth_context'] ?? get_option('mspress_oauth_context', []);
         if (!$storedState || $state !== $storedState) {
-            unset($_SESSION['mspress_oauth_state'], $_SESSION['mspress_oauth_pkce_code']);
+            unset($_SESSION['mspress_oauth_state'], $_SESSION['mspress_oauth_pkce_code'], $_SESSION['mspress_oauth_context']);
             throw new Exception('Invalid OAuth state');
         }
 
@@ -76,8 +78,9 @@ final class OAuthService {
             $this->oauthClient->setPkceCode($pkceCode);
         }
 
-        unset($_SESSION['mspress_oauth_state'], $_SESSION['mspress_oauth_pkce_code']);
+        unset($_SESSION['mspress_oauth_state'], $_SESSION['mspress_oauth_pkce_code'], $_SESSION['mspress_oauth_context']);
         delete_option('mspress_oauth_state');
+        delete_option('mspress_oauth_context');
 
         try {
             $token = $this->oauthClient->getAccessToken('authorization_code', [
@@ -117,6 +120,7 @@ final class OAuthService {
                 'access_token' => $token->getToken(),
                 'refresh_token' => $token->getRefreshToken(),
                 'expires' => $token->getExpires(),
+                'oauth_context' => is_array( $context ) ? $context : [],
             ];
         } catch (Exception $e) {
             utilities::write_log('MS Graph OAuth callback error: ' . $e->getMessage());

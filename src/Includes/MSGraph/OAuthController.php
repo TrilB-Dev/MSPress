@@ -59,6 +59,12 @@ final class OAuthController {
             }
 
             $user_data = $oauth_service->handle_oauth_callback( $code, $state );
+            $oauth_context = is_array( $user_data['oauth_context'] ?? null ) ? $user_data['oauth_context'] : [];
+            if ( 'exchange_connect' === ( $oauth_context['purpose'] ?? '' ) ) {
+                do_action( 'mspress_exchange_oauth_connected', $user_data );
+                wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=third-party&plugin=exchange&exchange_connected=1' ) );
+                exit;
+            }
             $email = sanitize_email( $user_data['email'] ?? '' );
 
             if ( $email === '' || ! is_email( $email ) ) {

@@ -32,6 +32,7 @@ final class Includes {
 
     public function init(): void {
         $this->settings->register();
+        add_action( 'mspress_exchange_oauth_connected', [ $this->settings, 'save_connected_account' ] );
         $this->mailer->register();
         register_post_type( 'mspress_email_template', [
             'labels' => [ 'name' => __( 'Email Templates', 'mspress' ), 'singular_name' => __( 'Email Template', 'mspress' ) ],
