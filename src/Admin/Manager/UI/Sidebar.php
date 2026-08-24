@@ -94,7 +94,12 @@ final class Sidebar {
 
 	/** @param array<string, string> $query */
 	private static function item_url( string $page, array $query ): string {
-		return admin_url( 'admin.php?page=' . $page . ( empty( $query ) ? '' : '&' . http_build_query( $query, '', '&', PHP_QUERY_RFC3986 ) ) );
+		$query_string = empty( $query ) ? '' : '?' . http_build_query( $query, '', '&', PHP_QUERY_RFC3986 );
+		if ( in_array( $page, [ 'edit.php', 'post-new.php' ], true ) ) {
+			return admin_url( $page . $query_string );
+		}
+
+		return admin_url( 'admin.php?page=' . $page . ( empty( $query ) ? '' : '&' . ltrim( $query_string, '?' ) ) );
 	}
 
 	/** @param array<string, string> $query */

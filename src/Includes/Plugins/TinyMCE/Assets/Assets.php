@@ -29,7 +29,7 @@ final class Assets {
     }
 
     public function register_admin_assets( array $assets, string $context = '' ): array {
-        $base_url = WIKIPRESS_URL . 'src/includes/Plugins/TinyMCE/Assets/tinymce/';
+        $base_url = MSPRESS_URL . 'src/includes/Plugins/TinyMCE/Assets/tinymce/';
 
         $assets['styles'][] = [
             'handle' => 'mspress-tinymce-skin',
@@ -42,7 +42,7 @@ final class Assets {
         ];
         $assets['scripts'][] = [
             'handle' => 'mspress-tinymce-boot',
-            'src' => WIKIPRESS_URL . 'src/includes/Plugins/TinyMCE/Assets/js/tinymce.js',
+            'src' => MSPRESS_URL . 'src/includes/Plugins/TinyMCE/Assets/js/tinymce.js',
             'deps' => [ 'mspress-tinymce' ],
             'in_footer' => true,
             'localize' => [

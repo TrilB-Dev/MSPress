@@ -7,8 +7,8 @@
         }
 
         var frame = window.wp.media({
-            title: window.wikipressTinyMCE?.mediaTitle || '',
-            button: { text: window.wikipressTinyMCE?.mediaButton || '' },
+            title: window.mspressTinyMCE?.mediaTitle || '',
+            button: { text: window.mspressTinyMCE?.mediaButton || '' },
             multiple: false
         });
 
@@ -28,7 +28,7 @@
             return;
         }
 
-        document.querySelectorAll('.wikipress-tinymce-config').forEach((node) => {
+        document.querySelectorAll('.mspress-tinymce-config').forEach((node) => {
             let settings;
             try {
                 settings = JSON.parse(node.textContent || '{}');
@@ -38,9 +38,9 @@
 
             settings.setup = (editor) => {
                 if (settings.media_buttons) {
-                    editor.ui.registry.addButton('wikipressmedia', {
+                    editor.ui.registry.addButton('mspressmedia', {
                         icon: 'image',
-                        tooltip: window.wikipressTinyMCE?.mediaTooltip || '',
+                        tooltip: window.mspressTinyMCE?.mediaTooltip || '',
                         onAction: () => insertMedia(editor)
                     });
                 }

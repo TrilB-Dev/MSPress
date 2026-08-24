@@ -39,12 +39,16 @@ final class ExchangeMailer {
         }
 
         try {
+            $template = $this->template( $atts['headers'] ?? [], $atts );
+            $subject = $template['subject'] ?? (string) ( $atts['subject'] ?? '' );
+            $content = $template['content'] ?? (string) ( $atts['message'] ?? '' );
+            $content_type = $template['content_type'] ?? $this->content_type( $atts['headers'] ?? [] );
             $payload = [
                 'message' => [
-                    'subject' => (string) ( $atts['subject'] ?? '' ),
+                    'subject' => $subject,
                     'body' => [
-                        'contentType' => $this->content_type( $atts['headers'] ?? [] ),
-                        'content' => (string) ( $atts['message'] ?? '' ),
+                        'contentType' => $content_type,
+                        'content' => $content,
                     ],
                     'from' => [ 'emailAddress' => $sender ],
                     'toRecipients' => $this->recipients( $atts['to'] ?? [] ),
@@ -125,6 +129,40 @@ final class ExchangeMailer {
             }
         }
         return 'Text';
+    }
+
+    private function template( $headers, array $atts ): array {
+        $slug = '';
+        foreach ( (array) $headers as $header ) {
+            if ( is_string( $header ) && stripos( $header, 'x-mspress-template:' ) === 0 ) {
+                $slug = sanitize_title( trim( substr( $header, strlen( 'x-mspress-template:' ) ) ) );
+                break;
+            }
+        }
+        if ( '' === $slug ) {
+            return [];
+        }
+
+        $post = get_page_by_path( $slug, OBJECT, 'mspress_email_template' );
+        if ( ! $post instanceof \WP_Post ) {
+            return [];
+        }
+        $context = apply_filters( 'mspress_exchange_template_context', [], $atts, $post );
+        $replace = [];
+        foreach ( is_array( $context ) ? $context : [] as $key => $value ) {
+            if ( is_scalar( $value ) ) {
+                $replace[ '{' . sanitize_key( (string) $key ) . '}' ] = (string) $value;
+            }
+        }
+        $subject = (string) get_post_meta( $post->ID, '_mspress_email_subject', true );
+        $html = (string) get_post_meta( $post->ID, '_mspress_email_html', true );
+        $plain = (string) get_post_meta( $post->ID, '_mspress_email_plain', true );
+        $is_html = '' !== $html;
+        return [
+            'subject' => strtr( $subject ?: (string) ( $atts['subject'] ?? '' ), $replace ),
+            'content' => strtr( $is_html ? $html : $plain, $replace ),
+            'content_type' => $is_html ? 'HTML' : 'Text',
+        ];
     }
 
     private function attachments( $value ): array {
