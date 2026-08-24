@@ -123,10 +123,6 @@ class GraphService {
     private function initializeGraph() {
         $options = Settings::get_group('ms365') ?? [];
 
-        if (empty($options['enabled']) || $options['enabled'] !== 'on') {
-            return;
-        }
-
         if (!EncryptionHelper::has_runtime_key()) {
             $this->connectionError = 'MSPRESS_ENCRYPTION_KEY is not configured. Add it to wp-config.php.';
             utilities::write_log('MSGraph Error: ' . $this->connectionError);

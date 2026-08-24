@@ -83,6 +83,10 @@ final class EncryptionHelper {
             return false;
         }
 
+        if ( ! defined( 'MSPRESS_ENCRYPTION_KEY' ) ) {
+            define( 'MSPRESS_ENCRYPTION_KEY', $key );
+        }
+
         return true;
     }
 
@@ -138,9 +142,10 @@ final class EncryptionHelper {
      * @return string|null The configuration path or null when it cannot be found.
      */
     private static function config_path(): ?string {
+        $abspath = (string) constant( 'ABSPATH' );
         $paths = [
-            \ABSPATH . 'wp-config.php',
-            dirname( \ABSPATH ) . '/wp-config.php',
+            $abspath . 'wp-config.php',
+            dirname( $abspath ) . '/wp-config.php',
         ];
 
         foreach ( $paths as $path ) {

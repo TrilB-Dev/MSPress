@@ -148,7 +148,6 @@ final class SettingsManager {
     public static function defaults(): array {
         return [
             'ms365' => [
-                'enabled' => 'off',
                 'client_id' => '',
                 'tenant_id' => '',
                 'client_secret' => '',

@@ -17,12 +17,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class SettingsConnection {
     public function render(): void {
-        if ( 'POST' === strtoupper( (string) ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) && isset( $_POST['mspress_connection_save'] ) ) {
-            $this->save();
+        if ( 'POST' === strtoupper( (string) ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) ) {
+            if ( isset( $_POST['mspress_connection_save'] ) ) {
+                $this->save();
+            } elseif ( isset( $_POST['mspress_add_encryption_key'] ) ) {
+                $this->add_encryption_key();
+            }
+        }
+
+        $can_edit = current_user_can( 'mspress_settings_connection_edit' );
+        if ( ! EncryptionHelper::has_runtime_key() ) {
+            $this->render_missing_key( $can_edit );
+            return;
         }
 
         $settings = Settings::get_group( 'ms365', [] ) ?? [];
-        $can_edit = current_user_can( 'mspress_settings_connection_edit' );
         $tenant_id = $this->display_credential( $settings['tenant_id'] ?? '' );
         $client_id = $this->display_credential( $settings['client_id'] ?? '' );
         ?>
@@ -32,10 +41,6 @@ final class SettingsConnection {
             <input type="hidden" name="mspress_connection_save" value="1" />
             <div class="card-body">
                 <fieldset <?php disabled( ! $can_edit ); ?>>
-                    <div class="mb-4">
-                        <?php echo FormFieldHelper::checkbox( 'mspress_ms365[enabled]', 'on', '', [ 'id' => 'mspress-ms365-enabled', 'checked' => 'on' === ( $settings['enabled'] ?? 'off' ) ] ); ?>
-                        <?php echo FormFieldHelper::label( 'mspress-ms365-enabled', __( 'Enable Microsoft Graph', 'mspress' ), [ 'description' => __( 'Allow MSPress integrations to use the configured application-only Graph connection.', 'mspress' ) ] ); ?>
-                    </div>
                     <div class="row g-3">
                         <div class="col-12 col-xl-6">
                             <?php echo FormFieldHelper::label( 'mspress-ms365-tenant-id', __( 'Tenant ID or verified domain', 'mspress' ) ); ?>
@@ -78,11 +83,6 @@ final class SettingsConnection {
             add_settings_error( 'mspress_connection', 'invalid_client', __( 'Enter a valid application (client) ID GUID.', 'mspress' ) );
             return;
         }
-        if ( ! EncryptionHelper::has_runtime_key() ) {
-            add_settings_error( 'mspress_connection', 'missing_key', __( 'MSPRESS_ENCRYPTION_KEY is not configured in wp-config.php.', 'mspress' ) );
-            return;
-        }
-
         $encrypted_tenant = EncryptionHelper::encrypt( $tenant_id );
         $encrypted_client = EncryptionHelper::encrypt( $client_id );
         $encrypted_secret = '' === $client_secret ? (string) ( $current['client_secret'] ?? '' ) : EncryptionHelper::encrypt( $client_secret );
@@ -91,7 +91,6 @@ final class SettingsConnection {
             return;
         }
 
-        $current['enabled'] = ! empty( $input['enabled'] ) ? 'on' : 'off';
         $current['tenant_id'] = $encrypted_tenant;
         $current['client_id'] = $encrypted_client;
         $current['client_secret'] = $encrypted_secret;
@@ -101,6 +100,40 @@ final class SettingsConnection {
         }
 
         add_settings_error( 'mspress_connection', 'saved', __( 'Microsoft Graph connection settings saved.', 'mspress' ), 'updated' );
+    }
+
+    private function add_encryption_key(): void {
+        if ( ! current_user_can( 'mspress_settings_connection_edit' ) || ! check_admin_referer( 'mspress_add_encryption_key', 'mspress_encryption_key_nonce' ) ) {
+            wp_die( esc_html__( 'You are not authorized to add the MSPress encryption key.', 'mspress' ) );
+        }
+
+        if ( EncryptionHelper::ensure_configured() ) {
+            if ( EncryptionHelper::has_runtime_key() ) {
+                add_settings_error( 'mspress_connection', 'key_added', __( 'The MSPress encryption key was added to wp-config.php.', 'mspress' ), 'updated' );
+                return;
+            }
+        }
+
+        add_settings_error( 'mspress_connection', 'key_failed', __( 'The encryption key could not be added automatically. Check that wp-config.php is writable and add the key manually.', 'mspress' ) );
+    }
+
+    private function render_missing_key( bool $can_edit ): void {
+        ?>
+        <?php settings_errors( 'mspress_connection' ); ?>
+        <form class="card mspress-settings-form" method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=mspress-settings&tab=connection' ) ); ?>">
+            <?php wp_nonce_field( 'mspress_add_encryption_key', 'mspress_encryption_key_nonce' ); ?>
+            <input type="hidden" name="mspress_add_encryption_key" value="1" />
+            <div class="card-body">
+                <h2 class="h5 card-title"><?php esc_html_e( 'Encryption key required', 'mspress' ); ?></h2>
+                <p class="card-text"><?php esc_html_e( 'MSPress cannot display or save Microsoft Graph credentials until its encryption key is configured.', 'mspress' ); ?></p>
+                <?php if ( $can_edit ) : ?>
+                    <?php echo FormFieldHelper::button( __( 'Add key to wp-config.php', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary' ] ); ?>
+                <?php else : ?>
+                    <p class="mb-0 text-secondary"><?php esc_html_e( 'You do not have permission to configure the encryption key.', 'mspress' ); ?></p>
+                <?php endif; ?>
+            </div>
+        </form>
+        <?php
     }
 
     private function display_credential( $encrypted ): string {

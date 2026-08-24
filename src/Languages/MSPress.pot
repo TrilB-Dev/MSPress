@@ -27,10 +27,6 @@ msgstr ""
 msgid "3rd Party"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Exchange.php:68
-msgid "A demonstration MSPress extension plugin."
-msgstr ""
-
 #: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:35
 msgid "A short value used to demonstrate Entra plugin setting metadata."
 msgstr ""
@@ -55,15 +51,19 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: src/Admin/Manager/Settings/SettingsConnection.php:130
+msgid "Add key to wp-config.php"
+msgstr ""
+
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:171
 msgid "Add Mapping"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:36
-msgid "Allow MSPress integrations to use the configured application-only Graph connection."
+#: src/Includes/Plugins/Exchange/Exchange.php:68
+msgid "Allows MSPress to use MS365 Exchange to send Emails from your Wordpress website."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:44
+#: src/Admin/Manager/Settings/SettingsConnection.php:50
 msgid "Application (client) ID"
 msgstr ""
 
@@ -88,7 +88,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:48
+#: src/Admin/Manager/Settings/SettingsConnection.php:54
 msgid "Client secret"
 msgstr ""
 
@@ -162,18 +162,6 @@ msgstr ""
 msgid "Debug logging"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:28
-msgid "Demo"
-msgstr ""
-
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:29
-msgid "Demo plugin settings"
-msgstr ""
-
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:34
-msgid "Demo text setting"
-msgstr ""
-
 #: src/Includes/Plugins/Entra/Includes/Login/Auth.php:381
 msgid "Department"
 msgstr ""
@@ -211,11 +199,6 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:92
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:93
-msgid "Email Settings"
-msgstr ""
-
 #: src/Admin/Manager/Settings/SettingsPlugins.php:152
 #: src/Admin/Manager/Settings/SettingsPlugins.php:328
 msgid "Enable %s"
@@ -237,10 +220,6 @@ msgstr ""
 msgid "Enable Graph Mailer"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:36
-msgid "Enable Microsoft Graph"
-msgstr ""
-
 #: src/Admin/Manager/Tools/DebugManager.php:48
 msgid "Enable MSPress debug logging"
 msgstr ""
@@ -253,11 +232,15 @@ msgstr ""
 msgid "Enable this only while investigating a problem, because logs can grow over time."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:76
+#: src/Admin/Manager/Settings/SettingsConnection.php:127
+msgid "Encryption key required"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:83
 msgid "Enter a valid application (client) ID GUID."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:72
+#: src/Admin/Manager/Settings/SettingsConnection.php:79
 msgid "Enter a valid tenant GUID or verified domain."
 msgstr ""
 
@@ -271,6 +254,23 @@ msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:34
 msgid "Entra text setting"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:28
+msgid "Exchange"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:29
+msgid "Exchange plugin settings"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:92
+#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:93
+msgid "Exchange Settings"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:34
+msgid "Exchange text setting"
 msgstr ""
 
 #: src/Admin/Manager/UI/Header.php:32
@@ -294,7 +294,7 @@ msgid "First Name"
 msgstr ""
 
 #: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:146
-msgid "From Email Address"
+msgid "From Exchange Address"
 msgstr ""
 
 #: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:154
@@ -332,7 +332,7 @@ msgstr ""
 msgid "Last Sync"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:48
+#: src/Admin/Manager/Settings/SettingsConnection.php:54
 msgid "Leave blank to keep the currently stored secret."
 msgstr ""
 
@@ -382,12 +382,12 @@ msgstr ""
 msgid "Microsoft Graph"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:101
+#: src/Admin/Manager/Settings/SettingsConnection.php:102
 msgid "Microsoft Graph connection settings saved."
 msgstr ""
 
 #: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:128
-msgid "Microsoft Graph Email Settings"
+msgid "Microsoft Graph Exchange Settings"
 msgstr ""
 
 #: src/Includes/Plugins/Onedrive/OneDrive.php:68
@@ -433,8 +433,8 @@ msgstr ""
 msgid "MSPress admin navigation"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/Core/Shortcodes.php:25
-msgid "MSPress Demo"
+#: src/Admin/Manager/Settings/SettingsConnection.php:128
+msgid "MSPress cannot display or save Microsoft Graph credentials until its encryption key is configured."
 msgstr ""
 
 #: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:216
@@ -443,6 +443,10 @@ msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/Core/Shortcodes.php:25
 msgid "MSPress Entra"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Core/Shortcodes.php:25
+msgid "MSPress Exchange"
 msgstr ""
 
 #: src/Admin/Manager/UI/Header.php:50
@@ -463,10 +467,6 @@ msgstr ""
 
 #: src/Includes/Plugins/Sharepoint/Includes/Core/Shortcodes.php:25
 msgid "MSPress SharePoint"
-msgstr ""
-
-#: src/Admin/Manager/Settings/SettingsConnection.php:80
-msgid "MSPRESS_ENCRYPTION_KEY is not configured in wp-config.php."
 msgstr ""
 
 #: src/Admin/Manager/UI/Sidebar.php:33
@@ -585,12 +585,12 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/Core/Shortcodes.php:27
-msgid "Render a message from the MSPress Demo plugin."
-msgstr ""
-
 #: src/Includes/Plugins/Entra/Includes/Core/Shortcodes.php:27
 msgid "Render a message from the MSPress Entra plugin."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Core/Shortcodes.php:27
+msgid "Render a message from the MSPress Exchange plugin."
 msgstr ""
 
 #: src/Includes/Plugins/Onedrive/Includes/Core/Shortcodes.php:27
@@ -638,7 +638,7 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:54
+#: src/Admin/Manager/Settings/SettingsConnection.php:60
 msgid "Save connection"
 msgstr ""
 
@@ -744,7 +744,7 @@ msgstr ""
 msgid "Syncing roles..."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:40
+#: src/Admin/Manager/Settings/SettingsConnection.php:46
 msgid "Tenant ID or verified domain"
 msgstr ""
 
@@ -752,11 +752,11 @@ msgstr ""
 msgid "Test email sent successfully!"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:88
+#: src/Admin/Manager/Settings/SettingsConnection.php:90
 msgid "The connection could not be encrypted. Check the encryption key and try again."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:97
+#: src/Admin/Manager/Settings/SettingsConnection.php:98
 msgid "The connection settings could not be saved."
 msgstr ""
 
@@ -768,8 +768,16 @@ msgstr ""
 msgid "The email address that will appear as the sender. Must be a valid Microsoft 365 email address."
 msgstr ""
 
+#: src/Admin/Manager/Settings/SettingsConnection.php:117
+msgid "The encryption key could not be added automatically. Check that wp-config.php is writable and add the key manually."
+msgstr ""
+
 #: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:45
 msgid "The Microsoft account authorized for delegated OneDrive access."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:112
+msgid "The MSPress encryption key was added to wp-config.php."
 msgstr ""
 
 #: src/Includes/Functions/Admin/FunctionsPlugins.php:44
@@ -825,12 +833,12 @@ msgstr ""
 msgid "Toggle header navigation"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:43
-msgid "Toggle the second Demo setting on or off."
-msgstr ""
-
 #: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:43
 msgid "Toggle the second Entra setting on or off."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:43
+msgid "Toggle the second Exchange setting on or off."
 msgstr ""
 
 #: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:43
@@ -940,8 +948,8 @@ msgstr ""
 msgid "Write diagnostic information to the WordPress debug log."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:41
-#: src/Admin/Manager/Settings/SettingsConnection.php:45
+#: src/Admin/Manager/Settings/SettingsConnection.php:47
+#: src/Admin/Manager/Settings/SettingsConnection.php:51
 msgid "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 msgstr ""
 
@@ -954,7 +962,11 @@ msgstr ""
 msgid "You are not authorized to access this MSPress tool."
 msgstr ""
 
-#: src/Admin/Admin.php:130
+#: src/Admin/Manager/Settings/SettingsConnection.php:107
+msgid "You are not authorized to add the MSPress encryption key."
+msgstr ""
+
+#: src/Admin/Admin.php:139
 msgid "You are not authorized to load MSPress settings."
 msgstr ""
 
@@ -970,10 +982,14 @@ msgstr ""
 msgid "You are not authorized to save MSPress plugin settings."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:62
+#: src/Admin/Manager/Settings/SettingsConnection.php:69
 msgid "You are not authorized to save the Microsoft Graph connection."
 msgstr ""
 
 #: src/Admin/Manager/Settings/SettingsManager.php:104
 msgid "You are not authorized to view these MSPress settings."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:132
+msgid "You do not have permission to configure the encryption key."
 msgstr ""
