@@ -145,7 +145,7 @@ final class SettingsPlugins {
         $modal_id = SanitizationHelper::key( $plugin->get_slug() );
         $can_edit = $this->can_edit_plugin( $plugin );
         ?>
-        <div class="col-12 col-md-6 col-xl-4 d-flex">
+        <div class="col-12 col-md-6 col-xl-6 d-flex">
             <article class="card mspress-plugin-card shadow-sm h-100 w-100">
                 <div class="card-header d-flex align-items-center gap-2">
                     <?php /* translators: %s is the plugin name. */ ?>
@@ -326,7 +326,7 @@ final class SettingsPlugins {
     private function render_third_party_plugin_card( string $file, array $plugin ): void {
         $active = function_exists( 'is_plugin_active' ) && is_plugin_active( $file );
         ?>
-        <div class="col-12 col-md-6 col-xl-4 d-flex">
+        <div class="col-12 col-md-6 col-xl-6 d-flex">
             <article class="card mspress-plugin-card shadow-sm h-100 w-100">
                 <div class="card-header d-flex align-items-center gap-2">
                     <?php /* translators: %s is the plugin name. */ ?>
