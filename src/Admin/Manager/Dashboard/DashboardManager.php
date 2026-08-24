@@ -149,7 +149,7 @@ final class DashboardManager extends Manager {
         if ( null !== $graph->get_connection_error() ) {
             return 'error';
         }
-        return null !== $graph->get_graph() ? 'ready' : 'disabled';
+        return null !== $graph->get_graph() ? 'connected' : 'error';
     }
 
     private function graph_message(): string {
@@ -158,7 +158,7 @@ final class DashboardManager extends Manager {
             return __( 'Review the Microsoft Graph settings and connection diagnostics.', 'mspress' );
         }
 
-        return null !== $graph->get_graph() ? __( 'Application credentials are available.', 'mspress' ) : __( 'Configure Microsoft Graph credentials to enable this service.', 'mspress' );
+        return null !== $graph->get_graph() ? __( 'Microsoft Graph connection is active.', 'mspress' ) : __( 'Configure Microsoft Graph credentials to activate this service.', 'mspress' );
     }
 
     private function can_render( $item ): bool {

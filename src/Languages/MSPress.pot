@@ -67,10 +67,6 @@ msgstr ""
 msgid "Application (client) ID"
 msgstr ""
 
-#: src/Admin/Manager/Dashboard/DashboardManager.php:161
-msgid "Application credentials are available."
-msgstr ""
-
 #: src/Admin/Manager/Dashboard/DashboardManager.php:127
 msgid "Attention needed"
 msgstr ""
@@ -105,7 +101,7 @@ msgid "Configure diagnostic logging from the Tools settings tab."
 msgstr ""
 
 #: src/Admin/Manager/Dashboard/DashboardManager.php:161
-msgid "Configure Microsoft Graph credentials to enable this service."
+msgid "Configure Microsoft Graph credentials to activate this service."
 msgstr ""
 
 #: src/Admin/Manager/Settings/SettingsManager.php:111
@@ -380,6 +376,10 @@ msgstr ""
 
 #: src/Admin/Manager/Dashboard/DashboardManager.php:58
 msgid "Microsoft Graph"
+msgstr ""
+
+#: src/Admin/Manager/Dashboard/DashboardManager.php:161
+msgid "Microsoft Graph connection is active."
 msgstr ""
 
 #: src/Admin/Manager/Settings/SettingsConnection.php:102
