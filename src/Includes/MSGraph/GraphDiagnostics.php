@@ -73,7 +73,43 @@ final class GraphDiagnostics {
 			return '[empty response body]';
 		}
 
+		$decoded = json_decode($clean, true);
+		if (is_array($decoded)) {
+			$sanitized = $this->redact_sensitive_values($decoded);
+			$encoded = wp_json_encode($sanitized);
+			if (is_string($encoded) && $encoded !== '') {
+				return strlen($encoded) > 180 ? substr($encoded, 0, 177) . '...' : $encoded;
+			}
+		}
+
+		$clean = preg_replace(
+			'/(["\']?(?:access_token|refresh_token|client_secret|id_token|token)["\']?\s*[:=]\s*["\'])(.*?)(["\'])/i',
+			'$1[redacted]$3',
+			$clean
+		);
+
 		return strlen($clean) > 180 ? substr($clean, 0, 177) . '...' : $clean;
+	}
+	/**
+	 * Redact sensitive values from a structured response before displaying it.
+	 *
+	 * @param array $values Response values to sanitize.
+	 * @return array Sanitized response values.
+	 */
+	private function redact_sensitive_values(array $values): array {
+		$sensitiveKeys = ['access_token', 'refresh_token', 'client_secret', 'id_token', 'token'];
+		$sanitized = [];
+		foreach ($values as $key => $value) {
+			if (in_array(strtolower((string) $key), $sensitiveKeys, true)) {
+				$sanitized[$key] = '[redacted]';
+			} elseif (is_array($value)) {
+				$sanitized[$key] = $this->redact_sensitive_values($value);
+			} else {
+				$sanitized[$key] = $value;
+			}
+		}
+
+		return $sanitized;
 	}
     /**
      * Get a summary of the proxy context for diagnostics.
@@ -261,12 +297,14 @@ final class GraphDiagnostics {
 		$status = (int) curl_getinfo($handle, CURLINFO_HTTP_CODE);
 		$contentType = (string) curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
 		$sslVersion = defined('CURLINFO_SSL_VERSION') ? (string) curl_getinfo($handle, CURLINFO_SSL_VERSION) : 'unavailable';
+		$sslVersion = $sslVersion !== '' ? $sslVersion : 'unavailable';
 		$headerSize = (int) curl_getinfo($handle, CURLINFO_HEADER_SIZE);
 		curl_close($handle);
 		$body = is_string($response) ? substr($response, $headerSize) : '';
 		$summary = $this->summarize_response_snippet($body);
 		$trace[] = 'HTTP ' . $status . ', Content-Type: ' . ($contentType ?: 'unknown');
-		$trace[] = 'TLS version: ' . $sslVersion;
+		$trace[] = 'TLS policy: TLS 1.2 enforced';
+		$trace[] = 'Negotiated TLS version: ' . $sslVersion . ($sslVersion === 'unavailable' ? ' (unavailable from this cURL build)' : '');
 		$trace[] = 'Response summary: ' . $summary;
 		if ($curlError !== '') {
 			$trace[] = 'cURL error: ' . $curlError;
@@ -281,6 +319,7 @@ final class GraphDiagnostics {
 			'diagnostics' => $this->build_connection_diagnostics(null, [
 				'curl_http_code' => $status,
 				'curl_content_type' => $contentType,
+				'curl_tls_policy' => 'TLS 1.2 enforced',
 				'curl_tls_version' => $sslVersion,
 				'curl_error' => $curlError ?: 'none',
 			]),
