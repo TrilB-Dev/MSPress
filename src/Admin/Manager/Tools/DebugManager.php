@@ -39,9 +39,17 @@ final class DebugManager extends Manager {
             try {
                 $graph = GraphService::get_instance();
                 $diagnostics_service = $graph->get_diagnostics();
-                $diagnostics = $diagnostics_service->test_direct_curl_connection();
+                $curl_diagnostics = $diagnostics_service->test_direct_curl_connection();
+                $http_graph_diagnostics = $diagnostics_service->test_http_graph_connection();
+                $diagnostics = [
+                    'success' => ! empty( $curl_diagnostics['success'] ) && ! empty( $http_graph_diagnostics['success'] ),
+                    'message' => __( 'Microsoft Graph diagnostics completed.', 'mspress' ),
+                    'curl' => $curl_diagnostics,
+                    'http_graph' => $http_graph_diagnostics,
+                ];
                 $diagnostics['diagnostics'] = array_merge(
-                    is_array( $diagnostics['diagnostics'] ?? null ) ? $diagnostics['diagnostics'] : [],
+                    is_array( $curl_diagnostics['diagnostics'] ?? null ) ? $curl_diagnostics['diagnostics'] : [],
+                    is_array( $http_graph_diagnostics['diagnostics'] ?? null ) ? $http_graph_diagnostics['diagnostics'] : [],
                     [
                         'graph_initialization_error' => $graph->get_connection_error() ?: 'none',
                         'token_endpoint_probe' => $diagnostics_service->probe_token_endpoint( (string) $graph->get_tenant_id() ),
@@ -63,22 +71,35 @@ final class DebugManager extends Manager {
             <div class="notice <?php echo ! empty( $diagnostics['success'] ) ? 'notice-success' : 'notice-error'; ?> is-dismissible">
                 <p><strong><?php echo esc_html( $diagnostics['message'] ?? __( 'Diagnostics completed.', 'mspress' ) ); ?></strong></p>
             </div>
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h5"><?php esc_html_e( 'Microsoft Graph diagnostic trace', 'mspress' ); ?></h2>
-                    <?php if ( ! empty( $diagnostics['trace'] ) && is_array( $diagnostics['trace'] ) ) : ?>
-                        <pre class="bg-light border rounded p-3 mb-3" style="white-space: pre-wrap;"><?php echo esc_html( implode( "\n", array_map( 'strval', $diagnostics['trace'] ) ) ); ?></pre>
-                    <?php endif; ?>
-                    <?php if ( ! empty( $diagnostics['diagnostics'] ) && is_array( $diagnostics['diagnostics'] ) ) : ?>
+            <div class="row g-4 mb-4">
+                <?php foreach ( [ 'curl' => __( 'cURL diagnostic', 'mspress' ), 'http_graph' => __( 'HTTP Graph diagnostic', 'mspress' ) ] as $transport => $title ) : ?>
+                    <?php $result = is_array( $diagnostics[ $transport ] ?? null ) ? $diagnostics[ $transport ] : []; ?>
+                    <div class="col-12 col-xl-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h2 class="h5"><?php echo esc_html( $title ); ?></h2>
+                                <p class="mb-3"><strong><?php echo esc_html( $result['message'] ?? __( 'No result available.', 'mspress' ) ); ?></strong></p>
+                                <?php if ( ! empty( $result['trace'] ) && is_array( $result['trace'] ) ) : ?>
+                                    <pre class="bg-light border rounded p-3 mb-0" style="white-space: pre-wrap;"><?php echo esc_html( implode( "\n", array_map( 'strval', $result['trace'] ) ) ); ?></pre>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <?php if ( ! empty( $diagnostics['diagnostics'] ) && is_array( $diagnostics['diagnostics'] ) ) : ?>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h2 class="h5"><?php esc_html_e( 'Shared diagnostic context', 'mspress' ); ?></h2>
                         <dl class="row mb-0">
                             <?php foreach ( $diagnostics['diagnostics'] as $key => $value ) : ?>
                                 <dt class="col-sm-4 text-break"><?php echo esc_html( (string) $key ); ?></dt>
                                 <dd class="col-sm-8 text-break"><?php echo esc_html( is_array( $value ) ? wp_json_encode( $value ) : (string) $value ); ?></dd>
                             <?php endforeach; ?>
                         </dl>
-                    <?php endif; ?>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
         <?php endif; ?>
         <div class="card shadow-sm mb-4">
             <div class="card-body">

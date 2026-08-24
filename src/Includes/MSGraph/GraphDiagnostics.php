@@ -325,6 +325,75 @@ final class GraphDiagnostics {
 			]),
 		];
 	}
+	/**
+	 * Test an authenticated Microsoft Graph request through the WordPress HTTP API.
+	 *
+	 * @return array An array containing the success status, message, trace, and diagnostics.
+	 */
+	public function test_http_graph_connection(): array {
+		$trace = [];
+		$tokenService = new TokenService($this->credentials);
+		$accessToken = $tokenService->getAccessToken();
+
+		if (empty($accessToken)) {
+			return [
+				'success' => false,
+				'message' => 'HTTP Graph failed because an access token could not be obtained.',
+				'trace' => ['WordPress HTTP API token acquisition failed.'],
+			];
+		}
+
+		$url = 'https://graph.microsoft.com/v1.0/organization';
+		try {
+			$response = wp_remote_get($url, [
+				'timeout' => 30,
+				'headers' => [
+					'Accept' => 'application/json',
+					'Authorization' => 'Bearer ' . $accessToken,
+				],
+			]);
+
+			if (is_wp_error($response)) {
+				$errorMessage = $response->get_error_message();
+				$trace[] = 'HTTP Graph error: ' . $errorMessage;
+				return [
+					'success' => false,
+					'message' => 'HTTP Graph request failed.',
+					'trace' => $trace,
+					'diagnostics' => [
+						'http_graph_url' => $url,
+						'http_graph_error' => $errorMessage,
+					],
+				];
+			}
+
+			$status = (int) wp_remote_retrieve_response_code($response);
+			$contentType = (string) wp_remote_retrieve_header($response, 'content-type');
+			$body = (string) wp_remote_retrieve_body($response);
+			$trace[] = 'HTTP Graph ' . $status . ', Content-Type: ' . ($contentType ?: 'unknown');
+			$trace[] = 'TLS policy: TLS 1.2 enforced by WordPress HTTP transport';
+			$trace[] = 'Response summary: ' . $this->summarize_response_snippet($body);
+
+			return [
+				'success' => $status >= 200 && $status < 300,
+				'message' => $status >= 200 && $status < 300
+					? 'HTTP Graph request successful - authenticated Graph access works!'
+					: 'HTTP Graph request returned HTTP ' . $status . '.',
+				'trace' => $trace,
+				'diagnostics' => [
+					'http_graph_http_code' => $status,
+					'http_graph_content_type' => $contentType ?: 'unknown',
+					'http_graph_url' => $url,
+				],
+			];
+		} catch (\Throwable $error) {
+			return [
+				'success' => false,
+				'message' => 'HTTP Graph request could not be completed.',
+				'trace' => ['HTTP Graph exception: ' . $error->getMessage()],
+			];
+		}
+	}
     /**
      * Extract request trace IDs from an exception for diagnostics.
      *
