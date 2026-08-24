@@ -260,11 +260,13 @@ final class GraphDiagnostics {
 		$curlError = curl_error($handle);
 		$status = (int) curl_getinfo($handle, CURLINFO_HTTP_CODE);
 		$contentType = (string) curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
+		$sslVersion = defined('CURLINFO_SSL_VERSION') ? (string) curl_getinfo($handle, CURLINFO_SSL_VERSION) : 'unavailable';
 		$headerSize = (int) curl_getinfo($handle, CURLINFO_HEADER_SIZE);
 		curl_close($handle);
 		$body = is_string($response) ? substr($response, $headerSize) : '';
 		$summary = $this->summarize_response_snippet($body);
 		$trace[] = 'HTTP ' . $status . ', Content-Type: ' . ($contentType ?: 'unknown');
+		$trace[] = 'TLS version: ' . $sslVersion;
 		$trace[] = 'Response summary: ' . $summary;
 		if ($curlError !== '') {
 			$trace[] = 'cURL error: ' . $curlError;
@@ -279,6 +281,7 @@ final class GraphDiagnostics {
 			'diagnostics' => $this->build_connection_diagnostics(null, [
 				'curl_http_code' => $status,
 				'curl_content_type' => $contentType,
+				'curl_tls_version' => $sslVersion,
 				'curl_error' => $curlError ?: 'none',
 			]),
 		];

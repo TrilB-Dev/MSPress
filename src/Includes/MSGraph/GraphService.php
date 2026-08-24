@@ -126,6 +126,10 @@ class GraphService {
         return $this->connectionError;
     }
 
+    public function get_diagnostics(): GraphDiagnostics {
+        return $this->diagnosticsService;
+    }
+
     public function get_oauth_client(): ?GenericProvider {
         return $this->oauthClient;
     }
