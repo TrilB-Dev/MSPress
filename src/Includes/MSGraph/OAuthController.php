@@ -40,7 +40,7 @@ final class OAuthController {
      * and logs the user in or creates a new user if necessary.
      */
     public function handle_callback(): void {
-        if ( ! get_query_var( 'mspress_ms_oauth' ) ) {
+        if ( ! $this->is_callback_request() ) {
             return;
         }
 
@@ -64,7 +64,12 @@ final class OAuthController {
             if ( 'exchange_connect' === ( $oauth_context['purpose'] ?? '' ) ) {
                 \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller: Exchange account data received; dispatching persistence action.' );
                 do_action( 'mspress_exchange_oauth_connected', $user_data );
-                wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=third-party&plugin=exchange&exchange_connected=1' ) );
+                $redirect_url = admin_url( 'admin.php?page=mspress-settings&tab=third-party&plugin=exchange&exchange_connected=1' );
+                \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller: redirecting to Exchange settings.' );
+                if ( ! wp_safe_redirect( $redirect_url ) ) {
+                    \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller: safe redirect rejected; using standard redirect.' );
+                    wp_redirect( $redirect_url );
+                }
                 exit;
             }
             $email = sanitize_email( $user_data['email'] ?? '' );
@@ -105,5 +110,26 @@ final class OAuthController {
             \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller error: ' . $exception->getMessage() );
             wp_die( esc_html( sprintf( __( 'Microsoft sign-in could not be completed: %s', 'mspress' ), $exception->getMessage() ) ) );
         }
+    }
+
+    /**
+     * Determine whether the current request is the Microsoft callback.
+     *
+     * The path fallback keeps the callback usable until rewrite rules are
+     * refreshed after plugin activation or a site permalink change.
+     */
+    private function is_callback_request(): bool {
+        if ( get_query_var( 'mspress_ms_oauth' ) ) {
+            return true;
+        }
+
+        $request_path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH );
+        $callback_path = wp_parse_url( self::callback_url(), PHP_URL_PATH );
+
+        return is_string( $request_path ) && is_string( $callback_path ) && untrailingslashit( $request_path ) === untrailingslashit( $callback_path );
+    }
+
+    private static function callback_url(): string {
+        return home_url( '/ms-oauth-callback' );
     }
 }
