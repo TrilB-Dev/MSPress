@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings for the Demo plugin.
+ * Settings for the Exchange plugin.
  * @package MSPress
  * @subpackage Includes\Plugins\Exchange\Includes
  * @since 1.0.0
@@ -11,7 +11,7 @@ use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 
 final class Settings {
     /**
-     * Returns the settings for the Demo plugin.
+     * Returns the settings for the Exchange plugin.
      *
      * @return array The settings array.
      */
@@ -25,13 +25,13 @@ final class Settings {
     public function get_settings_page(): array {
         return [
             'slug' => 'demo',
-            'label' => __( 'Demo', 'mspress' ),
-            'title' => __( 'Demo plugin settings', 'mspress' ),
+            'label' => __( 'Exchange', 'mspress' ),
+            'title' => __( 'Exchange plugin settings', 'mspress' ),
             'layout' => 'table',
             'fields' => [
                 [
                     'key' => 'demo_setting_1',
-                    'label' => __( 'Demo text setting', 'mspress' ),
+                    'label' => __( 'Exchange text setting', 'mspress' ),
                     'description' => __( 'A short value used to demonstrate plugin setting metadata.', 'mspress' ),
                     'tooltip' => __( 'This tooltip uses the default question icon.', 'mspress' ),
                     'type' => 'text',
@@ -40,7 +40,7 @@ final class Settings {
                 [
                     'key' => 'demo_setting_2',
                     'label' => __( 'Enable demo setting', 'mspress' ),
-                    'description' => __( 'Toggle the second Demo setting on or off.', 'mspress' ),
+                    'description' => __( 'Toggle the second Exchange setting on or off.', 'mspress' ),
                     'tooltip' => __( 'This tooltip uses the info icon and demonstrates a custom icon override.', 'mspress' ),
                     'tooltip_type' => 'info',
                     'tooltip_icon' => 'fa-circle-exclamation',

@@ -14,9 +14,9 @@ use MSPress\Includes\Plugins\PluginInterface;
 use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 use MSPress\Includes\Plugins\ShortcodeProviderInterface;
-use MSPress\Includes\Plugins\Email\Assets\Assets;
-use MSPress\Includes\Plugins\Email\Includes\Includes;
-use MSPress\Includes\Plugins\Email\Includes\Core\I18n;
+use MSPress\Includes\Plugins\Exchange\Assets\Assets;
+use MSPress\Includes\Plugins\Exchange\Includes\Includes;
+use MSPress\Includes\Plugins\Exchange\Includes\Core\I18n;
 
 class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface {
     /**
@@ -33,7 +33,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @return string The plugin name.
      */
     public function get_name(): string {
-        return 'Demo';
+        return 'Exchange';
     }
     /**
      * Get the plugin version.
@@ -65,7 +65,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @return string The plugin description.
      */
     public function get_description(): string {
-        return __( 'A demonstration MSPress extension plugin.', 'mspress' );
+        return __( 'Allows MSPress to use MS365 Exchange to send Emails from your Wordpress website.', 'mspress' );
     }
     /**
      * Get the plugin URI.

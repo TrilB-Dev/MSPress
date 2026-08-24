@@ -1,9 +1,9 @@
-# Translation catalog for Demo.
+# Translation catalog for Exchange.
 # Copyright (C) 2026 MSPress contributors
 # This file is distributed under the same license as the MSPress package.
 msgid ""
 msgstr ""
-"Project-Id-Version: MSPress 1.0.0\n"
+"Project-Id-Version: MSPress Exchange 1.0.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: mspress\n"

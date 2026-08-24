@@ -1,6 +1,6 @@
 <?php
 
-namespace MSPress\Includes\Plugins\Email\Includes;
+namespace MSPress\Includes\Plugins\Exchange\Includes;
 
 use MSPress\Includes\MSGraph\GraphService;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
@@ -8,7 +8,7 @@ use MSPress\Includes\Functions\Helpers\LoggerHelper;
 use MSPress\Includes\Settings\Settings;
 
 /**
- * Microsoft Graph Email integration for WordPress
+ * Microsoft Graph Exchange integration for WordPress
  */
 class GraphMailer {
 
@@ -89,8 +89,8 @@ class GraphMailer {
     public function add_admin_menu() {
         add_submenu_page(
             'mspress-ms365',
-            __('Email Settings', 'mspress'),
-            __('Email Settings', 'mspress'),
+            __('Exchange Settings', 'mspress'),
+            __('Exchange Settings', 'mspress'),
             'manage_options',
             'mspress-email',
             [$this, 'admin_page']
@@ -125,7 +125,7 @@ class GraphMailer {
 
         ?>
         <div class="wrap">
-            <h1><?php _e('Microsoft Graph Email Settings', 'mspress'); ?></h1>
+            <h1><?php _e('Microsoft Graph Exchange Settings', 'mspress'); ?></h1>
 
             <form method="post" action="">
                 <?php wp_nonce_field('mspress_email_settings'); ?>
@@ -143,7 +143,7 @@ class GraphMailer {
                     </tr>
 
                     <tr>
-                        <th scope="row"><?php _e('From Email Address', 'mspress'); ?></th>
+                        <th scope="row"><?php _e('From Exchange Address', 'mspress'); ?></th>
                         <td>
                             <input type="email" name="mail_from" value="<?php echo esc_attr($mail_from); ?>" class="regular-text" />
                             <p class="description"><?php _e('The email address that will appear as the sender. Must be a valid Microsoft 365 email address.', 'mspress'); ?></p>

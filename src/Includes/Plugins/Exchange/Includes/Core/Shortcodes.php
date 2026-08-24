@@ -1,6 +1,6 @@
 <?php
 
-namespace MSPress\Includes\Plugins\Email\Includes\Core;
+namespace MSPress\Includes\Plugins\Exchange\Includes\Core;
 
 use MSPress\Includes\Functions\Helpers\ShortcodeHelper;
 
@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Shortcodes supplied by the Demo MSPress plugin.
+ * Shortcodes supplied by the Exchange MSPress plugin.
  */
 final class Shortcodes {
     /**
@@ -22,9 +22,9 @@ final class Shortcodes {
             ShortcodeHelper::define(
                 'mspress_demo',
                 [ self::class, 'render_demo' ],
-                [ 'message' => __( 'MSPress Demo', 'mspress' ) ],
+                [ 'message' => __( 'MSPress Exchange', 'mspress' ) ],
                 [
-                    'description' => __( 'Render a message from the MSPress Demo plugin.', 'mspress' ),
+                    'description' => __( 'Render a message from the MSPress Exchange plugin.', 'mspress' ),
                     'category' => 'demo',
                 ]
             ),
@@ -32,7 +32,7 @@ final class Shortcodes {
     }
 
     /**
-     * Render the Demo shortcode.
+     * Render the Exchange shortcode.
      *
      * @param array<string, mixed> $atts Shortcode attributes.
      * @param string|null $content Enclosed content.

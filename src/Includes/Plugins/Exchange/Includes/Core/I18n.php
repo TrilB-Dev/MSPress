@@ -1,12 +1,12 @@
 <?php
 /**
- * Language internationalization (i18n) for the Demo plugin.
+ * Language internationalization (i18n) for the Exchange plugin.
  * @package MSPress
  * @subpackage Includes\Plugins\Exchange\Includes
  * @since 1.0.0
  * 
  */
-namespace MSPress\Includes\Plugins\Email\Includes\Core;
+namespace MSPress\Includes\Plugins\Exchange\Includes\Core;
 
 class I18n {
     /**
@@ -16,7 +16,7 @@ class I18n {
         load_plugin_textdomain(
             'mspress',
             false,
-            dirname( plugin_basename( MSPRESS_FILE ) ) . '/src/includes/Plugins/Email/Language/'
+            dirname( plugin_basename( MSPRESS_FILE ) ) . '/src/includes/Plugins/Exchange/Language/'
         );
     }
 }

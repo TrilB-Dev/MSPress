@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-namespace MSPress\Includes\Plugins\Email\Assets;
+namespace MSPress\Includes\Plugins\Exchange\Assets;
 
 use MSPress\Includes\Functions\Helpers\LoaderHelper;
 
@@ -19,7 +19,7 @@ final class Assets {
     }
 
     /**
-     * Constructor for the Demo plugin assets.
+     * Constructor for the Exchange plugin assets.
      */
     public function register(): void {
         $this->loader->register_component( $this, [
@@ -30,7 +30,7 @@ final class Assets {
     public function register_frontend_assets( array $assets ): array {
         $assets['scripts'][] = [
             'handle' => 'mspress-demo',
-            'src' => MSPRESS_URL . 'src/includes/Plugins/Email/Assets/dist/js/demo.js',
+            'src' => MSPRESS_URL . 'src/includes/Plugins/Exchange/Assets/dist/js/demo.js',
             'in_footer' => true,
         ];
 

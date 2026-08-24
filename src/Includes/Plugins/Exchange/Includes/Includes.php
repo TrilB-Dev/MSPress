@@ -7,9 +7,9 @@
  * @since 1.0.0
  */
 
-namespace MSPress\Includes\Plugins\Email\Includes;
-use MSPress\Includes\Plugins\Email\Includes\Core\Shortcodes;
-use MSPress\Includes\Plugins\Email\Includes\Settings\Settings;
+namespace MSPress\Includes\Plugins\Exchange\Includes;
+use MSPress\Includes\Plugins\Exchange\Includes\Core\Shortcodes;
+use MSPress\Includes\Plugins\Exchange\Includes\Settings\Settings;
 
 final class Includes {
     private static ?self $instance = null;
