@@ -15,10 +15,12 @@ final class Includes {
     private static ?self $instance = null;
     private Settings $settings;
     private Shortcodes $shortcodes;
+    private ExchangeMailer $mailer;
 
     private function __construct() {
         $this->settings = new Settings();
         $this->shortcodes = new Shortcodes();
+        $this->mailer = ExchangeMailer::get_instance();
     }
 
     public static function get_instance(): self {
@@ -27,6 +29,24 @@ final class Includes {
 
     public function init(): void {
         $this->settings->register();
+        $this->mailer->register();
+        register_post_type( 'mspress_email_template', [
+            'labels' => [ 'name' => __( 'Email Templates', 'mspress' ), 'singular_name' => __( 'Email Template', 'mspress' ) ],
+            'public' => false,
+            'show_ui' => true,
+            'show_in_menu' => 'mspress-ms365',
+            'supports' => [ 'title', 'editor', 'revisions' ],
+            'show_in_rest' => true,
+            'capability_type' => 'post',
+            'map_meta_cap' => true,
+        ] );
+        register_taxonomy( 'mspress_email_template_type', [ 'mspress_email_template' ], [
+            'labels' => [ 'name' => __( 'Template Types', 'mspress' ), 'singular_name' => __( 'Template Type', 'mspress' ) ],
+            'public' => false,
+            'show_ui' => true,
+            'show_in_rest' => true,
+            'hierarchical' => true,
+        ] );
     }
 
     public function settings(): Settings {

@@ -300,8 +300,11 @@ final class SettingsPlugins {
                 echo FormFieldHelper::select( $name, (array) ( $field['options'] ?? [] ), $value, [ 'id' => $id, 'attributes' => $field['attributes'] ?? [] ] );
             } elseif ( 'multiselect' === $type ) {
                 echo FormFieldHelper::bootstrap_multiselect( $name, [ 'id' => $id, 'data' => (array) ( $field['options'] ?? [] ), 'selected' => (array) $value, 'dropup_auto' => $field['dropup_auto'] ?? true, 'show_tick' => $field['show_tick'] ?? null, 'selection_indicator' => $field['selection_indicator'] ?? null, 'attributes' => $field['attributes'] ?? [] ] );
-            } elseif ( 'text' === $type ) {
-                echo FormFieldHelper::input( $name, is_scalar( $value ) ? (string) $value : '', [ 'id' => $id, 'type' => 'text' ] );
+            } elseif ( in_array( $type, [ 'text', 'email', 'url', 'number' ], true ) ) {
+                echo FormFieldHelper::input( $name, is_scalar( $value ) ? (string) $value : '', [ 'id' => $id, 'type' => $type ] );
+            } elseif ( 'textarea' === $type ) {
+                $textarea_value = is_scalar( $value ) ? (string) $value : wp_json_encode( $value, JSON_PRETTY_PRINT );
+                echo FormFieldHelper::textarea( $name, (string) $textarea_value, [ 'id' => $id, 'rows' => 6 ] );
             }
             echo 'table' === $layout ? '</td></tr>' : '</div></article>';
         }
