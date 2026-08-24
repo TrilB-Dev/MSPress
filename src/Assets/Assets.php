@@ -31,6 +31,7 @@ final class Assets {
      */
     public function register(): void {
         add_filter( 'mspress_base_assets', [ $this, 'default_assets' ], 10, 2 );
+        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin' ] );
     }
     /**
      * Registers assets for a specific page.
