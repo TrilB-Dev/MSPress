@@ -37,6 +37,9 @@ final class DiagnosticGenericProvider extends GenericProvider {
 
         $body = (string) $response->getBody();
         $this->last_response = [
+            'request_method' => $request->getMethod(),
+            'request_url' => (string) $request->getUri(),
+            'request_headers' => $this->safe_request_headers($request->getHeaders()),
             'status' => $response->getStatusCode(),
             'content_type' => implode(';', $response->getHeader('content-type')),
             'headers' => $response->getHeaders(),
@@ -47,5 +50,21 @@ final class DiagnosticGenericProvider extends GenericProvider {
         $this->checkResponse($response, $parsed);
 
         return $parsed;
+    }
+
+    /**
+     * Remove credentials and authorization values from request headers.
+     *
+     * @param array<string, array<int, string>> $headers Request headers.
+     * @return array<string, array<int, string>> Safe request headers.
+     */
+    private function safe_request_headers(array $headers): array {
+        foreach ($headers as $name => $values) {
+            if (in_array(strtolower($name), ['authorization', 'cookie', 'proxy-authorization'], true)) {
+                $headers[$name] = ['[redacted]'];
+            }
+        }
+
+        return $headers;
     }
 }

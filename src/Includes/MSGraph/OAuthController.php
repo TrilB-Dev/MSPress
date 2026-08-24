@@ -145,6 +145,9 @@ final class OAuthController {
         }
 
         if ( is_array( $last_response ) ) {
+            $details['authorization_server_request_method'] = $last_response['request_method'] ?? null;
+            $details['authorization_server_request_url'] = $last_response['request_url'] ?? null;
+            $details['authorization_server_request_headers'] = $last_response['request_headers'] ?? [];
             $details['authorization_server_http_status'] = $last_response['status'] ?? null;
             $details['authorization_server_content_type'] = $last_response['content_type'] ?? null;
             $details['authorization_server_headers'] = $last_response['headers'] ?? [];
