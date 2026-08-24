@@ -5,7 +5,7 @@
  * @subpackage Includes\Plugins\Exchange\Includes
  * @since 1.0.0
  */
-namespace MSPress\Includes\Plugins\Email\Includes\Settings;
+namespace MSPress\Includes\Plugins\Exchange\Includes\Settings;
 use MSPress\Includes\Settings\Settings as BaseSettings;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 
