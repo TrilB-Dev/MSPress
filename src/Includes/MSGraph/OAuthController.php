@@ -6,6 +6,7 @@
  */
 namespace MSPress\Includes\MSGraph;
 
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use MSPress\Includes\MSGraph\GraphService;
 
 final class OAuthController {
@@ -107,9 +108,64 @@ final class OAuthController {
             wp_safe_redirect( admin_url() );
             exit;
         } catch ( \Throwable $exception ) {
-            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller error: ' . $exception->getMessage() );
-            wp_die( esc_html( sprintf( __( 'Microsoft sign-in could not be completed: %s', 'mspress' ), $exception->getMessage() ) ) );
+            $details = $this->format_oauth_error_details( $exception );
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller error: ' . $details );
+            wp_die(
+                '<p>' . esc_html( __( 'Microsoft sign-in could not be completed.', 'mspress' ) ) . '</p>' .
+                '<p>' . esc_html( __( 'Full authorization server response:', 'mspress' ) ) . '</p>' .
+                '<pre style="white-space: pre-wrap; overflow-wrap: anywhere;">' . esc_html( $details ) . '</pre>'
+            );
         }
+    }
+
+    /**
+     * Format the complete OAuth exception details without exposing secrets.
+     *
+     * @param \Throwable $exception The OAuth exception.
+     * @return string Safe diagnostic details.
+     */
+    private function format_oauth_error_details( \Throwable $exception ): string {
+        $details = [
+            'exception_type' => get_class( $exception ),
+            'error_code' => $exception->getCode(),
+            'error_message' => $exception->getMessage(),
+        ];
+
+        if ( $exception instanceof IdentityProviderException ) {
+            $response = $exception->getResponseBody();
+            if ( is_string( $response ) ) {
+                $decoded = json_decode( $response, true );
+                $details['authorization_server_response'] = is_array( $decoded ) ? $decoded : $response;
+            } else {
+                $details['authorization_server_response'] = $response;
+            }
+        }
+
+        $safe_details = $this->redact_oauth_error_values( $details );
+        $formatted = wp_json_encode( $safe_details, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+
+        return is_string( $formatted ) ? $formatted : print_r( $safe_details, true );
+    }
+
+    /**
+     * Redact sensitive values from OAuth error details recursively.
+     *
+     * @param mixed $value Value to sanitize.
+     * @return mixed Sanitized value.
+     */
+    private function redact_oauth_error_values( $value ) {
+        $sensitive_keys = [ 'access_token', 'refresh_token', 'client_secret', 'id_token', 'token', 'code' ];
+        if ( is_array( $value ) ) {
+            $sanitized = [];
+            foreach ( $value as $key => $item ) {
+                $sanitized[ $key ] = in_array( strtolower( (string) $key ), $sensitive_keys, true )
+                    ? '[redacted]'
+                    : $this->redact_oauth_error_values( $item );
+            }
+            return $sanitized;
+        }
+
+        return $value;
     }
 
     /**
