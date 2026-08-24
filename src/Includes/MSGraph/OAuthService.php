@@ -85,7 +85,6 @@ final class OAuthService {
                 'code' => $code,
             ]);
             utilities::write_log('MSGraph OAuth callback: authorization code exchanged.');
-            $this->oauthClient->getResourceOwner($token);
 
             $graph = GraphServiceClient::createWithAuthenticationProvider(
                 new BaseBearerTokenAuthenticationProvider(
