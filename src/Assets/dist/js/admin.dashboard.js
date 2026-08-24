@@ -1,1 +1,0 @@
-document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll("[data-mspress-count]").forEach(e=>{e.classList.add("mspress-count-ready")})});

@@ -62,7 +62,11 @@ final class Admin {
      * @var FunctionsSettings
      */
     private FunctionsSettings $settings_functions;
-
+    /**
+     * Constructor for the Admin class.
+     *
+     * @param Assets $assets The Assets instance for managing plugin assets.
+     */
     public function __construct( Assets $assets ) {
         add_action( 'admin_menu', [ $this, 'register_admin_menu' ] );
         $this->dashboard_manager = new DashboardManager();

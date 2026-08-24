@@ -6,3 +6,7 @@ node_modules/
 Thumbs.db
 composer.lock
 .vscode/*
+!.vscode/
+!.vscode/settings.json
+*/Assets/Images/Logo/*@*
+*/Assets/Images/Logo/*.ai
