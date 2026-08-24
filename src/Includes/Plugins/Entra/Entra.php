@@ -18,7 +18,7 @@ use MSPress\Includes\Plugins\Entra\Assets\Assets;
 use MSPress\Includes\Plugins\Entra\Includes\Includes;
 use MSPress\Includes\Plugins\Entra\Includes\Core\I18n;
 
-class Demo implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface {
+class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface {
     /**
      * Get the plugin slug.
      *
@@ -33,7 +33,7 @@ class Demo implements PluginInterface, SettingsProviderInterface, SettingsPagePr
      * @return string The plugin name.
      */
     public function get_name(): string {
-        return 'Demo';
+        return 'Entra';
     }
     /**
      * Get the plugin version.
