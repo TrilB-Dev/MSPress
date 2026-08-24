@@ -68,19 +68,24 @@ final class Admin {
      * @param Assets $assets The Assets instance for managing plugin assets.
      */
     public function __construct( Assets $assets ) {
-        add_action( 'admin_menu', [ $this, 'register_admin_menu' ] );
         $this->dashboard_manager = new DashboardManager();
         $this->settings_manager = new SettingsManager();
         $this->tools_manager = new ToolsManager();
         $this->plugin_functions = new FunctionsPlugins();
         $this->settings_functions = new FunctionsSettings( $this->plugin_functions );
         $this->loader = new LoaderHelper();
-        add_action( 'admin_init', [ $this->settings_functions, 'register_settings' ] );
         $this->dashboard_manager->register_assets( $assets );
         $this->settings_manager->register_assets( $assets );
         $this->tools_manager->register_assets( $assets );
         $this->loader->register_component( $this, [
+            [ 'type' => 'action', 'hook' => 'admin_menu', 'callback' => 'register_admin_menu' ],
             [ 'type' => 'action', 'hook' => 'wp_ajax_mspress_load_settings_tab', 'callback' => 'load_settings_tab' ],
+        ] );
+        $this->loader->register_component( $assets, [
+            [ 'type' => 'action', 'hook' => 'admin_enqueue_scripts', 'callback' => 'enqueue_admin' ],
+        ] );
+        $this->loader->register_component( $this->settings_functions, [
+            [ 'type' => 'action', 'hook' => 'admin_init', 'callback' => 'register_settings' ],
         ] );
         $this->loader->register_component( $this->plugin_functions, [
             [ 'type' => 'action', 'hook' => 'wp_ajax_mspress_toggle_plugin', 'callback' => 'toggle_plugin' ],
