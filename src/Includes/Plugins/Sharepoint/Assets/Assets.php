@@ -30,7 +30,7 @@ final class Assets {
     public function register_frontend_assets( array $assets ): array {
         $assets['scripts'][] = [
             'handle' => 'mspress-sharepoint',
-            'src' => MSPRESS_URL . 'src/includes/Plugins/Sharepoint/Assets/dist/js/demo.js',
+            'src' => MSPRESS_URL . 'src/includes/Plugins/Sharepoint/Assets/dist/js/sharepoint.js',
             'in_footer' => true,
         ];
 

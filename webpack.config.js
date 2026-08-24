@@ -20,12 +20,16 @@ const entries = {
   'admin.debug': [ './src/Assets/js/admin.page.js', adminStyles ],
 };
 
-const extensionEntries = (name) => ({
-  demo: [
-    `./src/Includes/Plugins/${name}/Assets/js/demo.js`,
-    `./src/Includes/Plugins/${name}/Assets/scss/demo.scss`,
-  ],
-});
+const extensionEntries = (pluginName, directoryName) => {
+  const name = pluginName.toLowerCase();
+
+  return {
+    [name]: [
+      `./src/Includes/Plugins/${directoryName}/Assets/js/${name}.js`,
+      `./src/Includes/Plugins/${directoryName}/Assets/scss/${name}.scss`,
+    ],
+  };
+};
 
 const extensionBuilds = [
   [ 'entra', 'Entra' ],
@@ -83,9 +87,9 @@ module.exports = [
       new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
     ],
   },
-  ...extensionBuilds.map(([, directoryName ]) => ({
+  ...extensionBuilds.map(([pluginName, directoryName ]) => ({
     ...shared,
-    entry: extensionEntries(directoryName),
+    entry: extensionEntries(pluginName, directoryName),
     output: {
       path: path.resolve(__dirname, `src/Includes/Plugins/${directoryName}/Assets/dist`),
       filename: 'js/[name].js',

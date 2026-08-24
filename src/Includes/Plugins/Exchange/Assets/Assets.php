@@ -30,7 +30,7 @@ final class Assets {
     public function register_frontend_assets( array $assets ): array {
         $assets['scripts'][] = [
             'handle' => 'mspress-demo',
-            'src' => MSPRESS_URL . 'src/includes/Plugins/Exchange/Assets/dist/js/demo.js',
+            'src' => MSPRESS_URL . 'src/includes/Plugins/Exchange/Assets/dist/js/exchange.js',
             'in_footer' => true,
         ];
 

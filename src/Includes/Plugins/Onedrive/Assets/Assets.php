@@ -30,7 +30,7 @@ final class Assets {
     public function register_frontend_assets( array $assets ): array {
         $assets['scripts'][] = [
             'handle' => 'mspress-onedrive',
-            'src' => MSPRESS_URL . 'src/includes/Plugins/Onedrive/Assets/dist/js/demo.js',
+            'src' => MSPRESS_URL . 'src/includes/Plugins/Onedrive/Assets/dist/js/onedrive.js',
             'in_footer' => true,
         ];
 
