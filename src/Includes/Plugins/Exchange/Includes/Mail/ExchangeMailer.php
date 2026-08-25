@@ -6,7 +6,7 @@
  * @subpackage Includes\Plugins\Exchange\Includes
  * @since 1.0.0
  */
-namespace MSPress\Includes\Plugins\Exchange\Includes\Core;
+namespace MSPress\Includes\Plugins\Exchange\Includes\Mail;
 
 use MSPress\Includes\Functions\Helpers\LoggerHelper;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
@@ -93,6 +93,11 @@ final class ExchangeMailer {
             }
 
             $graph->users()->byUserId( $sender['address'] )->sendMail()->post( $payload )->wait();
+            \MSPress\Includes\Plugins\Exchange\Includes\Includes::get_instance()->settings()->log_sent( [
+                'to' => is_array( $atts['to'] ?? null ) ? implode( ', ', $atts['to'] ) : (string) ( $atts['to'] ?? '' ),
+                'subject' => $subject,
+                'sender' => $sender['address'],
+            ] );
             return true;
         } catch ( \Throwable $exception ) {
             LoggerHelper::write_log( 'MSPress Exchange mail error: ' . $exception->getMessage() );

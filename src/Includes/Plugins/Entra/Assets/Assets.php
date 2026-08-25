@@ -9,22 +9,20 @@
 
 namespace MSPress\Includes\Plugins\Entra\Assets;
 
-use MSPress\Includes\Functions\Helpers\LoaderHelper;
+use MSPress\Assets\Assets as CoreAssets;
 
 final class Assets {
-    private LoaderHelper $loader;
+    private CoreAssets $assets;
 
-    public function __construct( ?LoaderHelper $loader = null ) {
-        $this->loader = $loader ?? new LoaderHelper();
+    public function __construct( CoreAssets $assets ) {
+        $this->assets = $assets;
     }
 
     /**
      * Constructor for the Demo plugin assets.
      */
     public function register(): void {
-        $this->loader->register_component( $this, [
-            [ 'type' => 'filter', 'hook' => 'mspress_frontend_assets', 'callback' => 'register_frontend_assets' ],
-        ] )->run();
+        $this->assets->register_page( 'mspress', [ 'scripts' => $this->register_frontend_assets( [] )['scripts'] ] );
     }
 
     public function register_frontend_assets( array $assets ): array {

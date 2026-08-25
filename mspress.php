@@ -35,8 +35,6 @@ define( 'MSPRESS_ADMIN_URL', MSPRESS_URL . 'src/Admin' );
 define( 'MSPRESS_LANGUAGES', MSPRESS_DIR . 'src/languages' );
 define( 'MSPRESS_INCLUDES', MSPRESS_DIR . 'src/includes' );
 define( 'MSPRESS_CORE', MSPRESS_INCLUDES . '/Core' );
-define( 'MSPRESS_ELEMENTOR', MSPRESS_INCLUDES . '/Plugins/Elementor' );
-define( 'MSPRESS_ELEMENTOR_URL', MSPRESS_URL . 'src/includes/Plugins/Elementor' );
 define( 'MSPRESS_SETTINGS', MSPRESS_INCLUDES . '/Settings' );
 define( 'MSPRESS_PLUGINS', MSPRESS_INCLUDES . '/Plugins' );
 define( 'MSPRESS_PLUGINS_URL', MSPRESS_URL . 'src/includes/Plugins' );
@@ -61,15 +59,13 @@ function activate_mspress(): void {
     \MSPress\Includes\Core\WP\Activator::activate();
     \MSPress\Includes\Core\Capabilities::register();
 }
-
+register_activation_hook( __FILE__, 'activate_mspress' );
 /**
  * Run Plugin Deactivation tasks.
  */
 function deactivate_mspress(): void {
     \MSPress\Includes\Core\WP\Deactivator::deactivate();
 }
-
-register_activation_hook( __FILE__, 'activate_mspress' );
 register_deactivation_hook( __FILE__, 'deactivate_mspress' );
 /**
  * Begins execution of the plugin.

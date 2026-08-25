@@ -14,6 +14,7 @@ use MSPress\Includes\Plugins\PluginInterface;
 use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 use MSPress\Includes\Plugins\TinyMCE\Assets\Assets;
+use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\TinyMCE\Includes\Includes;
 use MSPress\Includes\Plugins\TinyMCE\Includes\I18n;
 
@@ -128,8 +129,8 @@ final class TinyMCE implements PluginInterface, SettingsProviderInterface, Setti
      *
      * @return void
      */
-    public function register_assets(): void {
-        ( new Assets() )->register();
+    public function register_assets( CoreAssets $assets ): void {
+        ( new Assets( $assets ) )->register();
     }
     /**
      * Load the text domain for the plugin.

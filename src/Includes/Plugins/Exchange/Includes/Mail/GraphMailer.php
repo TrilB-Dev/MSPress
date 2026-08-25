@@ -6,7 +6,7 @@
  * @subpackage Includes\Plugins\Exchange\Includes\Core
  * @since 1.0.0
  */
-namespace MSPress\Includes\Plugins\Exchange\Includes\Core;
+namespace MSPress\Includes\Plugins\Exchange\Includes\Mail;
 
 use MSPress\Includes\MSGraph\GraphService;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;

@@ -9,23 +9,21 @@
 
 namespace MSPress\Includes\Plugins\TinyMCE\Assets;
 
-use MSPress\Includes\Functions\Helpers\LoaderHelper;
+use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\TinyMCE\Includes\Settings\Settings;
 
 final class Assets {
-    private LoaderHelper $loader;
+    private CoreAssets $assets;
 
-    public function __construct( ?LoaderHelper $loader = null ) {
-        $this->loader = $loader ?? new LoaderHelper();
+    public function __construct( CoreAssets $assets ) {
+        $this->assets = $assets;
     }
 
     /**
      * Constructor for the TinyMCE plugin assets.
      */
     public function register(): void {
-        $this->loader->register_component( $this, [
-            [ 'type' => 'filter', 'hook' => 'mspress_admin_assets', 'callback' => 'register_admin_assets', 'accepted_args' => 2 ],
-        ] )->run();
+        $this->assets->register_page( 'mspress-settings', $this->register_admin_assets( [] ) );
     }
 
     public function register_admin_assets( array $assets, string $context = '' ): array {
@@ -55,9 +53,7 @@ final class Assets {
             ],
         ];
 
-        if ( function_exists( 'wp_enqueue_media' ) ) {
-            wp_enqueue_media();
-        }
+        $assets['enqueue_media'] = true;
 
         return $assets;
     }

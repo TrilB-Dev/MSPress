@@ -31,6 +31,7 @@ final class Assets {
      */
     public function register(): void {
         add_filter( 'mspress_base_assets', [ $this, 'default_assets' ], 10, 2 );
+        add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend' ] );
     }
     /**
      * Registers assets for a specific page.
@@ -44,6 +45,7 @@ final class Assets {
         $this->pages[ $page ] = [
             'styles' => array_merge( $this->pages[ $page ]['styles'] ?? [], $assets['styles'] ?? [] ),
             'scripts' => array_merge( $this->pages[ $page ]['scripts'] ?? [], $assets['scripts'] ?? [] ),
+            'enqueue_media' => ( $this->pages[ $page ]['enqueue_media'] ?? false ) || ! empty( $assets['enqueue_media'] ),
         ];
     }
     /**
@@ -115,7 +117,13 @@ final class Assets {
      * @return void
      */
     public function enqueue_frontend(): void {
-        return;
+        $registered = $this->pages['mspress'] ?? [];
+        $base = apply_filters( 'mspress_base_assets', [], 'frontend' );
+        $this->enqueue_registered( 'frontend', [
+            'styles'  => array_merge( $base['styles'] ?? [], $registered['styles'] ?? [] ),
+            'scripts' => array_merge( $base['scripts'] ?? [], $registered['scripts'] ?? [] ),
+            'enqueue_media' => ! empty( $registered['enqueue_media'] ),
+        ] );
     }
     /**
      * Enqueues the admin assets for the plugin.
@@ -134,6 +142,7 @@ final class Assets {
         $this->enqueue_registered( 'admin', [
             'styles'  => array_merge( $base['styles'] ?? [], $registered['styles'] ?? [] ),
             'scripts' => array_merge( $base['scripts'] ?? [], $registered['scripts'] ?? [] ),
+            'enqueue_media' => ! empty( $registered['enqueue_media'] ),
         ] );
 
     }
@@ -155,6 +164,10 @@ final class Assets {
      * @return void
      */
     private function enqueue_bundle( array $assets ): void {
+        if ( ! empty( $assets['enqueue_media'] ) && function_exists( 'wp_enqueue_media' ) ) {
+            wp_enqueue_media();
+        }
+
         if ( isset( $assets['styles'] ) && is_string( $assets['styles'] ) ) {
             $assets['styles'] = [ [ 'handle' => 'mspress-admin-' . $assets['styles'], 'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.' . $assets['styles'] . '.css' ] ];
         }

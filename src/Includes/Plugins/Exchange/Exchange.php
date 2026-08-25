@@ -10,16 +10,19 @@ namespace MSPress\Includes\Plugins\Exchange;
 
 use MSPress\Includes\Plugins\AssetsProviderInterface;
 use MSPress\Includes\Plugins\AdminSidebarProviderInterface;
+use MSPress\Includes\Plugins\CapabilitiesProviderInterface;
 use MSPress\Includes\Plugins\I18nProviderInterface;
 use MSPress\Includes\Plugins\PluginInterface;
 use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 use MSPress\Includes\Plugins\ShortcodeProviderInterface;
 use MSPress\Includes\Plugins\Exchange\Assets\Assets;
+use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Exchange\Includes\Includes;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\I18n;
+use MSPress\Includes\Plugins\Exchange\Includes\Core\Capabilities;
 
-class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, AdminSidebarProviderInterface {
+class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, AdminSidebarProviderInterface, CapabilitiesProviderInterface {
     /**
      * Get the plugin slug.
      *
@@ -108,6 +111,10 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
     public function register_settings(): void {
         Includes::get_instance()->settings()->register();
     }
+
+    public function register_capabilities(): void {
+        Capabilities::register();
+    }
     /**
      * Get the settings page for the plugin.
      *
@@ -134,7 +141,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
                     [
                         'label' => __( 'Overview', 'mspress' ),
                         'page' => 'mspress-settings',
-                        'query' => [ 'tab' => 'third-party', 'plugin' => 'exchange' ],
+                        'query' => [ 'tab' => 'exchange' ],
                         'icon' => 'fa-solid fa-gauge-high',
                         'capability' => 'mspress_settings_plugins_view',
                     ],
@@ -162,7 +169,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
                     [
                         'label' => __( 'Settings', 'mspress' ),
                         'page' => 'mspress-settings',
-                        'query' => [ 'tab' => 'third-party', 'plugin' => 'exchange' ],
+                        'query' => [ 'tab' => 'exchange' ],
                         'icon' => 'fa-solid fa-sliders',
                         'capability' => 'mspress_settings_plugins_view',
                     ],
@@ -192,8 +199,8 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      *
      * @return void
      */
-    public function register_assets(): void {
-        ( new Assets() )->register();
+    public function register_assets( CoreAssets $assets ): void {
+        ( new Assets( $assets ) )->register();
     }
     /**
      * Load the text domain for the plugin.

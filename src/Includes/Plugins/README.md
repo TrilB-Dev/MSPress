@@ -13,10 +13,12 @@ PluginName/
 |  `- Assets.php
 |- Includes/
 |  |- Core/
-|  |  `- Capabilities.php
+|  |  `- Database.php (optional for new tables)
+|  |  `- Capabilities.php (Optional for new Capabilities)
+|  |  `- I18n.php
+|  |  `- Shortcodes.php (Optional for new Shortcodes)
 |  |- Settings/
 |  |  `- Settings.php
-|  |- I18n.php
 |  `- Includes.php
 |- Language/
 |  `- PluginName.pot
@@ -43,6 +45,7 @@ The required plugin contract is:
 Optional capabilities are defined in `PluginsInterface.php`:
 
 - `SettingsProviderInterface::register_settings()`
+- `CapabilitiesProviderInterface::register_capabilities()`
 - `DatabaseProviderInterface::register_tables()`
 - `AssetsProviderInterface::register_assets()`
 - `AdminPageProviderInterface::register_admin_pages()`
@@ -60,11 +63,14 @@ The `mspress_dashboard_statuses` and `mspress_dashboard_cards` filters are
 available for extensions that do not use the discovered plugin interface.
 
 Plugins that define their own permissions should place them in
-`Includes/Core/Capabilities.php`, extend `MSPress\Includes\Core\Capabilities`,
-and register them from their `Includes` initializer. The core registry merges
-these definitions with core capabilities and installs missing capabilities on
-the administrator role.
+`Includes/Core/Capabilities.php` and expose them through
+`CapabilitiesProviderInterface::register_capabilities()`. The provider should
+call the core `Capabilities::extend()` method with its definitions. Provider
+capability classes use composition because the core registry is final. The
+core registry merges these definitions with core capabilities and installs
+missing capabilities on the administrator role.
 
 Plugins that provide translations should implement `I18nProviderInterface`, keep
-their text-domain loader in `Includes/I18n.php`, and store translation templates
-and language files in `Language/`.
+their text-domain loader in `Includes/Core/I18n.php` or `Includes/I18n.php`, and
+store translation templates and language files in `Language/`. The loader must
+use `MSPRESS_FILE` and a path relative to the plugin directory.

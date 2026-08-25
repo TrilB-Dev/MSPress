@@ -61,18 +61,7 @@ final class OAuthController {
             }
 
             $user_data = $oauth_service->handle_oauth_callback( $code, $state );
-            $oauth_context = is_array( $user_data['oauth_context'] ?? null ) ? $user_data['oauth_context'] : [];
-            if ( 'exchange_connect' === ( $oauth_context['purpose'] ?? '' ) ) {
-                \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller: Exchange account data received; dispatching persistence action.' );
-                do_action( 'mspress_exchange_oauth_connected', $user_data );
-                $redirect_url = admin_url( 'admin.php?page=mspress-settings&tab=third-party&plugin=exchange&exchange_connected=1' );
-                \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller: redirecting to Exchange settings.' );
-                if ( ! wp_safe_redirect( $redirect_url ) ) {
-                    \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller: safe redirect rejected; using standard redirect.' );
-                    wp_redirect( $redirect_url );
-                }
-                exit;
-            }
+            do_action( 'mspress_graph_oauth_connected', $user_data );
             $email = sanitize_email( $user_data['email'] ?? '' );
 
             if ( $email === '' || ! is_email( $email ) ) {

@@ -38,7 +38,6 @@ class Auth {
      */
     private function init_hooks() {
         add_action('init', [$this, 'init']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_shortcode('ms365_login', [$this, 'login_shortcode']);
         add_shortcode('ms365_logout', [$this, 'logout_shortcode']);
         add_shortcode('ms365_profile', [$this, 'profile_shortcode']);
@@ -64,39 +63,6 @@ class Auth {
     }
 
     /**
-     * Enqueue frontend scripts and styles
-     */
-    public function enqueue_scripts() {
-        if (!wp_script_is('jquery', 'enqueued')) {
-            wp_enqueue_script('jquery');
-        }
-
-        wp_enqueue_style(
-            'mspress-entra-auth',
-            MSPRESS_URL . 'src/Includes/Plugins/Entra/Assets/dist/css/auth-styles.css',
-            [],
-            MSPRESS_VERSION
-        );
-
-        wp_enqueue_script(
-            'mspress-entra-auth',
-            MSPRESS_URL . 'src/Includes/Plugins/Entra/Assets/dist/js/auth.js',
-            ['jquery'],
-            MSPRESS_VERSION,
-            true
-        );
-
-        wp_localize_script('mspress-entra-auth', 'mspress_entra_auth', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('mspress_entra_auth_nonce'),
-            'login_url' => $this->get_login_url(),
-            'logout_url' => wp_logout_url(home_url()),
-            'is_logged_in' => is_user_logged_in(),
-            'current_user' => is_user_logged_in() ? $this->get_current_user_data() : null,
-        ]);
-    }
-
-    /**
      * Handle OAuth callback
      */
     public function handle_oauth_callback() {
@@ -106,7 +72,6 @@ class Auth {
 
         // The canonical OAuth controller owns state, PKCE validation, and sign-in.
         // This legacy handler must not consume the callback before it can process
-        // Exchange account connections.
         if (get_query_var('mspress_ms_oauth')) {
             return;
         }

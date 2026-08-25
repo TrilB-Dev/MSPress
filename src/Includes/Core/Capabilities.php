@@ -12,8 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Capabilities {
+	private static array $extensions = [];
+
 	public static function definitions(): array {
-		return [
+		$core = [
 			'mspress_admin_view' => __( 'View MSPress', 'mspress' ),
 			'mspress_settings_plugins_view' => __( 'View Plugin Settings', 'mspress' ),
 			'mspress_settings_plugins_int_view' => __( 'View Internal Plugin Settings', 'mspress' ),
@@ -24,6 +26,27 @@ final class Capabilities {
 			'mspress_settings_connection_edit' => __( 'Edit Microsoft Graph Connection Settings', 'mspress' ),
 			'mspress_tools_debug' => __( 'Use MSPress Debug Tools', 'mspress' ),
 		];
+
+		return array_merge( $core, self::$extensions );
+	}
+
+	/**
+	 * Add provider capabilities to the shared registry.
+	 *
+	 * @param array<string, mixed> $capabilities Capability definitions.
+	 * @return void
+	 */
+	public static function extend( array $capabilities ): void {
+		self::$extensions = array_merge( self::$extensions, $capabilities );
+
+		$role = get_role( 'administrator' );
+		if ( ! $role ) {
+			return;
+		}
+
+		foreach ( array_keys( $capabilities ) as $capability ) {
+			$role->add_cap( $capability );
+		}
 	}
 
 	/**

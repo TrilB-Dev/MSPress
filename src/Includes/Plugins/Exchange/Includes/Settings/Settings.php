@@ -11,6 +11,7 @@ use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
 use MSPress\Includes\MSGraph\GraphService;
+use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
 
 final class Settings {
     /**
@@ -24,8 +25,21 @@ final class Settings {
             'default_sender' => '',
             'sender_profiles' => [],
             'account' => [],
+            'sent_logs' => [],
         ] );
-        add_action( 'admin_post_mspress_exchange_import_mailboxes', [ $this, 'import_mailboxes' ] );
+        add_action( 'wp_ajax_mspress_exchange_directory_mailboxes', [ $this, 'ajax_directory_mailboxes' ] );
+        add_action( 'admin_post_mspress_exchange_save_settings', [ $this, 'save_admin_settings' ] );
+    }
+
+    public function save_admin_settings(): void {
+        if ( ! current_user_can( 'mspress_settings_plugins_int_edit' ) ) {
+            wp_die( esc_html__( 'You are not authorized to save Exchange settings.', 'mspress' ), '', [ 'response' => 403 ] );
+        }
+        check_admin_referer( 'mspress_exchange_save_settings' );
+        $input = isset( $_POST['settings'] ) && is_array( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : [];
+        $this->sanitize( $input );
+        wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=exchange&updated=1' ) );
+        exit;
     }
 
     public function get_settings_page(): array {
@@ -34,38 +48,18 @@ final class Settings {
             'label' => __( 'Exchange', 'mspress' ),
             'title' => __( 'Microsoft Exchange email settings', 'mspress' ),
             'layout' => 'table',
+            'capability' => 'mspress_settings_plugins_int_view',
             'fields' => [
                 [
                     'key' => 'account',
                     'label' => __( 'Microsoft 365 account', 'mspress' ),
-                    'description' => __( 'Connect the mailbox account used to discover your primary address and directory mailboxes. Microsoft Graph administrator consent for User.ReadBasic.All may be required.', 'mspress' ),
+                    'description' => __( 'Connect the Microsoft 365 account used by Exchange.', 'mspress' ),
                     'type' => 'custom',
                     'default' => [],
                     'render' => [ $this, 'render_account' ],
                 ],
-                [
-                    'key' => 'enabled',
-                    'label' => __( 'Send WordPress email through Microsoft Graph', 'mspress' ),
-                    'description' => __( 'When enabled, WordPress email is sent with the configured Microsoft 365 application instead of the local mail transport.', 'mspress' ),
-                    'type' => 'checkbox',
-                    'default' => false,
-                ],
-                [
-                    'key' => 'default_sender',
-                    'label' => __( 'Default sender email', 'mspress' ),
-                    'description' => __( 'Use an enabled sender profile, including a shared mailbox such as info@example.com.', 'mspress' ),
-                    'type' => 'email',
-                    'default' => '',
-                ],
-                [
-                    'key' => 'sender_profiles',
-                    'label' => __( 'Sender profiles', 'mspress' ),
-                    'description' => __( 'Enable the accounts WordPress may use as senders. Imported shared mailboxes will appear here when available.', 'mspress' ),
-                    'type' => 'custom',
-                    'default' => [],
-                    'render' => [ $this, 'render_profiles' ],
-                ],
             ],
+            'render_page' => [ new ExchangeSettings(), 'render' ],
         ];
     }
 
@@ -78,6 +72,9 @@ final class Settings {
         $profiles = [];
         foreach ( (array) $raw_profiles as $profile ) {
             if ( ! is_array( $profile ) ) {
+                continue;
+            }
+            if ( ! empty( $profile['remove'] ) ) {
                 continue;
             }
             $email = sanitize_email( $profile['email'] ?? '' );
@@ -101,9 +98,22 @@ final class Settings {
             'default_sender' => sanitize_email( $input['default_sender'] ?? '' ),
             'sender_profiles' => $profiles,
             'account' => is_array( $existing['account'] ?? null ) ? $existing['account'] : [],
+            'sent_logs' => is_array( $existing['sent_logs'] ?? null ) ? $existing['sent_logs'] : [],
         ];
         BaseSettings::set_group( 'exchange', $input );
         return $input;
+    }
+
+    public function log_sent( array $entry ): void {
+        $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
+        $logs = is_array( $settings['sent_logs'] ?? null ) ? $settings['sent_logs'] : [];
+        array_unshift( $logs, [
+            'date' => current_time( 'mysql' ),
+            'to' => SanitizationHelper::text( $entry['to'] ?? '' ),
+            'subject' => SanitizationHelper::text( $entry['subject'] ?? '' ),
+            'sender' => sanitize_email( $entry['sender'] ?? '' ),
+        ] );
+        BaseSettings::set_group( 'exchange', array_merge( $settings, [ 'sent_logs' => array_slice( $logs, 0, 200 ) ] ) );
     }
 
     public function render_account( $value ): void {
@@ -117,7 +127,6 @@ final class Settings {
         echo '<span class="badge ' . ( $connected ? 'text-bg-success' : 'text-bg-secondary' ) . '">' . esc_html( $connected ? __( 'Connected', 'mspress' ) : __( 'Not connected', 'mspress' ) ) . '</span>';
         if ( $connected ) {
             echo '<strong>' . esc_html( $email ) . '</strong>';
-            echo '<a class="button" href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=mspress_exchange_import_mailboxes' ), 'mspress_exchange_import' ) ) . '">' . esc_html__( 'Import directory mailboxes', 'mspress' ) . '</a>';
         }
         if ( $connect_url ) {
             echo '<a class="button button-primary" href="' . esc_url( $connect_url ) . '">' . esc_html( $connected ? __( 'Reconnect account', 'mspress' ) : __( 'Connect Microsoft 365 account', 'mspress' ) ) . '</a>';
@@ -156,17 +165,30 @@ final class Settings {
         \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence completed: saved=' . ( $saved ? 'yes' : 'no' ) );
     }
 
-    public function import_mailboxes(): void {
-        if ( ! current_user_can( 'mspress_settings_plugins_int_edit' ) ) {
-            wp_die( esc_html__( 'You are not authorized to import Exchange mailboxes.', 'mspress' ), '', [ 'response' => 403 ] );
+    public function handle_oauth_connected( array $account ): void {
+        $context = is_array( $account['oauth_context'] ?? null ) ? $account['oauth_context'] : [];
+        if ( 'exchange_connect' !== ( $context['purpose'] ?? '' ) ) {
+            return;
         }
-        check_admin_referer( 'mspress_exchange_import' );
+        $this->save_connected_account( $account );
+        $redirect_url = admin_url( 'admin.php?page=mspress-settings&tab=exchange&exchange_connected=1' );
+        if ( ! wp_safe_redirect( $redirect_url ) ) {
+            wp_redirect( $redirect_url );
+        }
+        exit;
+    }
+
+    public function ajax_directory_mailboxes(): void {
+        if ( ! current_user_can( 'mspress_settings_plugins_int_edit' ) ) {
+            wp_send_json_error( [ 'message' => __( 'You are not authorized to import Exchange mailboxes.', 'mspress' ) ], 403 );
+        }
+        check_ajax_referer( 'mspress_exchange_settings', 'nonce' );
 
         $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
         $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
         $token = GraphService::get_instance()->getAccessToken();
         if ( ! is_string( $token ) || '' === $token ) {
-            wp_die( esc_html__( 'Microsoft Graph application access is unavailable. Check the MSPress Microsoft 365 connection settings and application consent.', 'mspress' ) );
+            wp_send_json_error( [ 'message' => __( 'Microsoft Graph application access is unavailable. Check the MSPress Microsoft 365 connection settings and application consent.', 'mspress' ) ], 400 );
         }
 
         $mailbox_url = 'https://graph.microsoft.com/v1.0/users?' . http_build_query( [
@@ -177,39 +199,24 @@ final class Settings {
         if ( ! $response['success'] ) {
             $error = (string) ( $response['error'] ?? 'Unknown Microsoft Graph error.' );
             \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange mailbox import failed: ' . $error );
-            wp_die( esc_html( sprintf( __( 'Microsoft Graph could not return directory mailboxes: %s', 'mspress' ), $error ) ) );
+            wp_send_json_error( [ 'message' => sprintf( __( 'Microsoft Graph could not return directory mailboxes: %s', 'mspress' ), $error ) ], 502 );
         }
 
         $body = json_decode( (string) $response['body'], true );
-        $profiles = is_array( $settings['sender_profiles'] ?? null ) ? $settings['sender_profiles'] : [];
-        $known = [];
-        foreach ( $profiles as $profile ) {
-            $known_email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
-            if ( is_string( $known_email ) ) {
-                $known[ strtolower( $known_email ) ] = true;
-            }
-        }
+        $mailboxes = [];
+        $known = array_map( 'strtolower', array_filter( array_map( 'sanitize_email', (array) ( $_POST['known'] ?? [] ) ), 'is_email' ) );
         foreach ( (array) ( $body['value'] ?? [] ) as $mailbox ) {
             $address = sanitize_email( $mailbox['mail'] ?? $mailbox['userPrincipalName'] ?? '' );
-            if ( ! is_email( $address ) || isset( $known[ strtolower( $address ) ] ) ) {
+            if ( ! is_email( $address ) || in_array( strtolower( $address ), $known, true ) ) {
                 continue;
             }
-            $encrypted = EncryptionHelper::encrypt( $address );
-            if ( null === $encrypted ) {
-                continue;
-            }
-            $profiles[] = [
-                'address' => $encrypted,
+            $mailboxes[] = [
+                'email' => $address,
                 'name' => SanitizationHelper::text( $mailbox['displayName'] ?? '' ),
                 'type' => 'user',
-                'enabled' => false,
             ];
-            $known[ strtolower( $address ) ] = true;
         }
-        $settings['sender_profiles'] = $profiles;
-        BaseSettings::set_group( 'exchange', $settings );
-        wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=third-party&plugin=exchange&exchange_imported=1' ) );
-        exit;
+        wp_send_json_success( [ 'mailboxes' => $mailboxes ] );
     }
 
     /**

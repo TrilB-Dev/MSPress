@@ -10,8 +10,8 @@
 namespace MSPress\Includes\Plugins\Exchange\Includes;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\Shortcodes;
 use MSPress\Includes\Plugins\Exchange\Includes\Settings\Settings;
-use MSPress\Includes\Plugins\Exchange\Includes\Core\EmailTemplates;
-use MSPress\Includes\Plugins\Exchange\Includes\Core\ExchangeMailer;
+use MSPress\Includes\Plugins\Exchange\Includes\Mail\EmailTemplates;
+use MSPress\Includes\Plugins\Exchange\Includes\Mail\ExchangeMailer;
 
 final class Includes {
     private static ?self $instance = null;
@@ -33,7 +33,7 @@ final class Includes {
 
     public function init(): void {
         $this->settings->register();
-        add_action( 'mspress_exchange_oauth_connected', [ $this->settings, 'save_connected_account' ] );
+        add_action( 'mspress_graph_oauth_connected', [ $this->settings, 'handle_oauth_connected' ] );
         $this->mailer->register();
         register_post_type( 'mspress_email_template', [
             'labels' => [ 'name' => __( 'Email Templates', 'mspress' ), 'singular_name' => __( 'Email Template', 'mspress' ) ],

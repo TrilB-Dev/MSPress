@@ -93,6 +93,9 @@ final class SettingsManager extends Manager {
             'third-party' => [ 'mspress_settings_plugins_view', 'mspress_settings_plugins_ext_view' ],
             'connection' => [ 'mspress_settings_connection_view' ],
         ];
+        if ( $this->plugins_page->has_settings_page( $tab ) && ! $this->plugins_page->can_view_settings_page( $tab ) ) {
+            wp_die( esc_html__( 'You are not authorized to view these MSPress settings.', 'mspress' ) );
+        }
         $can_view = true;
         foreach ( $view_capabilities[ $tab ] ?? [] as $capability ) {
             if ( ! current_user_can( $capability ) ) {

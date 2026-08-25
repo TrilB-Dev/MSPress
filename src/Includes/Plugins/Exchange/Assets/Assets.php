@@ -9,22 +9,30 @@
 
 namespace MSPress\Includes\Plugins\Exchange\Assets;
 
-use MSPress\Includes\Functions\Helpers\LoaderHelper;
+use MSPress\Assets\Assets as CoreAssets;
 
 final class Assets {
-    private LoaderHelper $loader;
+    private CoreAssets $assets;
 
-    public function __construct( ?LoaderHelper $loader = null ) {
-        $this->loader = $loader ?? new LoaderHelper();
+    public function __construct( CoreAssets $assets ) {
+        $this->assets = $assets;
     }
 
     /**
      * Constructor for the Exchange plugin assets.
      */
     public function register(): void {
-        $this->loader->register_component( $this, [
-            [ 'type' => 'filter', 'hook' => 'mspress_frontend_assets', 'callback' => 'register_frontend_assets' ],
-        ] )->run();
+        $this->assets->register_page( 'mspress', [ 'scripts' => $this->register_frontend_assets( [] )['scripts'] ] );
+        $this->assets->register_page( 'mspress-settings', $this->register_admin_assets( [] ) );
+    }
+
+    public function register_admin_assets( array $assets ): array {
+        if ( 'mspress-settings' !== sanitize_key( $_GET['page'] ?? '' ) || 'exchange' !== sanitize_key( $_GET['tab'] ?? '' ) ) {
+            return $assets;
+        }
+        $assets['styles'][] = [ 'handle' => 'mspress-admin-exchange', 'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.css' ];
+        $assets['scripts'][] = [ 'handle' => 'mspress-admin-exchange', 'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/js/exchange.js', 'deps' => [ 'mspress-bootstrap', 'mspress-bootstrap-select' ], 'in_footer' => true ];
+        return $assets;
     }
 
     public function register_frontend_assets( array $assets ): array {

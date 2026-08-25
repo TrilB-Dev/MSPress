@@ -96,7 +96,7 @@ final class Core {
 			new \MSPress\Admin\Admin( $this->assets );
 		}
 
-		$this->plugins->init();
+        $this->plugins->init( $this->assets );
 		$this->oauth->register();
 	}
     /**

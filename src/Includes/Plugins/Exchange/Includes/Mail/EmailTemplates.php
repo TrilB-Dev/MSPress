@@ -6,7 +6,7 @@
  * @subpackage Includes\Plugins\Exchange\Includes
  * @since 1.0.0
  */
-namespace MSPress\Includes\Plugins\Exchange\Includes\Core;
+namespace MSPress\Includes\Plugins\Exchange\Includes\Mail;
 
 use MSPress\Includes\Plugins\TinyMCE\Includes\Functions\Helpers\TinyMCEHelper;
 

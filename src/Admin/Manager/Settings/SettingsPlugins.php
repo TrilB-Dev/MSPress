@@ -25,6 +25,22 @@ final class SettingsPlugins {
     public function has_settings_page( string $slug ): bool {
         return isset( $this->settings_pages()[ $slug ] );
     }
+
+    /**
+     * Check whether the current user can view a provider settings page.
+     *
+     * @param string $slug The settings page slug.
+     * @return bool True when the page is public to the current settings user.
+     */
+    public function can_view_settings_page( string $slug ): bool {
+        $page = $this->settings_pages()[ $slug ] ?? null;
+        if ( ! is_array( $page ) ) {
+            return false;
+        }
+
+        $capability = SanitizationHelper::key( $page['capability'] ?? 'mspress_settings_plugins_int_view' );
+        return '' !== $capability && current_user_can( $capability );
+    }
     /**
      * Render the settings page for the given slug.
      *
@@ -76,6 +92,12 @@ final class SettingsPlugins {
     public function render( string $tab ): void {
         if ( 'third-party' === $tab ) {
             $this->render_third_party_plugins();
+            return;
+        }
+
+        $page = $this->settings_pages()[ $tab ] ?? null;
+        if ( is_array( $page ) && ! empty( $page['render_page'] ) && is_callable( $page['render_page'] ) ) {
+            call_user_func( $page['render_page'] );
             return;
         }
 

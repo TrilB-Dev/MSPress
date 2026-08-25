@@ -16,7 +16,7 @@ class I18n {
         load_plugin_textdomain(
             'mspress',
             false,
-            dirname( plugin_basename( MSPRESS_FILE ) ) . '/src/includes/Plugins/Onedrive/Language/'
+            dirname( plugin_basename( MSPRESS_FILE ) ) . '/src/Includes/Plugins/Onedrive/Language/'
         );
     }
 }

@@ -16,7 +16,7 @@ class I18n {
         load_plugin_textdomain(
             'mspress',
             false,
-            dirname( plugin_basename( WIKIPRESS_FILE ) ) . '/src/includes/Plugins/TinyMCE/Language/'
+            dirname( plugin_basename( MSPRESS_FILE ) ) . '/src/Includes/Plugins/TinyMCE/Language/'
         );
     }
 }

@@ -14,6 +14,7 @@ namespace MSPress\Includes\Plugins;
 use MSPress\Includes\Functions\Helpers\LoggerHelper;
 use MSPress\Includes\Settings\Settings;
 use MSPress\Includes\Plugins\PluginInterface;
+use MSPress\Assets\Assets;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -55,6 +56,12 @@ class Plugins {
      */
     private bool $initialized = false;
     /**
+     * The central MSPress asset manager.
+     *
+     * @var Assets|null
+     */
+    private ?Assets $assets = null;
+    /**
      * Get the singleton instance of the Plugins class.
      *
      * @return Plugins The singleton instance.
@@ -69,12 +76,13 @@ class Plugins {
     /**
      * Initializes the plugin system by discovering and loading plugin files.
      */
-    public function init(): void {
+    public function init( Assets $assets ): void {
         if ( $this->initialized ) {
             return;
         }
 
         $this->initialized = true;
+        $this->assets = $assets;
         $this->auto_activate = $this->should_auto_activate();
 
         $directory = $this->resolve_plugin_directory();
@@ -171,7 +179,7 @@ class Plugins {
         $this->registered_plugins[ $slug ] = $plugin;
 
         if ( $this->initialized && $this->auto_activate && $this->is_plugin_enabled( $slug ) ) {
-            $this->initialize_plugin( $plugin );
+            $this->initialize_plugin( $plugin, $this->assets );
         }
     }
     /**
@@ -341,7 +349,7 @@ class Plugins {
      *
      * @param PluginInterface $plugin The plugin instance to initialize.
      */
-    private function initialize_plugin( PluginInterface $plugin ): void {
+    private function initialize_plugin( PluginInterface $plugin, Assets $assets ): void {
         if ( ! $plugin->is_active() || ! $this->is_plugin_enabled( $plugin->get_slug() ) ) {
             return;
         }
@@ -349,6 +357,10 @@ class Plugins {
         try {
             if ( $plugin instanceof SettingsProviderInterface ) {
                 $plugin->register_settings();
+            }
+
+            if ( $plugin instanceof CapabilitiesProviderInterface ) {
+                $plugin->register_capabilities();
             }
 
             if ( $plugin instanceof DatabaseProviderInterface ) {
@@ -360,7 +372,7 @@ class Plugins {
             }
 
             if ( $plugin instanceof AssetsProviderInterface ) {
-                $plugin->register_assets();
+                $plugin->register_assets( $assets );
             }
 
             if ( $plugin instanceof AdminPageProviderInterface ) {

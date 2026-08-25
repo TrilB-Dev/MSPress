@@ -9,16 +9,19 @@
 namespace MSPress\Includes\Plugins\Entra;
 
 use MSPress\Includes\Plugins\AssetsProviderInterface;
+use MSPress\Includes\Plugins\CapabilitiesProviderInterface;
 use MSPress\Includes\Plugins\I18nProviderInterface;
 use MSPress\Includes\Plugins\PluginInterface;
 use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 use MSPress\Includes\Plugins\ShortcodeProviderInterface;
 use MSPress\Includes\Plugins\Entra\Assets\Assets;
+use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Entra\Includes\Includes;
 use MSPress\Includes\Plugins\Entra\Includes\Core\I18n;
+use MSPress\Includes\Plugins\Entra\Includes\Core\Capabilities;
 
-class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface {
+class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, CapabilitiesProviderInterface {
     /**
      * Get the plugin slug.
      *
@@ -107,6 +110,10 @@ class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageP
     public function register_settings(): void {
         Includes::get_instance()->settings()->register();
     }
+
+    public function register_capabilities(): void {
+        Capabilities::register();
+    }
     /**
      * Get the settings page for the plugin.
      *
@@ -137,8 +144,8 @@ class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageP
      *
      * @return void
      */
-    public function register_assets(): void {
-        ( new Assets() )->register();
+    public function register_assets( CoreAssets $assets ): void {
+        ( new Assets( $assets ) )->register();
     }
     /**
      * Load the text domain for the plugin.
