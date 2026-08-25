@@ -10,7 +10,8 @@
 namespace MSPress\Includes\Plugins\Exchange\Includes;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\Shortcodes;
 use MSPress\Includes\Plugins\Exchange\Includes\Settings\Settings;
-use MSPress\Includes\Plugins\Exchange\Includes\EmailTemplates;
+use MSPress\Includes\Plugins\Exchange\Includes\Core\EmailTemplates;
+use MSPress\Includes\Plugins\Exchange\Includes\Core\ExchangeMailer;
 
 final class Includes {
     private static ?self $instance = null;

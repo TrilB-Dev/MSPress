@@ -169,19 +169,18 @@ final class Settings {
             wp_die( esc_html__( 'Connect a Microsoft 365 account before importing mailboxes.', 'mspress' ) );
         }
 
-        $response = wp_remote_get( add_query_arg( [
+        $mailbox_url = add_query_arg( [
             '$select' => 'displayName,mail,userPrincipalName',
             '$filter' => 'mail ne null',
             '$top' => 999,
-        ], 'https://graph.microsoft.com/v1.0/users' ), [
-            'headers' => [ 'Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json' ],
-            'timeout' => 30,
-        ] );
-        if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+        ], 'https://graph.microsoft.com/v1.0/users' );
+        $response = $this->fetch_directory_mailboxes( $mailbox_url, $token );
+        if ( ! $response['success'] ) {
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange mailbox import failed: ' . (string) ( $response['error'] ?? 'unknown error' ) );
             wp_die( esc_html__( 'Microsoft Graph could not return directory mailboxes. Verify delegated directory consent and try again.', 'mspress' ) );
         }
 
-        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+        $body = json_decode( (string) $response['body'], true );
         $profiles = is_array( $settings['sender_profiles'] ?? null ) ? $settings['sender_profiles'] : [];
         $known = [];
         foreach ( $profiles as $profile ) {
@@ -211,6 +210,56 @@ final class Settings {
         BaseSettings::set_group( 'exchange', $settings );
         wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=third-party&plugin=exchange&exchange_imported=1' ) );
         exit;
+    }
+
+    /**
+     * Retrieve directory users with the delegated access token using cURL.
+     *
+     * @return array{success: bool, body?: string, error?: string}
+     */
+    private function fetch_directory_mailboxes( string $url, string $token ): array {
+        if ( ! function_exists( 'curl_init' ) ) {
+            return [ 'success' => false, 'error' => 'PHP cURL extension is unavailable.' ];
+        }
+
+        $handle = curl_init( $url );
+        if ( false === $handle ) {
+            return [ 'success' => false, 'error' => 'Could not initialize cURL.' ];
+        }
+
+        curl_setopt_array( $handle, [
+            CURLOPT_HTTPGET => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+            CURLOPT_USERAGENT => 'MSPress/1.0',
+            CURLOPT_HTTPHEADER => [
+                'Authorization: Bearer ' . $token,
+                'Accept: application/json',
+            ],
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2 | CURL_SSLVERSION_MAX_TLSv1_2,
+        ] );
+
+        $body = curl_exec( $handle );
+        $curl_error = curl_error( $handle );
+        $status_code = (int) curl_getinfo( $handle, CURLINFO_HTTP_CODE );
+        curl_close( $handle );
+
+        if ( false === $body ) {
+            return [ 'success' => false, 'error' => 'cURL error: ' . $curl_error ];
+        }
+
+        if ( 200 !== $status_code ) {
+            $error_body = json_decode( (string) $body, true );
+            $graph_error = is_array( $error_body['error'] ?? null ) ? $error_body['error'] : [];
+            $error_code = (string) ( $graph_error['code'] ?? 'HTTP ' . $status_code );
+            $error_message = (string) ( $graph_error['message'] ?? 'No Graph error details returned.' );
+            return [ 'success' => false, 'error' => $error_code . ': ' . $error_message ];
+        }
+
+        return [ 'success' => true, 'body' => (string) $body ];
     }
 
     public function render_profiles( $value ): void {

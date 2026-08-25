@@ -1,6 +1,12 @@
 <?php
-
-namespace MSPress\Includes\Plugins\Exchange\Includes;
+/**
+ * Provides the core functionality for the Exchange plugin.
+ *
+ * @package MSPress
+ * @subpackage Includes\Plugins\Exchange\Includes
+ * @since 1.0.0
+ */
+namespace MSPress\Includes\Plugins\Exchange\Includes\Core;
 
 use MSPress\Includes\Functions\Helpers\LoggerHelper;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
@@ -9,19 +15,39 @@ use MSPress\Includes\Settings\Settings;
 
 /** Sends WordPress email through Microsoft Graph when Exchange is enabled. */
 final class ExchangeMailer {
+    /**
+     * Singleton instance of the ExchangeMailer class.
+     *
+     * @var self|null
+     */
     private static ?self $instance = null;
-
+    /**
+     * Get the singleton instance of the ExchangeMailer class.
+     *
+     * @return self The singleton instance.
+     */
     public static function get_instance(): self {
         return self::$instance ??= new self();
     }
-
+    /**
+     * Private constructor to prevent direct instantiation.
+     */
     private function __construct() {}
-
+    /**
+     * Register the mailer functionality.
+     *
+     * @return void
+     */
     public function register(): void {
         add_filter( 'pre_wp_mail', [ $this, 'send' ], 10, 2 );
     }
-
-    /** @param null|bool|\WP_Error $pre @param array<string,mixed> $atts */
+    /**
+     * Send an email through Microsoft Graph if Exchange is enabled.
+     *
+     * @param mixed $pre The pre-send value.
+     * @param array $atts The email attributes.
+     * @return mixed True on success, WP_Error on failure, or the original pre-send value if not handled.
+     */
     public function send( $pre, array $atts ) {
         $options = Settings::get_group( 'exchange', [] );
         if ( empty( $options['enabled'] ) ) {
@@ -73,7 +99,12 @@ final class ExchangeMailer {
             return new \WP_Error( 'mspress_exchange_send', __( 'Microsoft Graph could not send the email.', 'mspress' ) );
         }
     }
-
+    /**
+     * Get the sender profile from the plugin settings.
+     *
+     * @param array $options The plugin settings.
+     * @return array|null The sender profile or null if not found.
+     */
     private function sender( array $options ): ?array {
         $default = sanitize_email( $options['default_sender'] ?? '' );
         foreach ( (array) ( $options['sender_profiles'] ?? [] ) as $profile ) {
@@ -90,7 +121,12 @@ final class ExchangeMailer {
         }
         return null;
     }
-
+    /**
+     * Get the recipients from the email attributes.
+     *
+     * @param mixed $value The recipients value.
+     * @return array The recipients array.
+     */
     private function recipients( $value ): array {
         $values = is_array( $value ) ? $value : preg_split( '/[,;]+/', (string) $value );
         $result = [];
@@ -103,7 +139,12 @@ final class ExchangeMailer {
         }
         return $result;
     }
-
+    /**
+     * Get the headers from the email attributes.
+     *
+     * @param mixed $value The headers value.
+     * @return array The headers array.
+     */
     private function headers( $value ): array {
         $headers = is_array( $value ) ? $value : preg_split( '/\r?\n/', (string) $value );
         $result = [];
@@ -121,7 +162,12 @@ final class ExchangeMailer {
         }
         return $result;
     }
-
+    /**
+     * Determine the content type of the email based on headers.
+     *
+     * @param mixed $headers The email headers.
+     * @return string The content type ('HTML' or 'Text').
+     */
     private function content_type( $headers ): string {
         foreach ( (array) $headers as $header ) {
             if ( is_string( $header ) && stripos( $header, 'content-type:' ) === 0 ) {
@@ -130,7 +176,13 @@ final class ExchangeMailer {
         }
         return 'Text';
     }
-
+    /**
+     * Get the email template based on headers and attributes.
+     *
+     * @param mixed $headers The email headers.
+     * @param array $atts The email attributes.
+     * @return array The template data (subject, content, content_type).
+     */
     private function template( $headers, array $atts ): array {
         $slug = '';
         foreach ( (array) $headers as $header ) {
@@ -164,7 +216,12 @@ final class ExchangeMailer {
             'content_type' => $is_html ? 'HTML' : 'Text',
         ];
     }
-
+    /**
+     * Get the attachments from the email attributes.
+     *
+     * @param mixed $value The attachments value.
+     * @return array The attachments array.
+     */
     private function attachments( $value ): array {
         $result = [];
         foreach ( (array) $value as $attachment ) {

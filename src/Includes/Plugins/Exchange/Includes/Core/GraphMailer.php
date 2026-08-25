@@ -1,6 +1,12 @@
 <?php
-
-namespace MSPress\Includes\Plugins\Exchange\Includes;
+/**
+ * Microsoft Graph Mailer for WordPress
+ *
+ * @package MSPress
+ * @subpackage Includes\Plugins\Exchange\Includes\Core
+ * @since 1.0.0
+ */
+namespace MSPress\Includes\Plugins\Exchange\Includes\Core;
 
 use MSPress\Includes\MSGraph\GraphService;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
@@ -11,14 +17,18 @@ use MSPress\Includes\Settings\Settings;
  * Microsoft Graph Exchange integration for WordPress
  */
 class GraphMailer {
-
     /**
      * Singleton instance
+     * 
+     * @var GraphMailer|null
+     * @since 1.0.0
      */
     private static $instance = null;
-
     /**
      * Get singleton instance
+     * 
+     * @return GraphMailer The singleton instance.
+     * @since 1.0.0
      */
     public static function get_instance() {
         if (self::$instance === null) {
@@ -26,9 +36,10 @@ class GraphMailer {
         }
         return self::$instance;
     }
-
     /**
      * Private constructor
+     * 
+     * @since 1.0.0
      */
     private function __construct() {
         add_action('phpmailer_init', [$this, 'configure_phpmailer']);
@@ -37,9 +48,12 @@ class GraphMailer {
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('wp_ajax_mspress_test_email', [$this, 'ajax_test_email']);
     }
-
     /**
      * Configure PHPMailer to use Microsoft Graph
+     * 
+     * @param \PHPMailer\PHPMailer\PHPMailer $phpmailer The PHPMailer instance.
+     * @return void
+     * @since 1.0.0
      */
     public function configure_phpmailer($phpmailer) {
         // Check if MS365 email is enabled
@@ -56,9 +70,12 @@ class GraphMailer {
         // Replace PHPMailer with our Graph Mailer
         $phpmailer = new GraphMailerTransport($phpmailer);
     }
-
     /**
      * Set mail from address
+     * 
+     * @param string $from The default from address.
+     * @return string The from address to use.
+     * @since 1.0.0
      */
     public function set_mail_from($from) {
         $options = Settings::get_group('ms365', []);
@@ -71,9 +88,12 @@ class GraphMailer {
         }
         return $from;
     }
-
     /**
      * Set mail from name
+     * 
+     * @param string $from_name The default from name.
+     * @return string The from name to use.
+     * @since 1.0.0
      */
     public function set_mail_from_name($from_name) {
         $options = Settings::get_group('ms365', []);
@@ -82,9 +102,11 @@ class GraphMailer {
         }
         return $from_name;
     }
-
     /**
      * Add admin menu for email settings
+     * 
+     * @since 1.0.0
+     * @return void
      */
     public function add_admin_menu() {
         add_submenu_page(
@@ -96,9 +118,11 @@ class GraphMailer {
             [$this, 'admin_page']
         );
     }
-
     /**
      * Admin page for email settings
+     * 
+     * @since 1.0.0
+     * @return void
      */
     public function admin_page() {
         if (!current_user_can('manage_options')) {
@@ -201,9 +225,11 @@ class GraphMailer {
         </script>
         <?php
     }
-
     /**
      * AJAX handler for testing email
+     * 
+     * @since 1.0.0
+     * @return void
      */
     public function ajax_test_email() {
         check_ajax_referer('mspress_test_email', 'nonce');
@@ -224,9 +250,13 @@ class GraphMailer {
             wp_send_json_error(['message' => __('Failed to send test email. Check the error logs.', 'mspress')]);
         }
     }
-
     /**
      * Encrypt a value
+     * 
+     * @param string $value The value to encrypt.
+     * @return string The encrypted value.
+     * @throws \Exception If encryption fails.
+     * @since 1.0.0
      */
     private function encrypt_value($value) {
         if (empty($value)) {
@@ -243,6 +273,11 @@ class GraphMailer {
 
     /**
      * Decrypt a value
+     *
+     * @param string $value The value to decrypt.
+     * @return string The decrypted value.
+     * @throws \Exception If decryption fails.
+     * @since 1.0.0
      */
     private function decrypt_value($value) {
         if (empty($value)) {
@@ -260,12 +295,33 @@ class GraphMailer {
 
 /**
  * PHPMailer transport class for Microsoft Graph
+ * 
+ * @package MSPress
+ * @subpackage Includes\Plugins\Exchange\Includes\Core
+ * @since 1.0.0
  */
 class GraphMailerTransport {
-
+    /**
+     * PHPMailer instance
+     * 
+     * @var \PHPMailer\PHPMailer\PHPMailer
+     * @since 1.0.0
+     */
     private $phpmailer;
+    /**
+     * Microsoft Graph service instance
+     * 
+     * @var GraphService
+     * @since 1.0.0
+     */
     private $msgraph;
-
+    /**
+     * Constructor
+     *
+     * @param \PHPMailer\PHPMailer\PHPMailer $phpmailer The PHPMailer instance.
+     * @throws \Exception If Microsoft Graph service is not available.
+     * @since 1.0.0
+     */
     public function __construct($phpmailer) {
         $this->phpmailer = $phpmailer;
         $this->msgraph = GraphService::get_instance();
@@ -277,9 +333,12 @@ class GraphMailerTransport {
         $this->phpmailer->mail = null;
         $this->phpmailer->smtp = null;
     }
-
     /**
      * Send email via Microsoft Graph
+     * 
+     * @return bool True on success, false on failure.
+     * @throws \Exception If sending fails.
+     * @since 1.0.0
      */
     public function send() {
         if (!$this->msgraph) {
@@ -337,9 +396,13 @@ class GraphMailerTransport {
             throw new \Exception(__('Failed to send email via Microsoft Graph: ', 'mspress') . $e->getMessage());
         }
     }
-
     /**
      * Format email recipients for Graph API
+     * 
+     * @param array $recipients Array of recipients from PHPMailer.
+     * @return array Formatted recipients for Graph API.
+     * @throws \Exception If recipient formatting fails.
+     * @since 1.0.0
      */
     private function format_recipients($recipients) {
         $formatted = [];
