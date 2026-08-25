@@ -1,8 +1,9 @@
 <?php
 /**
- * Own the plugin database schema.
+ * MSPress - Core Database Management
  *
  * @package MSPress
+ * @since 1.0.0
  */
 namespace MSPress\Includes\Core\WP;
 
@@ -10,23 +11,21 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * Own the plugin database schema.
- *
- * Extensions can add their own activation callbacks through Activator rather
- * than modifying the core schema registry.
- */
 final class Database {
-    /** @var array<string, callable> */
+    /**
+     * Array of registered plugin tables and their schema callbacks.
+     *
+     * @var array<string, callable>
+     */
     private static array $registered_tables = [];
 
     /**
-    * Register a plugin table schema for the next installation/update.
+     * Register a plugin table schema for the next installation/update.
      *
      * The callback receives the fully prefixed table name and charset/collation
      * string, and must return a dbDelta-compatible CREATE TABLE statement.
      *
-    * @param string   $table    Unprefixed plugin table suffix.
+     * @param string   $table    Unprefixed plugin table suffix.
      * @param callable $schema   Schema callback.
      * @return bool Whether the table was registered.
      */
@@ -41,7 +40,7 @@ final class Database {
     }
 
     /**
-    * Install or update all plugin-owned tables.
+     * Install or update all plugin-owned tables.
      *
      * @return void
      */
@@ -62,7 +61,7 @@ final class Database {
     }
 
     /**
-    * Return a prefixed plugin table name.
+     * Return a prefixed plugin table name.
      *
      * @param string $table Unprefixed table suffix.
      * @return string Full table name.

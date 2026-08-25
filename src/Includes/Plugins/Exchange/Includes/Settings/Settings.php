@@ -164,9 +164,9 @@ final class Settings {
 
         $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
         $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
-        $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
+        $token = GraphService::get_instance()->getAccessToken();
         if ( ! is_string( $token ) || '' === $token ) {
-            wp_die( esc_html__( 'Connect a Microsoft 365 account before importing mailboxes.', 'mspress' ) );
+            wp_die( esc_html__( 'Microsoft Graph application access is unavailable. Check the MSPress Microsoft 365 connection settings and application consent.', 'mspress' ) );
         }
 
         $mailbox_url = add_query_arg( [
@@ -176,8 +176,9 @@ final class Settings {
         ], 'https://graph.microsoft.com/v1.0/users' );
         $response = $this->fetch_directory_mailboxes( $mailbox_url, $token );
         if ( ! $response['success'] ) {
-            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange mailbox import failed: ' . (string) ( $response['error'] ?? 'unknown error' ) );
-            wp_die( esc_html__( 'Microsoft Graph could not return directory mailboxes. Verify delegated directory consent and try again.', 'mspress' ) );
+            $error = (string) ( $response['error'] ?? 'Unknown Microsoft Graph error.' );
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange mailbox import failed: ' . $error );
+            wp_die( esc_html( sprintf( __( 'Microsoft Graph could not return directory mailboxes: %s', 'mspress' ), $error ) ) );
         }
 
         $body = json_decode( (string) $response['body'], true );
@@ -213,7 +214,7 @@ final class Settings {
     }
 
     /**
-     * Retrieve directory users with the delegated access token using cURL.
+        * Retrieve directory users with the application access token using cURL.
      *
      * @return array{success: bool, body?: string, error?: string}
      */
@@ -248,7 +249,7 @@ final class Settings {
         curl_close( $handle );
 
         if ( false === $body ) {
-            return [ 'success' => false, 'error' => 'cURL error: ' . $curl_error ];
+            return [ 'success' => false, 'error' => 'cURL error: ' . ( $curl_error ?: 'Unknown transport error.' ) ];
         }
 
         if ( 200 !== $status_code ) {
