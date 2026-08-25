@@ -169,11 +169,11 @@ final class Settings {
             wp_die( esc_html__( 'Microsoft Graph application access is unavailable. Check the MSPress Microsoft 365 connection settings and application consent.', 'mspress' ) );
         }
 
-        $mailbox_url = add_query_arg( [
+        $mailbox_url = 'https://graph.microsoft.com/v1.0/users?' . http_build_query( [
             '$select' => 'displayName,mail,userPrincipalName',
             '$filter' => 'mail ne null',
             '$top' => 999,
-        ], 'https://graph.microsoft.com/v1.0/users' );
+        ], '', '&', PHP_QUERY_RFC3986 );
         $response = $this->fetch_directory_mailboxes( $mailbox_url, $token );
         if ( ! $response['success'] ) {
             $error = (string) ( $response['error'] ?? 'Unknown Microsoft Graph error.' );
@@ -221,6 +221,11 @@ final class Settings {
     private function fetch_directory_mailboxes( string $url, string $token ): array {
         if ( ! function_exists( 'curl_init' ) ) {
             return [ 'success' => false, 'error' => 'PHP cURL extension is unavailable.' ];
+        }
+
+        $parts = wp_parse_url( $url );
+        if ( ! is_array( $parts ) || 'https' !== strtolower( (string) ( $parts['scheme'] ?? '' ) ) || 'graph.microsoft.com' !== strtolower( (string) ( $parts['host'] ?? '' ) ) ) {
+            return [ 'success' => false, 'error' => 'Invalid Microsoft Graph directory URL.' ];
         }
 
         $handle = curl_init( $url );
