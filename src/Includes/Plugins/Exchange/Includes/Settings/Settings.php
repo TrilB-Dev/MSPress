@@ -171,7 +171,6 @@ final class Settings {
 
         $mailbox_url = 'https://graph.microsoft.com/v1.0/users?' . http_build_query( [
             '$select' => 'displayName,mail,userPrincipalName',
-            '$filter' => 'mail ne null',
             '$top' => 999,
         ], '', '&', PHP_QUERY_RFC3986 );
         $response = $this->fetch_directory_mailboxes( $mailbox_url, $token );
