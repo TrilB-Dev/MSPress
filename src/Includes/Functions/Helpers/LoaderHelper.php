@@ -7,6 +7,8 @@
  */
 namespace MSPress\Includes\Functions\Helpers;
 
+use MSPress\Includes\Core\WP\WPLoader;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -14,31 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Extend the core loader with component hook registration helpers.
  */
-class LoaderHelper {
-    /** @var array<int, array{type: string, hook: string, component: object|string|array, callback: string, priority: int, accepted_args: int}> */
-    private array $hooks = [];
-
-    public function add_action( string $hook, object|string|array $component, string $callback, int $priority = 10, int $accepted_args = 1 ): self {
-        $this->hooks[] = compact( 'hook', 'component', 'callback', 'priority', 'accepted_args' ) + [ 'type' => 'action' ];
-        return $this;
-    }
-
-    public function add_filter( string $hook, object|string|array $component, string $callback, int $priority = 10, int $accepted_args = 1 ): self {
-        $this->hooks[] = compact( 'hook', 'component', 'callback', 'priority', 'accepted_args' ) + [ 'type' => 'filter' ];
-        return $this;
-    }
-
-    public function run(): void {
-        foreach ( $this->hooks as $definition ) {
-            $callback = [ $definition['component'], $definition['callback'] ];
-            if ( 'filter' === $definition['type'] ) {
-                add_filter( $definition['hook'], $callback, $definition['priority'], $definition['accepted_args'] );
-                continue;
-            }
-            add_action( $definition['hook'], $callback, $definition['priority'], $definition['accepted_args'] );
-        }
-    }
-
+class LoaderHelper extends WPLoader {
     /**
      * Register multiple hooks belonging to one component.
      *

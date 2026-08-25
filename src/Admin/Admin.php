@@ -13,8 +13,8 @@ use MSPress\Includes\Settings\Settings;
 use MSPress\Includes\Functions\Admin\FunctionsPlugins;
 use MSPress\Includes\Functions\Admin\FunctionsSettings;
 use MSPress\Includes\Functions\Helpers\AjaxHelper;
+use MSPress\Includes\Functions\Helpers\LoaderHelper;
 use MSPress\Includes\Core\Capabilities;
-use MSPress\Includes\Core\WP\WPLoader;
 use MSPress\Includes\Core\WP\WPQuery;
 use MSPress\Includes\Functions\Admin\FunctionsSidebar;
 use MSPress\Assets\Assets;
@@ -46,11 +46,11 @@ final class Admin {
      */
     private ToolsManager $tools_manager;
     /**
-    * WPLoader instance for managing action and filter hooks.
+    * LoaderHelper instance for managing action and filter hooks.
      *
-    * @var WPLoader
+    * @var LoaderHelper
      */
-    private WPLoader $loader;
+    private LoaderHelper $loader;
     /**
      * FunctionsPlugins instance for managing plugin-related admin functions.
      *
@@ -74,7 +74,7 @@ final class Admin {
         $this->tools_manager = new ToolsManager();
         $this->plugin_functions = new FunctionsPlugins();
         $this->settings_functions = new FunctionsSettings( $this->plugin_functions );
-        $this->loader = new WPLoader();
+        $this->loader = new LoaderHelper();
         $this->dashboard_manager->register_assets( $assets );
         $this->settings_manager->register_assets( $assets );
         $this->tools_manager->register_assets( $assets );
