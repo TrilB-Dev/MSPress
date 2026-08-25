@@ -39,7 +39,7 @@ use MSPress\Includes\Settings\Settings;
 class GraphService {
     private static ?GraphService $instance = null;
     /**
-     * @var \Microsoft\Graph\GraphServiceClient|null $graph For app-level API calls
+        * @var \Microsoft\Graph\GraphServiceClient|null $graph For app-level API calls
      * @method mixed sites()
      * @method mixed me()
      * @method mixed organization()

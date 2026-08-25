@@ -21,7 +21,7 @@ final class GraphClientService {
     public function __construct(private TokenService $tokenService) {
     }
     /**
-     * Create a GraphServiceClient instance with authentication.
+    * Create a GraphServiceClient instance with authentication.
      *
      * @return GraphServiceClient|null The GraphServiceClient instance or null if token retrieval fails.
      */
