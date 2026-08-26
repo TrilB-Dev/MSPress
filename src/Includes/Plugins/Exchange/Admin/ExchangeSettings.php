@@ -79,7 +79,7 @@ final class ExchangeSettings {
                 </div>
             </form>
 
-            <div class="modal fade" id="mspress-exchange-import" tabindex="-1" aria-labelledby="mspress-exchange-import-title" aria-hidden="true">
+            <div class="modal fade modal-dialog-centered" id="mspress-exchange-import" tabindex="-1" aria-labelledby="mspress-exchange-import-title" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
