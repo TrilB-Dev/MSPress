@@ -93,10 +93,15 @@ final class ExchangeMailer {
             }
 
             $graph->users()->byUserId( $sender['address'] )->sendMail()->post( $payload )->wait();
-            \MSPress\Includes\Plugins\Exchange\Includes\Includes::get_instance()->settings()->log_sent( [
+            $settings = \MSPress\Includes\Plugins\Exchange\Includes\Includes::get_instance()->settings();
+            $settings->log_sent( [
                 'to' => is_array( $atts['to'] ?? null ) ? implode( ', ', $atts['to'] ) : (string) ( $atts['to'] ?? '' ),
                 'subject' => $subject,
                 'sender' => $sender['address'],
+            ] );
+            $settings->log_wordpress_mail( [
+                'to' => $atts['to'] ?? '',
+                'subject' => $subject,
             ] );
             return true;
         } catch ( \Throwable $exception ) {

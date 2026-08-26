@@ -29,9 +29,11 @@ final class Settings {
             'sender_profiles' => [],
             'account' => [],
             'sent_logs' => [],
+            'wordpress_mail_logs' => [],
         ] );
         add_action( 'wp_ajax_mspress_exchange_directory_mailboxes', [ $this, 'ajax_directory_mailboxes' ] );
         add_action( 'admin_post_mspress_exchange_save_settings', [ $this, 'save_admin_settings' ] );
+        add_action( 'wp_mail_succeeded', [ $this, 'log_wordpress_mail' ] );
     }
 
     public function save_admin_settings(): void {
@@ -127,6 +129,7 @@ final class Settings {
             'sender_profiles' => $profiles,
             'account' => is_array( $existing['account'] ?? null ) ? $existing['account'] : [],
             'sent_logs' => is_array( $existing['sent_logs'] ?? null ) ? $existing['sent_logs'] : [],
+            'wordpress_mail_logs' => is_array( $existing['wordpress_mail_logs'] ?? null ) ? $existing['wordpress_mail_logs'] : [],
         ];
         BaseSettings::set_group( 'exchange', $input );
         return $input;
@@ -142,6 +145,18 @@ final class Settings {
             'sender' => sanitize_email( $entry['sender'] ?? '' ),
         ] );
         BaseSettings::set_group( 'exchange', array_merge( $settings, [ 'sent_logs' => array_slice( $logs, 0, 200 ) ] ) );
+    }
+
+    public function log_wordpress_mail( array $mail_data ): void {
+        $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
+        $logs = is_array( $settings['wordpress_mail_logs'] ?? null ) ? $settings['wordpress_mail_logs'] : [];
+        $recipients = is_array( $mail_data['to'] ?? null ) ? implode( ', ', $mail_data['to'] ) : (string) ( $mail_data['to'] ?? '' );
+        array_unshift( $logs, [
+            'date' => current_time( 'mysql' ),
+            'to' => SanitizationHelper::text( $recipients ),
+            'subject' => SanitizationHelper::text( $mail_data['subject'] ?? '' ),
+        ] );
+        BaseSettings::set_group( 'exchange', array_merge( $settings, [ 'wordpress_mail_logs' => array_slice( $logs, 0, 200 ) ] ) );
     }
 
     public function render_account( $value ): void {
