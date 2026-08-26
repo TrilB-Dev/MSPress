@@ -10,6 +10,9 @@ use MSPress\Includes\Settings\Settings as BaseSettings;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
+use MSPress\Includes\Functions\Helpers\AjaxHelper;
+use MSPress\Includes\Functions\Helpers\PermissionHelper;
+use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\MSGraph\GraphService;
 use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
 
@@ -32,11 +35,13 @@ final class Settings {
     }
 
     public function save_admin_settings(): void {
-        if ( ! current_user_can( 'mspress_settings_plugins_int_edit' ) ) {
+        if ( ! PermissionHelper::can( 'mspress_settings_plugins_int_edit' ) ) {
             wp_die( esc_html__( 'You are not authorized to save Exchange settings.', 'mspress' ), '', [ 'response' => 403 ] );
         }
-        check_admin_referer( 'mspress_exchange_save_settings' );
-        $input = isset( $_POST['settings'] ) && is_array( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : [];
+        if ( ! AjaxHelper::has_valid_nonce( 'mspress_exchange_save_settings', '_wpnonce' ) ) {
+            wp_die( esc_html__( 'The security check failed. Please try again.', 'mspress' ), '', [ 'response' => 403 ] );
+        }
+        $input = RequestHelper::array( $_POST, 'settings' );
         $this->sanitize( $input );
         wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=exchange-settings&updated=1' ) );
         exit;
@@ -100,7 +105,7 @@ final class Settings {
             if ( ! empty( $profile['remove'] ) ) {
                 continue;
             }
-            $email = sanitize_email( $profile['email'] ?? '' );
+            $email = sanitize_email( SanitizationHelper::text( $profile['email'] ?? '' ) );
             if ( ! is_email( $email ) ) {
                 continue;
             }
@@ -111,14 +116,14 @@ final class Settings {
             $profiles[] = [
                 'address' => $encrypted_email,
                 'name' => SanitizationHelper::text( $profile['name'] ?? '' ),
-                'type' => in_array( $profile['type'] ?? '', [ 'user', 'shared' ], true ) ? $profile['type'] : 'user',
+                'type' => SanitizationHelper::one_of( SanitizationHelper::key( $profile['type'] ?? '' ), [ 'user', 'shared' ], 'user' ),
                 'enabled' => ! empty( $profile['enabled'] ),
             ];
         }
         $existing = BaseSettings::get_group( 'exchange', [] ) ?? [];
         $input = [
             'enabled' => ! empty( $input['enabled'] ),
-            'default_sender' => sanitize_email( $input['default_sender'] ?? '' ),
+            'default_sender' => sanitize_email( SanitizationHelper::text( $input['default_sender'] ?? '' ) ),
             'sender_profiles' => $profiles,
             'account' => is_array( $existing['account'] ?? null ) ? $existing['account'] : [],
             'sent_logs' => is_array( $existing['sent_logs'] ?? null ) ? $existing['sent_logs'] : [],
@@ -159,7 +164,7 @@ final class Settings {
     }
 
     public function save_connected_account( array $account ): void {
-        $email = sanitize_email( $account['email'] ?? '' );
+        $email = sanitize_email( SanitizationHelper::text( $account['email'] ?? '' ) );
         \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence started: email_present=' . ( $email !== '' ? 'yes' : 'no' ) . ', access_token_present=' . ( ! empty( $account['access_token'] ) ? 'yes' : 'no' ) . ', refresh_token_present=' . ( ! empty( $account['refresh_token'] ) ? 'yes' : 'no' ) );
         if ( ! is_email( $email ) ) {
             \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence skipped: invalid account email.' );
@@ -177,12 +182,12 @@ final class Settings {
         $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
         $settings['account'] = [
             'email' => $encrypted_email,
-            'user_id' => sanitize_text_field( $account['id'] ?? '' ),
-            'display_name' => sanitize_text_field( $account['display_name'] ?? '' ),
-            'tenant_id' => sanitize_text_field( $account['tenant_id'] ?? '' ),
+            'user_id' => SanitizationHelper::text( $account['id'] ?? '' ),
+            'display_name' => SanitizationHelper::text( $account['display_name'] ?? '' ),
+            'tenant_id' => SanitizationHelper::text( $account['tenant_id'] ?? '' ),
             'access_token' => $encrypted_access,
             'refresh_token' => $encrypted_refresh,
-            'expires' => absint( $account['expires'] ?? 0 ),
+            'expires' => SanitizationHelper::integer( $account['expires'] ?? 0 ),
         ];
         $saved = BaseSettings::set_group( 'exchange', $settings );
         \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence completed: saved=' . ( $saved ? 'yes' : 'no' ) );
@@ -202,10 +207,9 @@ final class Settings {
     }
 
     public function ajax_directory_mailboxes(): void {
-        if ( ! current_user_can( 'mspress_settings_plugins_int_edit' ) ) {
-            wp_send_json_error( [ 'message' => __( 'You are not authorized to import Exchange mailboxes.', 'mspress' ) ], 403 );
+        if ( ! AjaxHelper::authorized( 'mspress_exchange_settings', 'mspress_settings_plugins_int_edit' ) ) {
+            AjaxHelper::unauthorized( __( 'You are not authorized to import Exchange mailboxes.', 'mspress' ) );
         }
-        check_ajax_referer( 'mspress_exchange_settings', 'nonce' );
 
         $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
         $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
@@ -227,9 +231,9 @@ final class Settings {
 
         $body = json_decode( (string) $response['body'], true );
         $mailboxes = [];
-        $known = array_map( 'strtolower', array_filter( array_map( 'sanitize_email', (array) ( $_POST['known'] ?? [] ) ), 'is_email' ) );
+        $known = array_map( 'strtolower', array_filter( array_map( 'sanitize_email', RequestHelper::array( $_POST, 'known' ) ), 'is_email' ) );
         foreach ( (array) ( $body['value'] ?? [] ) as $mailbox ) {
-            $address = sanitize_email( $mailbox['mail'] ?? $mailbox['userPrincipalName'] ?? '' );
+            $address = sanitize_email( SanitizationHelper::text( $mailbox['mail'] ?? $mailbox['userPrincipalName'] ?? '' ) );
             if ( ! is_email( $address ) || in_array( strtolower( $address ), $known, true ) ) {
                 continue;
             }

@@ -9,6 +9,7 @@
 namespace MSPress\Includes\Plugins\Exchange\Admin;
 
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
+use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\Settings\Settings as BaseSettings;
 
 final class ExchangeSettings {
@@ -18,7 +19,7 @@ final class ExchangeSettings {
         $nonce = wp_create_nonce( 'mspress_exchange_settings' );
         ?>
         <div class="mspress-exchange-settings card shadow-sm" data-exchange-settings data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( $nonce ); ?>">
-            <?php if ( isset( $_GET['updated'] ) ) : ?>
+            <?php if ( '' !== RequestHelper::get_text( 'updated' ) ) : ?>
                 <div class="notice notice-success is-dismissible">
                     <p><?php esc_html_e( 'Exchange settings saved.', 'mspress' ); ?></p>
                 </div>
