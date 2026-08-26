@@ -8,7 +8,9 @@
  */
 namespace MSPress\Includes\Plugins\Exchange\Admin;
 
+use MSPress\Includes\Functions\Helpers\AlertHelper;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
+use MSPress\Includes\Functions\Helpers\FormFieldHelper;
 use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\Settings\Settings as BaseSettings;
 
@@ -20,9 +22,7 @@ final class ExchangeSettings {
         ?>
         <div class="mspress-exchange-settings card shadow-sm" data-exchange-settings data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( $nonce ); ?>">
             <?php if ( '' !== RequestHelper::get_text( 'updated' ) ) : ?>
-                <div class="notice notice-success is-dismissible">
-                    <p><?php esc_html_e( 'Exchange settings saved.', 'mspress' ); ?></p>
-                </div>
+                <?php AlertHelper::admin_success( __( 'Exchange settings saved.', 'mspress' ) ); ?>
             <?php endif; ?>
 
             <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="mspress-exchange-form">
@@ -34,36 +34,26 @@ final class ExchangeSettings {
                     <input type="hidden" name="action" value="mspress_exchange_save_settings">
                     <?php wp_nonce_field( 'mspress_exchange_save_settings' ); ?>
 
-                    <p>
-                        <label>
-                            <input type="checkbox" name="settings[enabled]" value="1" <?php checked( ! empty( $settings['enabled'] ), true ); ?>>
-                            <?php esc_html_e( 'Send WordPress email through Microsoft Graph', 'mspress' ); ?>
-                        </label>
-                    </p>
+                    <p><?php echo FormFieldHelper::checkbox( 'settings[enabled]', '1', __( 'Send WordPress email through Microsoft Graph', 'mspress' ), [ 'checked' => ! empty( $settings['enabled'] ) ] ); ?></p>
 
                     <p class="mb-0">
-                        <label for="mspress-exchange-default-sender"><?php esc_html_e( 'Default sender', 'mspress' ); ?></label>
-                        <select class="selectpicker form-select" data-live-search="true" id="mspress-exchange-default-sender" name="settings[default_sender]">
-                            <option value=""><?php esc_html_e( 'Choose a sender', 'mspress' ); ?></option>
-                            <?php foreach ( $profiles as $profile ) : ?>
-                                <?php
-                                $email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
-                                if ( ! is_email( $email ) || empty( $profile['enabled'] ) ) {
-                                    continue;
-                                }
-                                ?>
-                                <option value="<?php echo esc_attr( $email ); ?>" <?php selected( $settings['default_sender'] ?? '', $email ); ?>>
-                                    <?php echo esc_html( ( $profile['name'] ?: $email ) . ' <' . $email . '>' ); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <?php
+                        $sender_options = [ '' => __( 'Choose a sender', 'mspress' ) ];
+                        foreach ( $profiles as $profile ) {
+                            $email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
+                            if ( ! is_email( $email ) || empty( $profile['enabled'] ) ) {
+                                continue;
+                            }
+                            $sender_options[ $email ] = ( $profile['name'] ?: $email ) . ' <' . $email . '>';
+                        }
+                        echo FormFieldHelper::label( 'mspress-exchange-default-sender', __( 'Default sender', 'mspress' ) );
+                        echo FormFieldHelper::bootstrap_select( 'settings[default_sender]', [ 'data' => $sender_options, 'selected' => $settings['default_sender'] ?? '', 'id' => 'mspress-exchange-default-sender', 'live_search' => true, 'class' => 'form-select' ] );
+                        ?>
                     </p>
 
                     <h3 class="h6 mt-4"><?php esc_html_e( 'Sender profiles', 'mspress' ); ?></h3>
                     <p>
-                        <button type="button" class="btn btn-secondary" data-exchange-import>
-                            <?php esc_html_e( 'Import directory mailboxes', 'mspress' ); ?>
-                        </button>
+                        <?php echo FormFieldHelper::button( __( 'Import directory mailboxes', 'mspress' ), [ 'class' => 'btn-secondary', 'attributes' => [ 'data-exchange-import' => true ] ] ); ?>
                     </p>
 
                     <div class="table-responsive">
@@ -87,7 +77,7 @@ final class ExchangeSettings {
                 </div>
 
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary"><?php esc_html_e( 'Save Exchange settings', 'mspress' ); ?></button>
+                    <?php echo FormFieldHelper::button( __( 'Save Exchange settings', 'mspress' ), [ 'type' => 'submit' ] ); ?>
                 </div>
             </form>
 
@@ -128,24 +118,11 @@ final class ExchangeSettings {
         $email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
         ?>
         <tr>
-            <td>
-                <input type="email" name="settings[sender_profiles][<?php echo absint( $index ); ?>][email]" value="<?php echo esc_attr( is_string( $email ) ? $email : '' ); ?>">
-            </td>
-            <td>
-                <input type="text" name="settings[sender_profiles][<?php echo absint( $index ); ?>][name]" value="<?php echo esc_attr( $profile['name'] ?? '' ); ?>">
-            </td>
-            <td>
-                <select name="settings[sender_profiles][<?php echo absint( $index ); ?>][type]">
-                    <option value="user" <?php selected( $profile['type'] ?? 'user', 'user' ); ?>><?php esc_html_e( 'User', 'mspress' ); ?></option>
-                    <option value="shared" <?php selected( $profile['type'] ?? '', 'shared' ); ?>><?php esc_html_e( 'Shared mailbox', 'mspress' ); ?></option>
-                </select>
-            </td>
-            <td>
-                <input type="checkbox" name="settings[sender_profiles][<?php echo absint( $index ); ?>][enabled]" value="1" <?php checked( ! empty( $profile['enabled'] ), true ); ?>>
-            </td>
-            <td>
-                <input type="checkbox" name="settings[sender_profiles][<?php echo absint( $index ); ?>][remove]" value="1">
-            </td>
+            <td><?php echo FormFieldHelper::input( 'settings[sender_profiles][' . absint( $index ) . '][email]', is_string( $email ) ? $email : '', [ 'type' => 'email' ] ); ?></td>
+            <td><?php echo FormFieldHelper::text_input( 'settings[sender_profiles][' . absint( $index ) . '][name]', (string) ( $profile['name'] ?? '' ) ); ?></td>
+            <td><?php echo FormFieldHelper::select( 'settings[sender_profiles][' . absint( $index ) . '][type]', [ 'user' => __( 'User', 'mspress' ), 'shared' => __( 'Shared mailbox', 'mspress' ) ], $profile['type'] ?? 'user' ); ?></td>
+            <td><?php echo FormFieldHelper::checkbox( 'settings[sender_profiles][' . absint( $index ) . '][enabled]', '1', '', [ 'checked' => ! empty( $profile['enabled'] ) ] ); ?></td>
+            <td><?php echo FormFieldHelper::checkbox( 'settings[sender_profiles][' . absint( $index ) . '][remove]', '1' ); ?></td>
         </tr>
         <?php
     }
