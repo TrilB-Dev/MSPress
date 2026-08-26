@@ -35,25 +35,9 @@ final class ExchangeSettings {
                     <?php wp_nonce_field( 'mspress_exchange_save_settings' ); ?>
 
                     <p><?php echo FormFieldHelper::checkbox( 'settings[enabled]', '1', __( 'Send WordPress email through Microsoft Graph', 'mspress' ), [ 'checked' => ! empty( $settings['enabled'] ) ] ); ?></p>
-
-                    <p class="mb-0">
-                        <?php
-                        $sender_options = [ '' => __( 'Choose a sender', 'mspress' ) ];
-                        foreach ( $profiles as $profile ) {
-                            $email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
-                            if ( ! is_email( $email ) || empty( $profile['enabled'] ) ) {
-                                continue;
-                            }
-                            $sender_options[ $email ] = ( $profile['name'] ?: $email ) . ' <' . $email . '>';
-                        }
-                        echo FormFieldHelper::label( 'mspress-exchange-default-sender', __( 'Default sender', 'mspress' ) );
-                        echo FormFieldHelper::bootstrap_select( 'settings[default_sender]', [ 'data' => $sender_options, 'selected' => $settings['default_sender'] ?? '', 'id' => 'mspress-exchange-default-sender', 'live_search' => true, 'class' => 'form-select' ] );
-                        ?>
-                    </p>
-
                     <h3 class="h6 mt-4"><?php esc_html_e( 'Sender profiles', 'mspress' ); ?></h3>
                     <p>
-                        <?php echo FormFieldHelper::button( __( 'Import directory mailboxes', 'mspress' ), [ 'class' => 'btn-secondary', 'attributes' => [ 'data-exchange-import' => true ] ] ); ?>
+                        <?php echo FormFieldHelper::button( __( 'Import directory mailboxes', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-exchange-import' => true, 'data-bs-toggle' => 'modal', 'data-bs-target' => '#mspress-exchange-import' ] ] ); ?>
                     </p>
 
                     <div class="table-responsive">
@@ -74,6 +58,20 @@ final class ExchangeSettings {
                             </tbody>
                         </table>
                     </div>
+                    <p class="mb-0">
+                        <?php
+                        $sender_options = [ '' => __( 'Choose a sender', 'mspress' ) ];
+                        foreach ( $profiles as $profile ) {
+                            $email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
+                            if ( ! is_email( $email ) || empty( $profile['enabled'] ) ) {
+                                continue;
+                            }
+                            $sender_options[ $email ] = ( $profile['name'] ?: $email ) . ' <' . $email . '>';
+                        }
+                        echo FormFieldHelper::label( 'mspress-exchange-default-sender', __( 'Default sender', 'mspress' ) );
+                        echo FormFieldHelper::bootstrap_select( 'settings[default_sender]', [ 'data' => $sender_options, 'selected' => $settings['default_sender'] ?? '', 'id' => 'mspress-exchange-default-sender', 'live_search' => true, 'class' => 'form-select' ] );
+                        ?>
+                    </p>
                 </div>
 
                 <div class="card-footer">
@@ -81,11 +79,11 @@ final class ExchangeSettings {
                 </div>
             </form>
 
-            <div class="modal fade" id="mspress-exchange-import" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="mspress-exchange-import" tabindex="-1" aria-labelledby="mspress-exchange-import-title" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title fs-5"><?php esc_html_e( 'Import directory mailboxes', 'mspress' ); ?></h2>
+                            <h2 class="modal-title fs-5" id="mspress-exchange-import-title"><?php esc_html_e( 'Import directory mailboxes', 'mspress' ); ?></h2>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?php esc_attr_e( 'Close', 'mspress' ); ?>"></button>
                         </div>
                         <div class="modal-body">
