@@ -46,7 +46,7 @@ final class ExchangeSettings {
                         $sender_options = [ '' => __( 'Choose a sender', 'mspress' ) ];
                         foreach ( $profiles as $profile ) {
                             $email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
-                            if ( ! is_email( $email ) || empty( $profile['enabled'] ) ) {
+                            if ( ! is_email( $email ) ) {
                                 continue;
                             }
                             $sender_options[ $email ] = ( $profile['name'] ?: $email ) . ' <' . $email . '>';
@@ -76,6 +76,7 @@ final class ExchangeSettings {
                                                 <th><?php esc_html_e( 'Email address', 'mspress' ); ?></th>
                                                 <th><?php esc_html_e( 'Name', 'mspress' ); ?></th>
                                                 <th><?php esc_html_e( 'Type', 'mspress' ); ?></th>
+                                                <th><?php esc_html_e( 'Enabled', 'mspress' ); ?></th>
                                                 <th><?php esc_html_e( 'Delete', 'mspress' ); ?></th>
                                             </tr>
                                         </thead>
@@ -135,6 +136,7 @@ final class ExchangeSettings {
             <td><?php echo FormFieldHelper::input( 'settings[sender_profiles][' . absint( $index ) . '][email]', is_string( $email ) ? $email : '', [ 'type' => 'email', 'attributes' => [ 'readonly' => true ] ] ); ?></td>
             <td><?php echo FormFieldHelper::text_input( 'settings[sender_profiles][' . absint( $index ) . '][name]', (string) ( $profile['name'] ?? '' ) ); ?></td>
             <td><?php echo FormFieldHelper::select( 'settings[sender_profiles][' . absint( $index ) . '][type]', [ 'user' => __( 'User', 'mspress' ), 'shared' => __( 'Shared mailbox', 'mspress' ) ], $profile['type'] ?? 'user' ); ?></td>
+            <td><?php echo FormFieldHelper::input( 'settings[sender_profiles][' . absint( $index ) . '][enabled]', '0', [ 'type' => 'hidden' ] ); ?><?php echo FormFieldHelper::checkbox( 'settings[sender_profiles][' . absint( $index ) . '][enabled]', '1', '', [ 'checked' => ! array_key_exists( 'enabled', $profile ) || ! empty( $profile['enabled'] ), 'class' => 'form-check-input', 'attributes' => [ 'aria-label' => __( 'Enable sender profile', 'mspress' ) ] ] ); ?></td>
             <td><button type="button" class="btn btn-danger" data-exchange-profile-delete aria-label="<?php esc_attr_e( 'Delete profile', 'mspress' ); ?>"><i class="fa-solid fa-trash" aria-hidden="true"></i><span class="visually-hidden"><?php esc_html_e( 'Delete profile', 'mspress' ); ?></span></button></td>
         </tr>
         <?php

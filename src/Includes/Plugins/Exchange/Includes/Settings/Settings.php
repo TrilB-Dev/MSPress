@@ -117,7 +117,7 @@ final class Settings {
                 'address' => $encrypted_email,
                 'name' => SanitizationHelper::text( $profile['name'] ?? '' ),
                 'type' => SanitizationHelper::one_of( SanitizationHelper::key( $profile['type'] ?? '' ), [ 'user', 'shared' ], 'user' ),
-                'enabled' => ! empty( $profile['enabled'] ),
+                'enabled' => ! array_key_exists( 'enabled', $profile ) || ! empty( $profile['enabled'] ),
             ];
         }
         $existing = BaseSettings::get_group( 'exchange', [] ) ?? [];
