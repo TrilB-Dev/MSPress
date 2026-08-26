@@ -38,7 +38,7 @@ final class Settings {
         check_admin_referer( 'mspress_exchange_save_settings' );
         $input = isset( $_POST['settings'] ) && is_array( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : [];
         $this->sanitize( $input );
-        wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=exchange&updated=1' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=mspress-exchange-settings&updated=1' ) );
         exit;
     }
 
@@ -171,7 +171,7 @@ final class Settings {
             return;
         }
         $this->save_connected_account( $account );
-        $redirect_url = admin_url( 'admin.php?page=mspress-settings&tab=exchange&exchange_connected=1' );
+        $redirect_url = admin_url( 'admin.php?page=mspress-exchange-settings&exchange_connected=1' );
         if ( ! wp_safe_redirect( $redirect_url ) ) {
             wp_redirect( $redirect_url );
         }

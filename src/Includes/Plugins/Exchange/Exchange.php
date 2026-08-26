@@ -16,13 +16,18 @@ use MSPress\Includes\Plugins\PluginInterface;
 use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 use MSPress\Includes\Plugins\ShortcodeProviderInterface;
+use MSPress\Includes\Plugins\AdminMenuProviderInterface;
 use MSPress\Includes\Plugins\Exchange\Assets\Assets;
 use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Exchange\Includes\Includes;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\Capabilities;
+use MSPress\Includes\Plugins\Exchange\Admin\EmailTemplates;
+use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
+use MSPress\Includes\Plugins\Exchange\Admin\RoutTrace;
+use MSPress\Includes\Plugins\Exchange\Admin\SentLogs;
 
-class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, AdminSidebarProviderInterface, CapabilitiesProviderInterface {
+class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, AdminSidebarProviderInterface, AdminMenuProviderInterface, CapabilitiesProviderInterface {
     /**
      * Get the plugin slug.
      *
@@ -103,6 +108,30 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
     public function init(): void {
         Includes::get_instance()->init();
     }
+
+    /**
+     * Return Exchange-owned admin pages.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function get_admin_menu(): array {
+        return [
+            [
+                'page_title' => __( 'Exchange', 'mspress' ),
+                'menu_title' => __( 'Exchange', 'mspress' ),
+                'menu_slug' => 'mspress-exchange-settings',
+                'parent' => 'mspress',
+                'callback' => [ ExchangeSettings::class, 'render' ],
+                'capability' => 'mspress_settings_plugins_view',
+                'children' => [
+                    [ 'page_title' => __( 'Exchange Settings', 'mspress' ), 'menu_title' => __( 'Exchange Settings', 'mspress' ), 'menu_slug' => 'mspress-exchange-settings', 'callback' => [ ExchangeSettings::class, 'render' ], 'capability' => 'mspress_settings_plugins_view' ],
+                    [ 'page_title' => __( 'Email Templates', 'mspress' ), 'menu_title' => __( 'Email Templates', 'mspress' ), 'menu_slug' => 'mspress-exchange-email-templates', 'callback' => [ EmailTemplates::class, 'render' ], 'capability' => 'edit_posts' ],
+                    [ 'page_title' => __( 'Route Trace', 'mspress' ), 'menu_title' => __( 'Route Trace', 'mspress' ), 'menu_slug' => 'mspress-exchange-route-trace', 'callback' => [ RoutTrace::class, 'render' ], 'capability' => 'mspress_tools_debug' ],
+                    [ 'page_title' => __( 'Sent Log', 'mspress' ), 'menu_title' => __( 'Sent Log', 'mspress' ), 'menu_slug' => 'mspress-exchange-sent-log', 'callback' => [ SentLogs::class, 'render' ], 'capability' => 'mspress_tools_debug' ],
+                ],
+            ],
+        ];
+    }
     /**
      * Registers the settings for the plugin.
      * @since 1.0.0
@@ -139,39 +168,32 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
                 'capability' => 'mspress_settings_plugins_view',
                 'items' => [
                     [
-                        'label' => __( 'Overview', 'mspress' ),
-                        'page' => 'mspress-settings',
-                        'query' => [ 'tab' => 'exchange' ],
+                        'label' => __( 'Exchange Settings', 'mspress' ),
+                        'page' => 'mspress-exchange-settings',
+                        'query' => [],
                         'icon' => 'fa-solid fa-gauge-high',
                         'capability' => 'mspress_settings_plugins_view',
                     ],
                     [
                         'label' => __( 'Email Templates', 'mspress' ),
-                        'page' => 'edit.php',
-                        'query' => [ 'post_type' => 'mspress_email_template' ],
+                        'page' => 'mspress-exchange-email-templates',
+                        'query' => [],
                         'icon' => 'fa-solid fa-file-lines',
                         'capability' => 'edit_posts',
                     ],
                     [
                         'label' => __( 'Route Trace', 'mspress' ),
-                        'page' => 'mspress-tools',
-                        'query' => [ 'tool' => 'exchange-route-trace' ],
+                        'page' => 'mspress-exchange-route-trace',
+                        'query' => [],
                         'icon' => 'fa-solid fa-route',
                         'capability' => 'mspress_tools_debug',
                     ],
                     [
                         'label' => __( 'Sent Log', 'mspress' ),
-                        'page' => 'mspress-tools',
-                        'query' => [ 'tool' => 'exchange-sent-log' ],
+                        'page' => 'mspress-exchange-sent-log',
+                        'query' => [],
                         'icon' => 'fa-solid fa-paper-plane',
                         'capability' => 'mspress_tools_debug',
-                    ],
-                    [
-                        'label' => __( 'Settings', 'mspress' ),
-                        'page' => 'mspress-settings',
-                        'query' => [ 'tab' => 'exchange' ],
-                        'icon' => 'fa-solid fa-sliders',
-                        'capability' => 'mspress_settings_plugins_view',
                     ],
                 ],
             ],

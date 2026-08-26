@@ -90,6 +90,15 @@ All assets must flow through `src/Assets/Assets.php`.
 
 - Put WordPress registration and shared infrastructure in core; put business
   behavior in the owning internal plugin.
+- Keep feature-specific conditions, selectors, settings keys, labels,
+  capabilities, and business rules out of shared core classes.
+- Before changing core, use this decision gate:
+  1. Can the behavior live entirely in the owning plugin? If yes, keep it
+     there.
+  2. If not, does the same need exist in at least two plugins? If no, do not
+     add a core-specific solution.
+  3. If yes, add a generic, backward-compatible extension point and let the
+     plugin provide the feature-specific data or behavior.
 - If functionality belongs in core because it is a service, registry,
   interface, hook, or extension point, keep its API feature-neutral and make it
   useful to multiple plugins or future integrations.
@@ -105,10 +114,51 @@ All assets must flow through `src/Assets/Assets.php`.
 - Use provider-owned admin pages, sidebar entries, AJAX handlers, REST routes,
   and shortcodes instead of hard-coding a plugin name in core.
 
+## Reusable APIs
+
+- Before adding local logic, check the existing APIs and helpers in
+  `src/Includes/Core/`, `src/Includes/Functions/`, `src/Includes/Settings/`,
+  and `src/Includes/Plugins/PluginsInterface.php`.
+- Prefer the existing settings, sanitization, permission, form-field, AJAX,
+  and response helpers over duplicating their behavior.
+- Use hooks, filters, provider interfaces, and generic metadata when extending
+  core. Do not make shared services identify a provider by slug or class name.
+
+## Security and quality
+
+- Check capabilities before privileged admin, AJAX, REST, settings, import,
+  export, or file operations.
+- Verify nonces for state-changing admin and AJAX requests, validate REST
+  permissions, and sanitize request input with the appropriate WordPress or
+  project helper.
+- Escape output for its context and validate URLs, IDs, file paths, and upload
+  types before use.
+- Never hard-code credentials, tokens, salts, or environment-specific paths.
+  Do not log secrets or sensitive request data.
+- Keep admin-only code out of frontend execution paths and avoid loading
+  feature assets globally.
+
+## Localization
+
+- Keep provider translations in the owning plugin's `Language/` or
+  `Languages/` directory and use the provider's text domain. Keep MSPress core
+  translations under `src/Languages/`.
+- When adding or changing translatable strings, run `npm run i18n:pot` and
+  `npm run i18n:mo` when those scripts are available in the repository.
+- Do not move provider strings into the core catalog or hard-code translated
+  text in shared core code.
+
 ## Change guidance
 
 Before editing, identify the owning layer and keep the change within that
-boundary. Preserve existing public interfaces unless a contract change is
-required, and update every internal implementation when a provider interface
-changes. Validate focused PHP and JavaScript syntax, run the asset build when
-asset files change, and run `git diff --check` before finishing.
+boundary. Read the relevant README and documentation before changing
+architecture, then inspect the nearest implementation, provider interface,
+and test or call site. Preserve existing public interfaces unless a contract
+change is required, and update every internal implementation when a provider
+interface changes.
+
+Validate focused PHP with `php -l`, changed JavaScript with `node --check`, and
+run focused tests before broader checks. Run `npm run build` when JavaScript,
+SCSS, webpack entries, or asset registration changes. Review generated assets
+for stale bundles, run `git diff --check`, and inspect deleted, generated, and
+unrelated worktree changes before finishing.

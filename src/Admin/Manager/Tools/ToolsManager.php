@@ -59,14 +59,13 @@ final class ToolsManager extends Manager {
      */
     public function render(): void {
         $tool = SanitizationHelper::key( $_GET['tool'] ?? 'debug', 'debug' );
-        $tool = 'debug' === $tool ? $tool : 'debug';
-        $capabilities = [
-            'debug' => 'mspress_tools_debug',
-        ];
-        if ( ! current_user_can( $capabilities[ $tool ] ) ) {
+        if ( 'debug' !== $tool ) {
+            $tool = 'debug';
+        }
+        if ( ! current_user_can( 'mspress_tools_debug' ) ) {
             wp_die( esc_html__( 'You are not authorized to access this MSPress tool.', 'mspress' ) );
         }
-        $this->header( $this->title( $tool ) );
+        $this->header( __( 'Debug', 'mspress' ) );
         $this->debug_manager->render_page_content();
         $this->footer();
     }
@@ -79,15 +78,5 @@ final class ToolsManager extends Manager {
      */
     public function register_assets( Assets $assets ): void {
         $this->register_page_assets( $assets, [ 'mspress-tools' ], 'debug' );
-    }
-    /**
-     * Returns the title for the given tool.
-     *
-     * @since 1.0.0
-     * @param string $tool The tool name.
-     * @return string The title for the tool.
-     */
-    private function title( string $tool ): string {
-        return __( 'Debug', 'mspress' );
     }
 }
