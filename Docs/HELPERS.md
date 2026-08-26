@@ -150,12 +150,13 @@ Never log credentials, tokens, secrets, or sensitive request data. Keep the logg
 
 ## FormFieldHelper
 
+For the complete API, option contracts, composition patterns, accessibility guidance, and examples, see [the FormFieldHelper reference](Helpers/FORMFIELDHELPER.md).
+
 `FormFieldHelper` renders escaped Bootstrap-compatible form controls and validation markup:
 
 - `input($name, $value = '', $options = [])` renders a configurable input type.
 - `text_input($name, $value = '', $attributes = [])` renders a text input.
 - `textarea($name, $value = '', $options = [])` renders a textarea.
-- `tinymce($id, $name, $label, $value = '', $rows = 8, $media_buttons = false)` renders a TinyMCE editor or textarea fallback.
 - `select($name, $options = [], $selected = [], $attributes = [])` renders a select, including option groups.
 - `checkbox($name, $value = '1', $label = '', $options = [])`, `radio($name, $value, $label = '', $options = [])`, and `switch($name, $value = '1', $label = '', $options = [])` render check controls.
 - `check($type, $name, $value, $label = '', $options = [])` is the shared checkbox/radio renderer.

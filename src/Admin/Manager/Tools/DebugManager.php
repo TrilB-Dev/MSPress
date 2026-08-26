@@ -107,7 +107,7 @@ final class DebugManager extends Manager {
                 <p class="text-secondary"><?php esc_html_e( 'Test the configured application credentials against Microsoft Entra over TLS 1.2. The test does not display credentials or tokens.', 'mspress' ); ?></p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=mspress-tools&tool=debug' ) ); ?>">
                     <?php wp_nonce_field( 'mspress_run_graph_diagnostics', 'mspress_graph_diagnostics_nonce' ); ?>
-                    <input type="hidden" name="mspress_run_graph_diagnostics" value="1" />
+                    <?php echo FormFieldHelper::input( 'mspress_run_graph_diagnostics', '1', [ 'type' => 'hidden' ] ); ?>
                     <?php echo FormFieldHelper::button( __( 'Run Graph diagnostics', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary' ] ); ?>
                 </form>
                 <p class="small text-secondary mt-3 mb-0"><?php esc_html_e( 'A successful result confirms token acquisition, but does not test delegated OAuth mailbox access.', 'mspress' ); ?></p>

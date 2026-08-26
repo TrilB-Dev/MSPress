@@ -26,15 +26,15 @@ final class ExchangeSettings {
             <?php endif; ?>
 
             <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="mspress-exchange-form">
-                <div class="card-header">
-                    <h2 class="card-title h5 mb-0"><?php esc_html_e( 'Sending', 'mspress' ); ?></h2>
-                </div>
-
+               
                 <div class="card-body">
-                    <input type="hidden" name="action" value="mspress_exchange_save_settings">
+                    <?php echo FormFieldHelper::input( 'action', 'mspress_exchange_save_settings', [ 'type' => 'hidden' ] ); ?>
                     <?php wp_nonce_field( 'mspress_exchange_save_settings' ); ?>
 
-                    <p><?php echo FormFieldHelper::checkbox( 'settings[enabled]', '1', __( 'Send WordPress email through Microsoft Graph', 'mspress' ), [ 'checked' => ! empty( $settings['enabled'] ) ] ); ?></p>
+                    <div class="mb-3">
+                        <?php echo FormFieldHelper::switch( 'settings[enabled]', '1', __( 'Exchange Integration', 'mspress' ), [ 'checked' => ! empty( $settings['enabled'] ) ] ); ?>
+                        <?php echo FormFieldHelper::form_text( __( 'Send WordPress email through Microsoft Graph', 'mspress' ) ); ?>
+                    </div>
                     <h3 class="h6 mt-4"><?php esc_html_e( 'Sender profiles', 'mspress' ); ?></h3>
                     <p>
                         <?php echo FormFieldHelper::button( __( 'Import Sender Profiles', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-exchange-profile-import' => true, 'data-bs-toggle' => 'modal', 'data-bs-target' => '#mspress-exchange-profile-import', 'data-bs-placement' => 'top', 'title' => __( 'Find user and shared mailboxes in the directory and add them as sender profiles.', 'mspress' ), 'aria-label' => __( 'Import Sender Profiles. Find user and shared mailboxes in the directory and add them as sender profiles.', 'mspress' ) ] ] ); ?>

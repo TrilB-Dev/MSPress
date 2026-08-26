@@ -10,8 +10,8 @@
 namespace MSPress\Includes\Plugins\Exchange\Includes;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\Shortcodes;
 use MSPress\Includes\Plugins\Exchange\Includes\Settings\Settings;
-use MSPress\Includes\Plugins\Exchange\Includes\Mail\EmailTemplates;
 use MSPress\Includes\Plugins\Exchange\Includes\Mail\ExchangeMailer;
+use MSPress\Includes\Plugins\Exchange\Admin\EmailTemplates;
 
 final class Includes {
     private static ?self $instance = null;
@@ -24,7 +24,7 @@ final class Includes {
         $this->settings = new Settings();
         $this->shortcodes = new Shortcodes();
         $this->mailer = ExchangeMailer::get_instance();
-        $this->templates = EmailTemplates::get_instance();
+        $this->templates = new EmailTemplates();
     }
 
     public static function get_instance(): self {

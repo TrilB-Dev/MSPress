@@ -40,7 +40,7 @@ final class SettingsConnection {
         <?php settings_errors( 'mspress_connection' ); ?>
         <form class="card mspress-settings-form" method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=mspress-settings&tab=connection' ) ); ?>">
             <?php wp_nonce_field( 'mspress_save_connection', 'mspress_connection_nonce' ); ?>
-            <input type="hidden" name="mspress_connection_save" value="1" />
+            <?php echo FormFieldHelper::input( 'mspress_connection_save', '1', [ 'type' => 'hidden' ] ); ?>
             <div class="card-body">
                 <fieldset <?php disabled( ! $can_edit ); ?>>
                     <div class="row g-3">
@@ -133,7 +133,7 @@ final class SettingsConnection {
         <?php settings_errors( 'mspress_connection' ); ?>
         <form class="card mspress-settings-form" method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=mspress-settings&tab=connection' ) ); ?>">
             <?php wp_nonce_field( 'mspress_add_encryption_key', 'mspress_encryption_key_nonce' ); ?>
-            <input type="hidden" name="mspress_add_encryption_key" value="1" />
+            <?php echo FormFieldHelper::input( 'mspress_add_encryption_key', '1', [ 'type' => 'hidden' ] ); ?>
             <div class="card-body">
                 <h2 class="h5 card-title"><?php esc_html_e( 'Encryption key required', 'mspress' ); ?></h2>
                 <p class="card-text"><?php esc_html_e( 'MSPress cannot display or save Microsoft Graph credentials until its encryption key is configured.', 'mspress' ); ?></p>
