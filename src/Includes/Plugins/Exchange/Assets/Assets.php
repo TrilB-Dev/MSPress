@@ -10,6 +10,7 @@
 namespace MSPress\Includes\Plugins\Exchange\Assets;
 
 use MSPress\Assets\Assets as CoreAssets;
+use MSPress\Includes\Functions\Helpers\RequestHelper;
 
 final class Assets {
     private CoreAssets $assets;
@@ -32,8 +33,8 @@ final class Assets {
     }
 
     public function register_admin_assets( array $assets ): array {
-        $page = sanitize_key( $_GET['page'] ?? '' );
-        $tab = sanitize_key( $_GET['tab'] ?? '' );
+        $page = RequestHelper::get_key( 'page' );
+        $tab = RequestHelper::get_key( 'tab' );
         $is_settings = in_array( $page, [ 'mspress-exchange', 'mspress-exchange-settings' ], true ) || ( 'mspress-settings' === $page && 'exchange-settings' === $tab );
         $is_exchange_page = in_array( $page, [ 'mspress-exchange-email-templates', 'mspress-exchange-route-trace', 'mspress-exchange-sent-log' ], true ) || ( 'mspress-settings' === $page && in_array( $tab, [ 'exchange-email-templates', 'exchange-trace-rout', 'exchange-sent-logs' ], true ) );
         if ( ! $is_settings && ! $is_exchange_page ) {
@@ -48,8 +49,8 @@ final class Assets {
 
     public function register_frontend_assets( array $assets ): array {
         $assets['scripts'][] = [
-            'handle' => 'mspress-demo',
-            'src' => MSPRESS_URL . 'src/includes/Plugins/Exchange/Assets/dist/js/exchange.js',
+            'handle' => 'mspress-public-exchange',
+            'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/js/exchange-public.js',
             'in_footer' => true,
         ];
 

@@ -82,9 +82,6 @@ final class Admin {
             [ 'type' => 'action', 'hook' => 'admin_menu', 'callback' => 'register_admin_menu' ],
             [ 'type' => 'action', 'hook' => 'wp_ajax_mspress_load_settings_tab', 'callback' => 'load_settings_tab' ],
         ] );
-        $this->loader->register_component( $assets, [
-            [ 'type' => 'action', 'hook' => 'admin_enqueue_scripts', 'callback' => 'enqueue_admin' ],
-        ] );
         $this->loader->register_component( $this->settings_functions, [
             [ 'type' => 'action', 'hook' => 'admin_init', 'callback' => 'register_settings' ],
         ] );

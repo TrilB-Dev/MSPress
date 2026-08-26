@@ -8,6 +8,9 @@
  */
 namespace MSPress\Assets;
 
+use MSPress\Includes\Functions\Helpers\RequestHelper;
+use MSPress\Includes\Functions\Helpers\SanitizationHelper;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -32,6 +35,7 @@ final class Assets {
     public function register(): void {
         add_filter( 'mspress_base_assets', [ $this, 'default_assets' ], 10, 2 );
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend' ] );
+        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin' ] );
     }
     /**
      * Registers assets for a specific page.
@@ -41,7 +45,7 @@ final class Assets {
      * @return void
      */
     public function register_page( string $page, array $assets ): void {
-        $page = sanitize_key( $page );
+        $page = SanitizationHelper::key( $page );
         $this->pages[ $page ] = [
             'styles' => array_merge( $this->pages[ $page ]['styles'] ?? [], $assets['styles'] ?? [] ),
             'scripts' => array_merge( $this->pages[ $page ]['scripts'] ?? [], $assets['scripts'] ?? [] ),
@@ -132,17 +136,30 @@ final class Assets {
      * @return void
      */
     public function enqueue_admin( string $hook_suffix ): void {
-        if ( false === strpos( $hook_suffix, 'mspress' ) ) {
+        $page = RequestHelper::get_key( 'page' );
+        $is_mspress_page = false !== strpos( $hook_suffix, 'mspress' ) || isset( $this->pages[ $page ] );
+        if ( ! $is_mspress_page ) {
             return;
         }
 
-        $page = sanitize_key( $_GET['page'] ?? 'mspress' );
-        $registered = $this->pages[ $page ] ?? [];
         $base = apply_filters( 'mspress_base_assets', [], 'admin' );
+        $assets = [
+            'styles'  => $base['styles'] ?? [],
+            'scripts' => $base['scripts'] ?? [],
+            'enqueue_media' => false,
+        ];
+
+        if ( $is_mspress_page ) {
+            $registered = $this->pages[ $page ] ?? [];
+            $assets['styles'] = array_merge( $assets['styles'], $registered['styles'] ?? [] );
+            $assets['scripts'] = array_merge( $assets['scripts'], $registered['scripts'] ?? [] );
+            $assets['enqueue_media'] = ! empty( $registered['enqueue_media'] );
+        }
+
         $this->enqueue_registered( 'admin', [
-            'styles'  => array_merge( $base['styles'] ?? [], $registered['styles'] ?? [] ),
-            'scripts' => array_merge( $base['scripts'] ?? [], $registered['scripts'] ?? [] ),
-            'enqueue_media' => ! empty( $registered['enqueue_media'] ),
+            'styles'  => $assets['styles'],
+            'scripts' => $assets['scripts'],
+            'enqueue_media' => $assets['enqueue_media'],
         ] );
 
     }
@@ -183,7 +200,7 @@ final class Assets {
                 wp_localize_script( $script['handle'], $script['localize']['object_name'], $script['localize']['data'] );
             }
         }
-        if ( 'mspress-settings' === sanitize_key( $_GET['page'] ?? '' ) ) {
+        if ( 'mspress-settings' === RequestHelper::get_key( 'page' ) ) {
             $settings_config = [
                 'ajaxUrl' => admin_url( 'admin-ajax.php' ),
                 'nonce' => wp_create_nonce( 'mspress_settings_tabs' ),
