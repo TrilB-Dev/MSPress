@@ -31,19 +31,19 @@ msgstr ""
 msgid "A short value used to demonstrate Entra plugin setting metadata."
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:35
-msgid "A short value used to demonstrate plugin setting metadata."
-msgstr ""
-
 #: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:35
 msgid "A short value used to demonstrate SharePoint plugin setting metadata."
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:113
+msgid "A successful result confirms token acquisition, but does not test delegated OAuth mailbox access."
 msgstr ""
 
 #: src/Admin/Manager/UI/Header.php:44
 msgid "Account"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:358
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:314
 msgid "Account Information"
 msgstr ""
 
@@ -51,7 +51,11 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:130
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:114
+msgid "Add"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:146
 msgid "Add key to wp-config.php"
 msgstr ""
 
@@ -59,11 +63,35 @@ msgstr ""
 msgid "Add Mapping"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Exchange.php:68
+#: src/Admin/Manager/Settings/SettingsConnection.php:60
+msgid "Add this exact URL as a Web redirect URI in your Microsoft Entra app registration."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/EmailTemplates.php:94
+msgid "Admin"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Exchange.php:77
 msgid "Allows MSPress to use MS365 Exchange to send Emails from your Wordpress website."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:50
+#: src/Includes/Plugins/Onedrive/Includes/Core/Capabilities.php:31
+msgid "Allows reading files through the OneDrive integration."
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Core/Capabilities.php:31
+msgid "Allows reading files through the SharePoint integration."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Core/Capabilities.php:31
+msgid "Allows reading internal MSPress content."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Core/Capabilities.php:31
+msgid "Allows sending mail through the configured Exchange integration."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:52
 msgid "Application (client) ID"
 msgstr ""
 
@@ -71,24 +99,50 @@ msgstr ""
 msgid "Attention needed"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:194
+#: src/Admin/Manager/Settings/SettingsPlugins.php:228
 msgid "Author"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:158
-#: src/Admin/Manager/Settings/SettingsPlugins.php:334
+#: src/Admin/Manager/Settings/SettingsPlugins.php:192
+#: src/Admin/Manager/Settings/SettingsPlugins.php:373
 msgid "Author:"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:210
+#: src/Includes/Plugins/Exchange/Includes/Mail/EmailTemplates.php:67
+msgid "Available placeholders"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:60
+msgid "Browser callback URL"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:244
 msgid "Cancel"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:54
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:46
+msgid "Choose a sender"
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:87
+msgid "Choose the stylesheet used inside the editor content area."
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:96
+msgid "Choose the TinyMCE toolbar and dialog skin."
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:105
+msgid "Choose which bundled TinyMCE plugins are available to the editor."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:56
 msgid "Client secret"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:187
+#: src/Admin/Manager/Settings/SettingsPlugins.php:221
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:103
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:69
 msgid "Close"
 msgstr ""
 
@@ -96,7 +150,7 @@ msgstr ""
 msgid "Community"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:32
+#: src/Admin/Manager/Tools/DebugManager.php:119
 msgid "Configure diagnostic logging from the Tools settings tab."
 msgstr ""
 
@@ -104,12 +158,21 @@ msgstr ""
 msgid "Configure Microsoft Graph credentials to activate this service."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsManager.php:111
+#: src/Admin/Manager/Settings/SettingsManager.php:114
 #: src/Admin/Manager/Settings/SettingsManager.php:75
 msgid "Configure the Microsoft Graph application connection used by MSPress integrations."
 msgstr ""
 
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:160
+msgid "Connect Microsoft 365 account"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:61
+msgid "Connect the Microsoft 365 account used by Exchange."
+msgstr ""
+
 #: src/Admin/Manager/Dashboard/DashboardManager.php:127
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:155
 msgid "Connected"
 msgstr ""
 
@@ -125,11 +188,15 @@ msgstr ""
 msgid "Connection status"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:55
+#: src/Admin/Manager/Tools/DebugManager.php:146
 msgid "Console logging"
 msgstr ""
 
-#: src/Includes/MSGraph/OAuthController.php:65
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:88
+msgid "Content skins control typography and content formatting inside the editing area."
+msgstr ""
+
+#: src/Includes/MSGraph/OAuthController.php:68
 msgid "Could not retrieve a valid email address from Microsoft."
 msgstr ""
 
@@ -137,9 +204,13 @@ msgstr ""
 msgid "Create \"{0}\""
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsManager.php:111
+#: src/Admin/Manager/Settings/SettingsManager.php:114
 #: src/Admin/Manager/Settings/SettingsManager.php:75
 msgid "Credentials are encrypted before they are stored and the client secret is never displayed."
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:75
+msgid "cURL diagnostic"
 msgstr ""
 
 #: src/Admin/Manager/Dashboard/DashboardManager.php:49
@@ -148,30 +219,58 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: src/Admin/Manager/Tools/ToolsManager.php:91
+#: src/Includes/Plugins/Exchange/Admin/SentLogs.php:28
+msgid "Date"
+msgstr ""
+
+#: src/Admin/Manager/Tools/ToolsManager.php:68
 #: src/Includes/Functions/Admin/FunctionsSidebar.php:142
 msgid "Debug"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:32
-#: src/Admin/Manager/Tools/DebugManager.php:48
+#: src/Admin/Manager/Tools/DebugManager.php:118
+#: src/Admin/Manager/Tools/DebugManager.php:139
 msgid "Debug logging"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:381
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:86
+msgid "Default content skin"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:54
+msgid "Default sender"
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:95
+msgid "Default user-interface skin"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:79
+msgid "Delete"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:138
+msgid "Delete profile"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:337
 msgid "Department"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:72
+msgid "Diagnostics completed."
 msgstr ""
 
 #: src/Admin/Manager/Dashboard/DashboardManager.php:127
 msgid "Disabled"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:372
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:328
 msgid "Display Name"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:160
-#: src/Admin/Manager/Settings/SettingsPlugins.php:336
+#: src/Admin/Manager/Settings/SettingsPlugins.php:194
+#: src/Admin/Manager/Settings/SettingsPlugins.php:375
 msgid "Docs:"
 msgstr ""
 
@@ -179,44 +278,93 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: src/Includes/Core/Capabilities.php:22
-msgid "Edit Extension Settings"
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:122
+msgid "Done"
 msgstr ""
 
-#: src/Includes/Core/Capabilities.php:20
-msgid "Edit Internal Plugin Settings"
+#: src/Includes/Plugins/Exchange/Admin/EmailTemplates.php:28
+msgid "Edit"
 msgstr ""
 
 #: src/Includes/Core/Capabilities.php:24
+msgid "Edit Extension Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:22
+msgid "Edit Internal Plugin Settings"
+msgstr ""
+
+#: src/Includes/Core/Capabilities.php:26
 msgid "Edit Microsoft Graph Connection Settings"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:363
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:68
+msgid "Edit sender profiles"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:41
+msgid "Edit Sender Profiles"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:41
+msgid "Edit Sender Profiles. Edit the local names and mailbox types of saved sender profiles, or delete profiles."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/EmailTemplates.php:30
+msgid "Edit template"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:41
+msgid "Edit the local names and mailbox types of saved sender profiles, or delete profiles."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:319
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:111
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:311
 msgid "Email"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:152
-#: src/Admin/Manager/Settings/SettingsPlugins.php:328
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:76
+msgid "Email address"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/EmailTemplates.php:49
+msgid "Email content"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Includes.php:39
+msgid "Email Template"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/EmailTemplates.php:24
+msgid "Email templates"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Exchange.php:128
+#: src/Includes/Plugins/Exchange/Exchange.php:178
+#: src/Includes/Plugins/Exchange/Includes/Includes.php:39
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:70
+msgid "Email Templates"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:186
+#: src/Admin/Manager/Settings/SettingsPlugins.php:367
 msgid "Enable %s"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:55
+#: src/Admin/Manager/Tools/DebugManager.php:146
 msgid "Enable browser console logging"
-msgstr ""
-
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:42
-msgid "Enable demo setting"
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:42
 msgid "Enable Entra setting"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:135
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:159
 msgid "Enable Graph Mailer"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:48
+#: src/Admin/Manager/Tools/DebugManager.php:139
 msgid "Enable MSPress debug logging"
 msgstr ""
 
@@ -224,19 +372,27 @@ msgstr ""
 msgid "Enable SharePoint setting"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:45
+#: src/Admin/Manager/Tools/DebugManager.php:136
 msgid "Enable this only while investigating a problem, because logs can grow over time."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:127
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:311
+msgid "Enabled"
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:104
+msgid "Enabled TinyMCE plugins"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:138
 msgid "Encryption key required"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:83
+#: src/Admin/Manager/Settings/SettingsConnection.php:94
 msgid "Enter a valid application (client) ID GUID."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:79
+#: src/Admin/Manager/Settings/SettingsConnection.php:90
 msgid "Enter a valid tenant GUID or verified domain."
 msgstr ""
 
@@ -252,21 +408,34 @@ msgstr ""
 msgid "Entra text setting"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:28
+#: src/Includes/Plugins/Exchange/Exchange.php:120
+#: src/Includes/Plugins/Exchange/Exchange.php:121
+#: src/Includes/Plugins/Exchange/Exchange.php:165
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:53
 msgid "Exchange"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:29
-msgid "Exchange plugin settings"
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:71
+msgid "Exchange email templates"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:92
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:93
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:78
+msgid "Exchange route trace"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:85
+msgid "Exchange sent logs"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Exchange.php:127
+#: src/Includes/Plugins/Exchange/Exchange.php:171
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:114
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:115
 msgid "Exchange Settings"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:34
-msgid "Exchange text setting"
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:25
+msgid "Exchange settings saved."
 msgstr ""
 
 #: src/Admin/Manager/UI/Header.php:32
@@ -277,24 +446,32 @@ msgstr ""
 msgid "Failed to refresh groups:"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:337
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:396
 msgid "Failed to send email via Microsoft Graph: "
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:224
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:250
 msgid "Failed to send test email. Check the error logs."
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:366
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:40
+msgid "Find user and shared mailboxes in the directory and add them as sender profiles."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:322
 msgid "First Name"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:146
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:170
 msgid "From Exchange Address"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:154
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:178
 msgid "From Name"
+msgstr ""
+
+#: src/Includes/MSGraph/OAuthController.php:107
+msgid "Full authorization server response:"
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:387
@@ -305,22 +482,51 @@ msgstr ""
 msgid "Group to Role Mappings"
 msgstr ""
 
+#: src/Admin/Manager/Tools/DebugManager.php:75
+msgid "HTTP Graph diagnostic"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:102
+msgid "Import sender profiles"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:40
+msgid "Import Sender Profiles"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:40
+msgid "Import Sender Profiles. Find user and shared mailboxes in the directory and add them as sender profiles."
+msgstr ""
+
 #: src/Includes/Plugins/Entra/Includes/User/Sync.php:101
 msgid "Incremental Sync"
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Assets/Assets.php:50
+msgid "Insert into editor"
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Assets/Assets.php:49
+#: src/Includes/Plugins/TinyMCE/Assets/Assets.php:51
+msgid "Insert media"
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:345
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:364
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:381
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:212
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:238
 msgid "Insufficient permissions"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:376
+#: src/Includes/Plugins/TinyMCE/TinyMCE.php:68
+msgid "Introduces a local TinyMCE 8.8 editor for MSPress."
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:332
 msgid "Job Title"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:369
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:325
 msgid "Last Name"
 msgstr ""
 
@@ -328,11 +534,11 @@ msgstr ""
 msgid "Last Sync"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:54
+#: src/Admin/Manager/Settings/SettingsConnection.php:56
 msgid "Leave blank to keep the currently stored secret."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:198
+#: src/Admin/Manager/Settings/SettingsPlugins.php:232
 msgid "License"
 msgstr ""
 
@@ -340,13 +546,13 @@ msgstr ""
 msgid "Live service readiness"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:267
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:223
 msgid "Login with Microsoft"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:264
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:311
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:451
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:220
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:267
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:407
 msgid "Logout"
 msgstr ""
 
@@ -356,6 +562,10 @@ msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:106
 msgid "Map Microsoft 365 groups to WordPress roles. Users will automatically be assigned the corresponding WordPress role based on their group membership."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:60
+msgid "Microsoft 365 account"
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:134
@@ -370,54 +580,82 @@ msgstr ""
 msgid "Microsoft 365 User Synchronization"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Entra.php:68
+#: src/Includes/Plugins/Entra/Entra.php:71
 msgid "Microsoft Entra integration for MSPress."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:54
+msgid "Microsoft Exchange email settings"
 msgstr ""
 
 #: src/Admin/Manager/Dashboard/DashboardManager.php:58
 msgid "Microsoft Graph"
 msgstr ""
 
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:218
+msgid "Microsoft Graph application access is unavailable. Check the MSPress Microsoft 365 connection settings and application consent."
+msgstr ""
+
 #: src/Admin/Manager/Dashboard/DashboardManager.php:161
 msgid "Microsoft Graph connection is active."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:102
+#: src/Admin/Manager/Settings/SettingsConnection.php:113
 msgid "Microsoft Graph connection settings saved."
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:128
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:229
+msgid "Microsoft Graph could not return directory mailboxes: %s"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/ExchangeMailer.php:104
+msgid "Microsoft Graph could not send the email."
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:106
+msgid "Microsoft Graph diagnostics"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:46
+msgid "Microsoft Graph diagnostics completed."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:152
 msgid "Microsoft Graph Exchange Settings"
 msgstr ""
 
-#: src/Includes/Plugins/Onedrive/OneDrive.php:68
+#: src/Includes/Plugins/Exchange/Includes/Mail/ExchangeMailer.php:64
+msgid "Microsoft Graph is not available. Check the MS365 connection settings."
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/OneDrive.php:71
 msgid "Microsoft OneDrive integration for MSPress."
 msgstr ""
 
-#: src/Includes/Plugins/Sharepoint/Sharepoint.php:68
+#: src/Includes/Plugins/Sharepoint/Sharepoint.php:71
 msgid "Microsoft SharePoint integration for MSPress."
 msgstr ""
 
-#: src/Includes/MSGraph/OAuthController.php:97
-msgid "Microsoft sign-in could not be completed. Please try again."
+#: src/Includes/MSGraph/OAuthController.php:106
+msgid "Microsoft sign-in could not be completed."
 msgstr ""
 
-#: src/Includes/MSGraph/OAuthController.php:58
+#: src/Includes/MSGraph/OAuthController.php:60
 msgid "Microsoft sign-in is not configured. Please try again later."
 msgstr ""
 
-#: src/Includes/MSGraph/OAuthController.php:52
+#: src/Includes/MSGraph/OAuthController.php:53
 msgid "Microsoft sign-in was not completed. Please try again."
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/Sync.php:224
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:292
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:351
 msgid "MS365 connection failed"
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:405
 #: src/Includes/Plugins/Entra/Includes/User/Sync.php:218
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:286
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:345
 msgid "MS365 integration not configured"
 msgstr ""
 
@@ -433,11 +671,11 @@ msgstr ""
 msgid "MSPress admin navigation"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:128
+#: src/Admin/Manager/Settings/SettingsConnection.php:139
 msgid "MSPress cannot display or save Microsoft Graph credentials until its encryption key is configured."
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:216
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:242
 msgid "MSPress Email Test"
 msgstr ""
 
@@ -469,6 +707,12 @@ msgstr ""
 msgid "MSPress SharePoint"
 msgstr ""
 
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:112
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:77
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:311
+msgid "Name"
+msgstr ""
+
 #: src/Admin/Manager/UI/Sidebar.php:33
 msgid "Navigate"
 msgstr ""
@@ -477,27 +721,47 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:333
+#: src/Admin/Manager/Settings/SettingsPlugins.php:372
 msgid "No description provided."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/ExchangeMailer.php:59
+msgid "No enabled Microsoft 365 sender profile is configured."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/SentLogs.php:33
+msgid "No Graph emails have been sent yet."
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:410
 msgid "No group mappings configured"
 msgstr ""
 
+#: src/Admin/Manager/Tools/DebugManager.php:81
+msgid "No result available."
+msgstr ""
+
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:145
 msgid "No role"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:307
+msgid "No sender profiles configured yet."
 msgstr ""
 
 #: src/Admin/Manager/Dashboard/DashboardManager.php:118
 msgid "No service cards have been registered yet."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:336
+#: src/Admin/Manager/Settings/SettingsPlugins.php:375
 msgid "Not available"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:386
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:155
+msgid "Not connected"
+msgstr ""
+
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:342
 msgid "Office Location"
 msgstr ""
 
@@ -525,15 +789,27 @@ msgstr ""
 msgid "OneDrive plugin settings"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:32
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:106
+msgid "Only selected local plugin files are requested when an editor starts."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:63
+msgid "Open callback"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:120
 msgid "Open Tools Settings"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:165
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:189
 msgid "Optional reply-to email address."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:191
+#: src/Includes/Plugins/Exchange/Includes/Mail/EmailTemplates.php:66
+msgid "Plain-text fallback"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:225
 msgid "Plugin information"
 msgstr ""
 
@@ -542,7 +818,7 @@ msgstr ""
 msgid "Plugin settings saved successfully."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsManager.php:109
+#: src/Admin/Manager/Settings/SettingsManager.php:112
 #: src/Admin/Manager/Settings/SettingsManager.php:73
 msgid "Plugin-specific configuration is available from each plugin settings page when provided."
 msgstr ""
@@ -563,8 +839,28 @@ msgstr ""
 msgid "Provided by installed extensions"
 msgstr ""
 
+#: src/Includes/Plugins/Entra/Includes/Core/Capabilities.php:30
+msgid "Read Entra"
+msgstr ""
+
+#: src/Includes/Plugins/Onedrive/Includes/Core/Capabilities.php:30
+msgid "Read OneDrive files"
+msgstr ""
+
+#: src/Includes/Plugins/Sharepoint/Includes/Core/Capabilities.php:30
+msgid "Read SharePoint files"
+msgstr ""
+
 #: src/Admin/Manager/Dashboard/DashboardManager.php:127
 msgid "Ready"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/SentLogs.php:28
+msgid "Recipients"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:160
+msgid "Reconnect account"
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:114
@@ -576,7 +872,7 @@ msgstr ""
 msgid "Refreshing..."
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:411
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:367
 msgid "Register with Microsoft 365"
 msgstr ""
 
@@ -601,12 +897,20 @@ msgstr ""
 msgid "Render a message from the MSPress SharePoint plugin."
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:162
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:186
 msgid "Reply-To Email"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/EmailTemplates.php:94
+msgid "Report"
 msgstr ""
 
 #: src/Admin/Manager/Dashboard/DashboardManager.php:158
 msgid "Review the Microsoft Graph settings and connection diagnostics."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/EmailTemplates.php:65
+msgid "Rich HTML body"
 msgstr ""
 
 #: src/Admin/Manager/UI/Header.php:40
@@ -630,20 +934,38 @@ msgstr ""
 msgid "Role sync failed!"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:212
+#: src/Includes/Plugins/Exchange/Exchange.php:129
+#: src/Includes/Plugins/Exchange/Exchange.php:185
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:77
+msgid "Route Trace"
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:111
+msgid "Run Graph diagnostics"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsPlugins.php:246
 msgid "Save"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:171
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:195
 msgid "Save Changes"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:60
+#: src/Admin/Manager/Settings/SettingsConnection.php:71
 msgid "Save connection"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:61
+msgid "Save Exchange settings"
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/RoleManager.php:177
 msgid "Save Mappings"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:91
+msgid "Save profiles"
 msgstr ""
 
 #: src/Includes/Functions/Helpers/FormFieldHelper.php:542
@@ -658,13 +980,43 @@ msgstr ""
 msgid "Select options"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:172
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:191
+#: src/Includes/Plugins/Exchange/Includes/Core/Capabilities.php:30
+msgid "Send Exchange mail"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:196
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:215
 msgid "Send Test Email"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:185
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:37
+msgid "Send WordPress email through Microsoft Graph"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/SentLogs.php:28
+msgid "Sender"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:38
+msgid "Sender profiles"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:30
+msgid "Sending"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:209
 msgid "Sending..."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/SentLogs.php:28
+msgid "Sent email log"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Exchange.php:130
+#: src/Includes/Plugins/Exchange/Exchange.php:192
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:84
+msgid "Sent Log"
 msgstr ""
 
 #: src/Admin/Manager/Dashboard/DashboardManager.php:128
@@ -673,19 +1025,28 @@ msgid "Service"
 msgstr ""
 
 #: src/Admin/Manager/Settings/SettingsManager.php:77
-#: src/Admin/Manager/Settings/SettingsPlugins.php:162
-#: src/Admin/Manager/Settings/SettingsPlugins.php:337
+#: src/Admin/Manager/Settings/SettingsPlugins.php:196
+#: src/Admin/Manager/Settings/SettingsPlugins.php:376
 #: src/Includes/Functions/Admin/FunctionsSidebar.php:110
 #: src/Includes/Functions/Admin/FunctionsSidebar.php:130
 msgid "Settings"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsManager.php:114
+#: src/Admin/Manager/Settings/SettingsManager.php:117
 msgid "Settings information"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:119
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:143
 msgid "Settings saved successfully."
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:93
+msgid "Shared diagnostic context"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:137
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:321
+msgid "Shared mailbox"
 msgstr ""
 
 #: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:28
@@ -700,8 +1061,13 @@ msgstr ""
 msgid "SharePoint text setting"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:283
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:239
 msgid "Sign in with Microsoft 365"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/SentLogs.php:28
+#: src/Includes/Plugins/Exchange/Includes/Mail/EmailTemplates.php:64
+msgid "Subject"
 msgstr ""
 
 #: src/Admin/Manager/UI/Header.php:36
@@ -744,31 +1110,55 @@ msgstr ""
 msgid "Syncing roles..."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:46
+#: src/Includes/Plugins/Exchange/Admin/EmailTemplates.php:28
+msgid "Template"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Includes.php:49
+msgid "Template Type"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Includes.php:49
+msgid "Template Types"
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:48
 msgid "Tenant ID or verified domain"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:222
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:248
 msgid "Test email sent successfully!"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:90
+#: src/Admin/Manager/Tools/DebugManager.php:107
+msgid "Test the configured application credentials against Microsoft Entra over TLS 1.2. The test does not display credentials or tokens."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:163
+msgid "The connected account must also have Exchange access to any shared mailbox used for sending. Consent and mailbox delegation are separate from importing an address."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsConnection.php:101
 msgid "The connection could not be encrypted. Check the encryption key and try again."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:98
+#: src/Admin/Manager/Settings/SettingsConnection.php:109
 msgid "The connection settings could not be saved."
+msgstr ""
+
+#: src/Admin/Manager/Tools/DebugManager.php:64
+msgid "The diagnostics could not be completed."
 msgstr ""
 
 #: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:38
 msgid "The drive used by the OneDrive file manager."
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:149
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:173
 msgid "The email address that will appear as the sender. Must be a valid Microsoft 365 email address."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:117
+#: src/Admin/Manager/Settings/SettingsConnection.php:128
 msgid "The encryption key could not be added automatically. Check that wp-config.php is writable and add the key manually."
 msgstr ""
 
@@ -776,7 +1166,7 @@ msgstr ""
 msgid "The Microsoft account authorized for delegated OneDrive access."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:112
+#: src/Admin/Manager/Settings/SettingsConnection.php:123
 msgid "The MSPress encryption key was added to wp-config.php."
 msgstr ""
 
@@ -784,7 +1174,7 @@ msgstr ""
 msgid "The MSPress plugin state could not be saved."
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:157
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:181
 msgid "The name that will appear as the sender."
 msgstr ""
 
@@ -796,23 +1186,25 @@ msgstr ""
 msgid "The requested MSPress plugin was not found."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsManager.php:110
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:42
+msgid "The security check failed. Please try again."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:113
 #: src/Admin/Manager/Settings/SettingsManager.php:74
 msgid "Third-party plugin settings are managed through WordPress or the plugin author’s own settings page."
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:217
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:243
 msgid "This is a test email sent through Microsoft Graph API."
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:36
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:36
 #: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:36
 msgid "This tooltip uses the default question icon."
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:44
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:44
 #: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:44
 msgid "This tooltip uses the info icon and demonstrates a custom icon override."
 msgstr ""
@@ -825,6 +1217,14 @@ msgstr ""
 msgid "This will sync roles for all MS365 users. Continue?"
 msgstr ""
 
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:80
+msgid "TinyMCE"
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:81
+msgid "TinyMCE integration"
+msgstr ""
+
 #: src/Includes/Functions/Helpers/FormFieldHelper.php:331
 msgid "Toggle Dropdown"
 msgstr ""
@@ -835,10 +1235,6 @@ msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/Settings/Settings.php:43
 msgid "Toggle the second Entra setting on or off."
-msgstr ""
-
-#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:43
-msgid "Toggle the second Exchange setting on or off."
 msgstr ""
 
 #: src/Includes/Plugins/Sharepoint/Includes/Settings/Settings.php:43
@@ -854,25 +1250,45 @@ msgstr ""
 msgid "Total Users"
 msgstr ""
 
+#: src/Includes/Plugins/Exchange/Admin/TraceRout.php:27
+msgid "Trace Rout"
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:113
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:78
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:311
+msgid "Type"
+msgstr ""
+
+#: src/Includes/Plugins/TinyMCE/Includes/Settings/Settings.php:97
+msgid "UI skins control the toolbar, menus, dialogs, and editor chrome."
+msgstr ""
+
 #: src/Admin/Manager/Dashboard/DashboardManager.php:127
 msgid "Unavailable"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:334
-#: src/Admin/Manager/Settings/SettingsPlugins.php:335
+#: src/Admin/Manager/Settings/SettingsPlugins.php:373
+#: src/Admin/Manager/Settings/SettingsPlugins.php:374
 msgid "Unknown"
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:139
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:163
 msgid "Use Microsoft Graph API for sending emails"
 msgstr ""
 
-#: src/Includes/Core/Capabilities.php:25
+#: src/Includes/Core/Capabilities.php:27
 msgid "Use MSPress Debug Tools"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:53
+#: src/Admin/Manager/Tools/DebugManager.php:144
 msgid "Use this during frontend troubleshooting and disable it afterward."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Admin/ExchangeSettings.php:137
+#: src/Includes/Plugins/Exchange/Includes/Mail/EmailTemplates.php:94
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:321
+msgid "User"
 msgstr ""
 
 #: src/Includes/Plugins/Entra/Includes/User/Sync.php:59
@@ -880,59 +1296,63 @@ msgstr ""
 msgid "User Sync"
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:360
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:316
 msgid "Username"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:196
+#: src/Admin/Manager/Settings/SettingsPlugins.php:230
 msgid "Version"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:159
-#: src/Admin/Manager/Settings/SettingsPlugins.php:335
+#: src/Admin/Manager/Settings/SettingsPlugins.php:193
+#: src/Admin/Manager/Settings/SettingsPlugins.php:374
 msgid "Version:"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsPlugins.php:160
-#: src/Admin/Manager/Settings/SettingsPlugins.php:336
+#: src/Admin/Manager/Settings/SettingsPlugins.php:194
+#: src/Admin/Manager/Settings/SettingsPlugins.php:375
 msgid "View documentation"
 msgstr ""
 
-#: src/Includes/Core/Capabilities.php:21
+#: src/Includes/Core/Capabilities.php:23
 msgid "View Extension Settings"
 msgstr ""
 
-#: src/Includes/Core/Capabilities.php:19
+#: src/Includes/Core/Capabilities.php:21
 msgid "View Internal Plugin Settings"
 msgstr ""
 
-#: src/Includes/Core/Capabilities.php:23
+#: src/Includes/Core/Capabilities.php:25
 msgid "View Microsoft Graph Connection Settings"
 msgstr ""
 
-#: src/Includes/Core/Capabilities.php:17
+#: src/Includes/Core/Capabilities.php:19
 msgid "View MSPress"
 msgstr ""
 
-#: src/Includes/Core/Capabilities.php:18
+#: src/Includes/Core/Capabilities.php:20
 msgid "View Plugin Settings"
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsManager.php:109
+#: src/Admin/Manager/Settings/SettingsManager.php:112
 #: src/Admin/Manager/Settings/SettingsManager.php:73
 msgid "View the MSPress plugins installed on this site."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsManager.php:110
+#: src/Includes/Plugins/Exchange/Admin/TraceRout.php:28
+msgid "View the rout trace for the Exchange plugin."
+msgstr ""
+
+#: src/Admin/Manager/Settings/SettingsManager.php:113
 #: src/Admin/Manager/Settings/SettingsManager.php:74
 msgid "View third-party plugins installed on this site."
 msgstr ""
 
-#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:204
+#: src/Includes/Plugins/Entra/Includes/Login/Auth.php:160
 msgid "Welcome %s! You have successfully registered using your Microsoft 365 account."
 msgstr ""
 
-#: src/Includes/Plugins/Exchange/Includes/GraphMailer.php:141
+#: src/Includes/Plugins/Exchange/Includes/Mail/GraphMailer.php:165
 msgid "When enabled, all WordPress emails will be sent through Microsoft Graph API instead of SMTP."
 msgstr ""
 
@@ -940,16 +1360,16 @@ msgstr ""
 msgid "WordPress Role"
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:52
+#: src/Admin/Manager/Tools/DebugManager.php:143
 msgid "Write diagnostic information to the browser console."
 msgstr ""
 
-#: src/Admin/Manager/Tools/DebugManager.php:44
+#: src/Admin/Manager/Tools/DebugManager.php:135
 msgid "Write diagnostic information to the WordPress debug log."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:47
-#: src/Admin/Manager/Settings/SettingsConnection.php:51
+#: src/Admin/Manager/Settings/SettingsConnection.php:49
+#: src/Admin/Manager/Settings/SettingsConnection.php:53
 msgid "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 msgstr ""
 
@@ -958,15 +1378,19 @@ msgstr ""
 msgid "You are not allowed to connect OneDrive."
 msgstr ""
 
-#: src/Admin/Manager/Tools/ToolsManager.php:67
+#: src/Admin/Manager/Tools/ToolsManager.php:66
 msgid "You are not authorized to access this MSPress tool."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:107
+#: src/Admin/Manager/Settings/SettingsConnection.php:118
 msgid "You are not authorized to add the MSPress encryption key."
 msgstr ""
 
-#: src/Admin/Admin.php:139
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:211
+msgid "You are not authorized to import Exchange mailboxes."
+msgstr ""
+
+#: src/Admin/Admin.php:137
 msgid "You are not authorized to load MSPress settings."
 msgstr ""
 
@@ -978,18 +1402,27 @@ msgstr ""
 msgid "You are not authorized to manage MSPress plugins."
 msgstr ""
 
+#: src/Admin/Manager/Tools/DebugManager.php:36
+msgid "You are not authorized to run Microsoft Graph diagnostics."
+msgstr ""
+
+#: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:39
+msgid "You are not authorized to save Exchange settings."
+msgstr ""
+
 #: src/Includes/Functions/Admin/FunctionsPlugins.php:64
 msgid "You are not authorized to save MSPress plugin settings."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:69
+#: src/Admin/Manager/Settings/SettingsConnection.php:80
 msgid "You are not authorized to save the Microsoft Graph connection."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsManager.php:104
+#: src/Admin/Manager/Settings/SettingsManager.php:107
+#: src/Admin/Manager/Settings/SettingsManager.php:97
 msgid "You are not authorized to view these MSPress settings."
 msgstr ""
 
-#: src/Admin/Manager/Settings/SettingsConnection.php:132
+#: src/Admin/Manager/Settings/SettingsConnection.php:141
 msgid "You do not have permission to configure the encryption key."
 msgstr ""

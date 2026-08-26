@@ -37,27 +37,10 @@ final class ExchangeSettings {
                     <p><?php echo FormFieldHelper::checkbox( 'settings[enabled]', '1', __( 'Send WordPress email through Microsoft Graph', 'mspress' ), [ 'checked' => ! empty( $settings['enabled'] ) ] ); ?></p>
                     <h3 class="h6 mt-4"><?php esc_html_e( 'Sender profiles', 'mspress' ); ?></h3>
                     <p>
-                        <?php echo FormFieldHelper::button( __( 'Import directory mailboxes', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-exchange-import' => true, 'data-bs-toggle' => 'modal', 'data-bs-target' => '#mspress-exchange-import' ] ] ); ?>
+                        <?php echo FormFieldHelper::button( __( 'Import Sender Profiles', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-exchange-profile-import' => true, 'data-bs-toggle' => 'modal', 'data-bs-target' => '#mspress-exchange-profile-import', 'data-bs-placement' => 'top', 'title' => __( 'Find user and shared mailboxes in the directory and add them as sender profiles.', 'mspress' ), 'aria-label' => __( 'Import Sender Profiles. Find user and shared mailboxes in the directory and add them as sender profiles.', 'mspress' ) ] ] ); ?>
+                        <?php echo FormFieldHelper::button( __( 'Edit Sender Profiles', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-warning', 'attributes' => [ 'data-exchange-profile-edit' => true, 'data-bs-toggle' => 'modal', 'data-bs-target' => '#mspress-exchange-profile-edit', 'data-bs-placement' => 'top', 'title' => __( 'Edit the local names and mailbox types of saved sender profiles, or delete profiles.', 'mspress' ), 'aria-label' => __( 'Edit Sender Profiles. Edit the local names and mailbox types of saved sender profiles, or delete profiles.', 'mspress' ) ] ] ); ?>
                     </p>
 
-                    <div class="table-responsive">
-                        <table class="widefat striped">
-                            <thead>
-                                <tr>
-                                    <th><?php esc_html_e( 'Email', 'mspress' ); ?></th>
-                                    <th><?php esc_html_e( 'Name', 'mspress' ); ?></th>
-                                    <th><?php esc_html_e( 'Type', 'mspress' ); ?></th>
-                                    <th><?php esc_html_e( 'Enabled', 'mspress' ); ?></th>
-                                    <th><?php esc_html_e( 'Remove', 'mspress' ); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody data-exchange-profiles>
-                                <?php foreach ( $profiles as $index => $profile ) : ?>
-                                    <?php $this->profile_row( $index, $profile ); ?>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
                     <p class="mb-0">
                         <?php
                         $sender_options = [ '' => __( 'Choose a sender', 'mspress' ) ];
@@ -77,13 +60,46 @@ final class ExchangeSettings {
                 <div class="card-footer">
                     <?php echo FormFieldHelper::button( __( 'Save Exchange settings', 'mspress' ), [ 'type' => 'submit' ] ); ?>
                 </div>
+
+                <div class="modal fade" id="mspress-exchange-profile-edit" tabindex="-1" aria-labelledby="mspress-exchange-profile-edit-title" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 class="modal-title fs-5" id="mspress-exchange-profile-edit-title"><?php esc_html_e( 'Edit sender profiles', 'mspress' ); ?></h2>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?php esc_attr_e( 'Close', 'mspress' ); ?>"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="table-responsive">
+                                    <table class="widefat striped align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th><?php esc_html_e( 'Email address', 'mspress' ); ?></th>
+                                                <th><?php esc_html_e( 'Name', 'mspress' ); ?></th>
+                                                <th><?php esc_html_e( 'Type', 'mspress' ); ?></th>
+                                                <th><?php esc_html_e( 'Delete', 'mspress' ); ?></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-exchange-profiles>
+                                            <?php foreach ( $profiles as $index => $profile ) : ?>
+                                                <?php $this->profile_row( $index, $profile ); ?>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <?php echo FormFieldHelper::button( __( 'Save profiles', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary', 'attributes' => [ 'data-exchange-profile-save' => true ] ] ); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
 
-            <div class="modal fade modal-dialog-centered" id="mspress-exchange-import" tabindex="-1" aria-labelledby="mspress-exchange-import-title" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
+            <div class="modal fade" id="mspress-exchange-profile-import" tabindex="-1" aria-labelledby="mspress-exchange-profile-import-title" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title fs-5" id="mspress-exchange-import-title"><?php esc_html_e( 'Import directory mailboxes', 'mspress' ); ?></h2>
+                            <h2 class="modal-title fs-5" id="mspress-exchange-profile-import-title"><?php esc_html_e( 'Import sender profiles', 'mspress' ); ?></h2>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?php esc_attr_e( 'Close', 'mspress' ); ?>"></button>
                         </div>
                         <div class="modal-body">
@@ -116,11 +132,10 @@ final class ExchangeSettings {
         $email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
         ?>
         <tr>
-            <td><?php echo FormFieldHelper::input( 'settings[sender_profiles][' . absint( $index ) . '][email]', is_string( $email ) ? $email : '', [ 'type' => 'email' ] ); ?></td>
+            <td><?php echo FormFieldHelper::input( 'settings[sender_profiles][' . absint( $index ) . '][email]', is_string( $email ) ? $email : '', [ 'type' => 'email', 'attributes' => [ 'readonly' => true ] ] ); ?></td>
             <td><?php echo FormFieldHelper::text_input( 'settings[sender_profiles][' . absint( $index ) . '][name]', (string) ( $profile['name'] ?? '' ) ); ?></td>
             <td><?php echo FormFieldHelper::select( 'settings[sender_profiles][' . absint( $index ) . '][type]', [ 'user' => __( 'User', 'mspress' ), 'shared' => __( 'Shared mailbox', 'mspress' ) ], $profile['type'] ?? 'user' ); ?></td>
-            <td><?php echo FormFieldHelper::checkbox( 'settings[sender_profiles][' . absint( $index ) . '][enabled]', '1', '', [ 'checked' => ! empty( $profile['enabled'] ) ] ); ?></td>
-            <td><?php echo FormFieldHelper::checkbox( 'settings[sender_profiles][' . absint( $index ) . '][remove]', '1' ); ?></td>
+            <td><button type="button" class="btn btn-danger" data-exchange-profile-delete aria-label="<?php esc_attr_e( 'Delete profile', 'mspress' ); ?>"><i class="fa-solid fa-trash" aria-hidden="true"></i><span class="visually-hidden"><?php esc_html_e( 'Delete profile', 'mspress' ); ?></span></button></td>
         </tr>
         <?php
     }
