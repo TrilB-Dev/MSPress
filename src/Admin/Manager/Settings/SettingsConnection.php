@@ -65,10 +65,12 @@ final class SettingsConnection {
                         </div>
                     </div>
                 </fieldset>
-                <?php if ( $can_edit ) : ?>
-                    <p class="submit mb-0"><?php echo FormFieldHelper::button( __( 'Save connection', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary' ] ); ?></p>
-                <?php endif; ?>
             </div>
+            <?php if ( $can_edit ) : ?>
+                <div class="card-footer">
+                    <?php echo FormFieldHelper::button( __( 'Save connection', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary' ] ); ?>
+                </div>
+            <?php endif; ?>
         </form>
         <?php
     }
@@ -135,12 +137,15 @@ final class SettingsConnection {
             <div class="card-body">
                 <h2 class="h5 card-title"><?php esc_html_e( 'Encryption key required', 'mspress' ); ?></h2>
                 <p class="card-text"><?php esc_html_e( 'MSPress cannot display or save Microsoft Graph credentials until its encryption key is configured.', 'mspress' ); ?></p>
-                <?php if ( $can_edit ) : ?>
-                    <?php echo FormFieldHelper::button( __( 'Add key to wp-config.php', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary' ] ); ?>
-                <?php else : ?>
+                <?php if ( ! $can_edit ) : ?>
                     <p class="mb-0 text-secondary"><?php esc_html_e( 'You do not have permission to configure the encryption key.', 'mspress' ); ?></p>
                 <?php endif; ?>
             </div>
+            <?php if ( $can_edit ) : ?>
+                <div class="card-footer">
+                    <?php echo FormFieldHelper::button( __( 'Add key to wp-config.php', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-primary' ] ); ?>
+                </div>
+            <?php endif; ?>
         </form>
         <?php
     }
