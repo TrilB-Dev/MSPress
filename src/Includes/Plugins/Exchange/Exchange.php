@@ -24,7 +24,7 @@ use MSPress\Includes\Plugins\Exchange\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\Capabilities;
 use MSPress\Includes\Plugins\Exchange\Admin\EmailTemplates;
 use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
-use MSPress\Includes\Plugins\Exchange\Admin\RoutTrace;
+use MSPress\Includes\Plugins\Exchange\Admin\TraceRout;
 use MSPress\Includes\Plugins\Exchange\Admin\SentLogs;
 
 class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, AdminSidebarProviderInterface, AdminMenuProviderInterface, CapabilitiesProviderInterface {
@@ -126,7 +126,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
                 'children' => [
                     [ 'page_title' => __( 'Exchange Settings', 'mspress' ), 'menu_title' => __( 'Exchange Settings', 'mspress' ), 'menu_slug' => 'mspress-exchange-settings', 'callback' => [ ExchangeSettings::class, 'render' ], 'capability' => 'mspress_settings_plugins_view' ],
                     [ 'page_title' => __( 'Email Templates', 'mspress' ), 'menu_title' => __( 'Email Templates', 'mspress' ), 'menu_slug' => 'mspress-exchange-email-templates', 'callback' => [ EmailTemplates::class, 'render' ], 'capability' => 'edit_posts' ],
-                    [ 'page_title' => __( 'Route Trace', 'mspress' ), 'menu_title' => __( 'Route Trace', 'mspress' ), 'menu_slug' => 'mspress-exchange-route-trace', 'callback' => [ RoutTrace::class, 'render' ], 'capability' => 'mspress_tools_debug' ],
+                    [ 'page_title' => __( 'Route Trace', 'mspress' ), 'menu_title' => __( 'Route Trace', 'mspress' ), 'menu_slug' => 'mspress-exchange-route-trace', 'callback' => [ TraceRout::class, 'render' ], 'capability' => 'mspress_tools_debug' ],
                     [ 'page_title' => __( 'Sent Log', 'mspress' ), 'menu_title' => __( 'Sent Log', 'mspress' ), 'menu_slug' => 'mspress-exchange-sent-log', 'callback' => [ SentLogs::class, 'render' ], 'capability' => 'mspress_tools_debug' ],
                 ],
             ],
@@ -169,29 +169,29 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
                 'items' => [
                     [
                         'label' => __( 'Exchange Settings', 'mspress' ),
-                        'page' => 'mspress-exchange-settings',
-                        'query' => [],
+                        'page' => 'mspress-settings',
+                        'query' => [ 'tab' => 'exchange-settings' ],
                         'icon' => 'fa-solid fa-gauge-high',
                         'capability' => 'mspress_settings_plugins_view',
                     ],
                     [
                         'label' => __( 'Email Templates', 'mspress' ),
-                        'page' => 'mspress-exchange-email-templates',
-                        'query' => [],
+                        'page' => 'mspress-settings',
+                        'query' => [ 'tab' => 'exchange-email-templates' ],
                         'icon' => 'fa-solid fa-file-lines',
                         'capability' => 'edit_posts',
                     ],
                     [
                         'label' => __( 'Route Trace', 'mspress' ),
-                        'page' => 'mspress-exchange-route-trace',
-                        'query' => [],
+                        'page' => 'mspress-settings',
+                        'query' => [ 'tab' => 'exchange-trace-rout' ],
                         'icon' => 'fa-solid fa-route',
                         'capability' => 'mspress_tools_debug',
                     ],
                     [
                         'label' => __( 'Sent Log', 'mspress' ),
-                        'page' => 'mspress-exchange-sent-log',
-                        'query' => [],
+                        'page' => 'mspress-settings',
+                        'query' => [ 'tab' => 'exchange-sent-logs' ],
                         'icon' => 'fa-solid fa-paper-plane',
                         'capability' => 'mspress_tools_debug',
                     ],

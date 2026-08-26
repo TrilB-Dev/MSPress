@@ -34,8 +34,8 @@ final class Assets {
     public function register_admin_assets( array $assets ): array {
         $page = sanitize_key( $_GET['page'] ?? '' );
         $tab = sanitize_key( $_GET['tab'] ?? '' );
-        $is_settings = in_array( $page, [ 'mspress-exchange', 'mspress-exchange-settings' ], true ) || ( 'mspress-settings' === $page && 'exchange' === $tab );
-        $is_exchange_page = in_array( $page, [ 'mspress-exchange-email-templates', 'mspress-exchange-route-trace', 'mspress-exchange-sent-log' ], true );
+        $is_settings = in_array( $page, [ 'mspress-exchange', 'mspress-exchange-settings' ], true ) || ( 'mspress-settings' === $page && 'exchange-settings' === $tab );
+        $is_exchange_page = in_array( $page, [ 'mspress-exchange-email-templates', 'mspress-exchange-route-trace', 'mspress-exchange-sent-log' ], true ) || ( 'mspress-settings' === $page && in_array( $tab, [ 'exchange-email-templates', 'exchange-trace-rout', 'exchange-sent-logs' ], true ) );
         if ( ! $is_settings && ! $is_exchange_page ) {
             return $assets;
         }

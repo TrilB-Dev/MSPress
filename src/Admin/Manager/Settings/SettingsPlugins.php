@@ -116,10 +116,22 @@ final class SettingsPlugins {
             }
 
             $page = $plugin->get_settings_page();
-            if ( empty( $page['slug'] ) || empty( $page['label'] ) || empty( $page['fields'] ) ) {
+            if ( empty( $page['slug'] ) || empty( $page['label'] ) || ( empty( $page['fields'] ) && empty( $page['render_page'] ) ) ) {
                 continue;
             }
             $pages[ SanitizationHelper::key( $page['slug'] ) ] = $page;
+
+            foreach ( $page['tabs'] ?? [] as $tab ) {
+                if ( ! is_array( $tab ) || empty( $tab['slug'] ) || empty( $tab['label'] ) || empty( $tab['render_page'] ) || ! is_callable( $tab['render_page'] ) ) {
+                    continue;
+                }
+
+                $pages[ SanitizationHelper::key( $tab['slug'] ) ] = array_merge(
+                    $page,
+                    $tab,
+                    [ 'fields' => $tab['fields'] ?? [] ]
+                );
+            }
         }
         return $pages;
     }

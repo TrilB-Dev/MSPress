@@ -38,13 +38,13 @@ final class Settings {
         check_admin_referer( 'mspress_exchange_save_settings' );
         $input = isset( $_POST['settings'] ) && is_array( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : [];
         $this->sanitize( $input );
-        wp_safe_redirect( admin_url( 'admin.php?page=mspress-exchange-settings&updated=1' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=exchange-settings&updated=1' ) );
         exit;
     }
 
     public function get_settings_page(): array {
         return [
-            'slug' => 'exchange',
+            'slug' => 'exchange-settings',
             'label' => __( 'Exchange', 'mspress' ),
             'title' => __( 'Microsoft Exchange email settings', 'mspress' ),
             'layout' => 'table',
@@ -57,6 +57,29 @@ final class Settings {
                     'type' => 'custom',
                     'default' => [],
                     'render' => [ $this, 'render_account' ],
+                ],
+            ],
+            'tabs' => [
+                [
+                    'slug' => 'exchange-email-templates',
+                    'label' => __( 'Email Templates', 'mspress' ),
+                    'title' => __( 'Exchange email templates', 'mspress' ),
+                    'capability' => 'edit_posts',
+                    'render_page' => [ \MSPress\Includes\Plugins\Exchange\Admin\EmailTemplates::class, 'render' ],
+                ],
+                [
+                    'slug' => 'exchange-trace-rout',
+                    'label' => __( 'Route Trace', 'mspress' ),
+                    'title' => __( 'Exchange route trace', 'mspress' ),
+                    'capability' => 'mspress_tools_debug',
+                    'render_page' => [ \MSPress\Includes\Plugins\Exchange\Admin\TraceRout::class, 'render' ],
+                ],
+                [
+                    'slug' => 'exchange-sent-logs',
+                    'label' => __( 'Sent Log', 'mspress' ),
+                    'title' => __( 'Exchange sent logs', 'mspress' ),
+                    'capability' => 'mspress_tools_debug',
+                    'render_page' => [ \MSPress\Includes\Plugins\Exchange\Admin\SentLogs::class, 'render' ],
                 ],
             ],
             'render_page' => [ new ExchangeSettings(), 'render' ],
@@ -171,7 +194,7 @@ final class Settings {
             return;
         }
         $this->save_connected_account( $account );
-        $redirect_url = admin_url( 'admin.php?page=mspress-exchange-settings&exchange_connected=1' );
+        $redirect_url = admin_url( 'admin.php?page=mspress-settings&tab=exchange-settings&exchange_connected=1' );
         if ( ! wp_safe_redirect( $redirect_url ) ) {
             wp_redirect( $redirect_url );
         }

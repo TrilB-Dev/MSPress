@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Rout Trace class for the Exchange plugin.
+ * Admin Trace Rout class for the Exchange plugin.
  *
  * @package MSPress
  * @subpackage Includes\Plugins\Exchange\Admin
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class RoutTrace {
+class TraceRout {
 
     /**
      * Renders the rout trace page.
@@ -24,7 +24,7 @@ class RoutTrace {
     public static function render(): void {
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e( 'Rout Trace', 'mspress' ); ?></h1>
+            <h1><?php esc_html_e( 'Trace Rout', 'mspress' ); ?></h1>
             <p><?php esc_html_e( 'View the rout trace for the Exchange plugin.', 'mspress' ); ?></p>
             <form method="post" action="options.php">
                 <?php
