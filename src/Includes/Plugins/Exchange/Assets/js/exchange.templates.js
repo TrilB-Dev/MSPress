@@ -29,6 +29,8 @@
 		root.addEventListener('click', function (event) {
 			var button = event.target.closest('[data-exchange-email-edit]');
 			if (!button) return;
+			event.preventDefault();
+			event.stopPropagation();
 			var data;
 			try { data = JSON.parse(button.dataset.template || '{}'); } catch (error) { return; }
 			var category = button.dataset.category || '';

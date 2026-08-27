@@ -95,18 +95,9 @@ class EmailTemplates {
         ?>
         <div class="accordion-item">
             <h3 class="accordion-header">
-                <?php
-                echo FormFieldHelper::button(
-                    __( 'Global', 'mspress' ),
-                    [
-                        'class'      => 'accordion-button',
-                        'attributes' => [
-                            'data-bs-toggle' => 'collapse',
-                            'data-bs-target' => '#mspress-email-global',
-                        ],
-                    ]
-                );
-                ?>
+                <button type="button" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#mspress-email-global">
+                    <?php esc_html_e( 'Global', 'mspress' ); ?>
+                </button>
             </h3>
             <div id="mspress-email-global" class="accordion-collapse collapse show" data-bs-parent="#mspress-email-accordion">
                 <div class="accordion-body">
@@ -115,6 +106,7 @@ class EmailTemplates {
                         echo FormFieldHelper::button(
                             __( 'Edit header', 'mspress' ),
                             [
+                                'type'       => 'button',
                                 'class'      => 'btn-outline-primary',
                                 'attributes' => [
                                     'data-bs-toggle' => 'modal',
@@ -125,6 +117,7 @@ class EmailTemplates {
                         echo FormFieldHelper::button(
                             __( 'Edit footer', 'mspress' ),
                             [
+                                'type'       => 'button',
                                 'class'      => 'btn-outline-primary',
                                 'attributes' => [
                                     'data-bs-toggle' => 'modal',
@@ -145,18 +138,9 @@ class EmailTemplates {
         ?>
         <div class="accordion-item">
             <h3 class="accordion-header">
-                <?php
-                echo FormFieldHelper::button(
-                    $category[0],
-                    [
-                        'class'      => 'accordion-button collapsed',
-                        'attributes' => [
-                            'data-bs-toggle' => 'collapse',
-                            'data-bs-target' => '#mspress-email-' . $slug,
-                        ],
-                    ]
-                );
-                ?>
+                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#mspress-email-<?php echo esc_attr( $slug ); ?>">
+                    <?php echo esc_html( $category[0] ); ?>
+                </button>
             </h3>
             <div id="mspress-email-<?php echo esc_attr( $slug ); ?>" class="accordion-collapse collapse" data-bs-parent="#mspress-email-accordion">
                 <div class="accordion-body p-0">
@@ -184,6 +168,7 @@ class EmailTemplates {
                     echo FormFieldHelper::button(
                         __( 'Edit', 'mspress' ),
                         [
+                            'type'       => 'button',
                             'class'      => 'btn-sm btn-primary',
                             'attributes' => [
                                 'data-exchange-email-edit' => true,
@@ -236,6 +221,7 @@ class EmailTemplates {
                         echo FormFieldHelper::button(
                             '',
                             [
+                                'type'       => 'button',
                                 'class'      => 'btn-close',
                                 'attributes' => [
                                     'data-bs-dismiss' => 'modal',
@@ -282,7 +268,7 @@ class EmailTemplates {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <?php echo FormFieldHelper::button( __( 'Close', 'mspress' ), [ 'class' => 'btn-secondary', 'attributes' => [ 'data-bs-dismiss' => 'modal' ] ] ); ?>
+                        <?php echo FormFieldHelper::button( __( 'Close', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-bs-dismiss' => 'modal' ] ] ); ?>
                     </div>
                 </div>
             </div>
@@ -303,6 +289,7 @@ class EmailTemplates {
                         echo FormFieldHelper::button(
                             '',
                             [
+                                'type'       => 'button',
                                 'class'      => 'btn-close',
                                 'attributes' => [
                                     'data-bs-dismiss' => 'modal',
@@ -336,7 +323,7 @@ class EmailTemplates {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <?php echo FormFieldHelper::button( __( 'Close', 'mspress' ), [ 'class' => 'btn-secondary', 'attributes' => [ 'data-bs-dismiss' => 'modal' ] ] ); ?>
+                        <?php echo FormFieldHelper::button( __( 'Close', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-bs-dismiss' => 'modal' ] ] ); ?>
                     </div>
                 </div>
             </div>
@@ -357,6 +344,7 @@ class EmailTemplates {
                         echo FormFieldHelper::button(
                             '',
                             [
+                                'type'       => 'button',
                                 'class'      => 'btn-close',
                                 'attributes' => [
                                     'data-bs-dismiss' => 'modal',
@@ -391,7 +379,7 @@ class EmailTemplates {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <?php echo FormFieldHelper::button( __( 'Cancel', 'mspress' ), [ 'class' => 'btn-secondary', 'attributes' => [ 'data-bs-dismiss' => 'modal' ] ] ); ?>
+                        <?php echo FormFieldHelper::button( __( 'Cancel', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-bs-dismiss' => 'modal' ] ] ); ?>
                         <?php echo FormFieldHelper::button( __( 'Save template', 'mspress' ), [ 'type' => 'submit' ] ); ?>
                     </div>
                 </div>
