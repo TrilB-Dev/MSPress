@@ -13,20 +13,36 @@ use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\TinyMCE\Includes\Settings\Settings;
 
 final class Assets {
+    /**
+     * The core assets manager.
+     *
+     * @var CoreAssets
+     */
     private CoreAssets $assets;
-
+    /**
+     * Constructor for the TinyMCE plugin assets.
+     *
+     * @param CoreAssets $assets The core assets manager.
+     */
     public function __construct( CoreAssets $assets ) {
         $this->assets = $assets;
     }
 
     /**
-     * Constructor for the TinyMCE plugin assets.
+     * Registers the TinyMCE plugin assets with the core assets manager.
+     * 
+     * @return void
      */
     public function register(): void {
         $this->assets->register_page( 'mspress-settings', $this->register_admin_assets( [] ) );
-        $this->assets->register_page( 'mspress-exchange-email-templates', $this->register_admin_assets( [] ) );
     }
-
+    /**
+     * Registers the admin assets for the TinyMCE plugin.
+     *
+     * @param array  $assets The current assets.
+     * @param string $context The context (e.g., 'frontend', 'admin').
+     * @return array The updated assets with TinyMCE assets included.
+     */
     public function register_admin_assets( array $assets, string $context = '' ): array {
         $base_url = MSPRESS_URL . 'src/Includes/Plugins/TinyMCE/Assets/tinymce/';
 
