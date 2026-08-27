@@ -10,3 +10,6 @@ composer.lock
 !.vscode/settings.json
 */Assets/Images/Logo/*@*
 */Assets/Images/Logo/*.ai
+!src/Includes/Plugins/TinyMCE/Assets/tinymce/icons/
+!src/Includes/Plugins/TinyMCE/Assets/tinymce/icons/default/
+!src/Includes/Plugins/TinyMCE/Assets/tinymce/icons/default/icons.min.js
