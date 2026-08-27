@@ -24,8 +24,8 @@
     };
 
     const initialize = () => {
-        if (!window.tinymce) {
-            return;
+        if (!window.tinymce || typeof window.tinymce.init !== 'function') {
+            return false;
         }
 
         document.querySelectorAll('.mspress-tinymce-config').forEach((node) => {
@@ -51,15 +51,27 @@
                 }
             };
 
-            window.tinymce.init(settings);
+            window.tinymce.init(settings).catch((error) => {
+                console.error('MSPress TinyMCE initialization failed.', error);
+            });
         });
+
+        return true;
+    };
+
+    const initializeWhenReady = () => {
+        if (initialize()) {
+            return;
+        }
+
+        window.setTimeout(initializeWhenReady, 50);
     };
 
     window.addEventListener('mspress:settings-tab-loaded', initialize);
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initialize);
+        document.addEventListener('DOMContentLoaded', initializeWhenReady);
     } else {
-        initialize();
+        initializeWhenReady();
     }
 })();
