@@ -24,6 +24,7 @@ final class Assets {
      */
     public function register(): void {
         $this->assets->register_page( 'mspress-settings', $this->register_admin_assets( [] ) );
+        $this->assets->register_page( 'mspress-exchange-email-templates', $this->register_admin_assets( [] ) );
     }
 
     public function register_admin_assets( array $assets, string $context = '' ): array {

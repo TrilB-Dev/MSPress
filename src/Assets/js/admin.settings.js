@@ -65,6 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
         setActive(response.data.tab, response.data.layout_section);
         if (updateHash) window.history.pushState({}, '', `${window.location.pathname}${window.location.search}#${response.data.tab === 'layout' ? `layout-${response.data.layout_section}` : response.data.tab}`);
         bindForms();
+        window.dispatchEvent(new CustomEvent('mspress:settings-tab-loaded', {
+          detail: { tab: response.data.tab, section: response.data.layout_section }
+        }));
         const nextContent = panel.querySelector('.mspress-settings-tab-content');
         if (nextContent) requestAnimationFrame(() => nextContent.classList.remove('is-loading'));
       })

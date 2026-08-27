@@ -29,6 +29,11 @@
         }
 
         document.querySelectorAll('.mspress-tinymce-config').forEach((node) => {
+            const editorId = node.dataset.editor;
+            if (!editorId || window.tinymce.get(editorId)) {
+                return;
+            }
+
             let settings;
             try {
                 settings = JSON.parse(node.textContent || '{}');
@@ -49,6 +54,8 @@
             window.tinymce.init(settings);
         });
     };
+
+    window.addEventListener('mspress:settings-tab-loaded', initialize);
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initialize);
