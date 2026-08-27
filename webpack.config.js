@@ -23,6 +23,16 @@ const entries = {
 const extensionEntries = (pluginName, directoryName) => {
   const name = pluginName.toLowerCase();
 
+  if ( 'exchange' === name ) {
+    return {
+      'exchange.settings': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.js`,
+      'exchange.templates': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.templates.js`,
+      'exchange.logs': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.logs.js`,
+      'exchange.trace': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.trace.js`,
+      'exchange.styles': `./src/Includes/Plugins/${directoryName}/Assets/scss/${name}.scss`,
+    };
+  }
+
   return {
     [name]: [
       `./src/Includes/Plugins/${directoryName}/Assets/js/${name}.js`,

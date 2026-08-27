@@ -40,10 +40,17 @@ final class Assets {
         if ( ! $is_settings && ! $is_exchange_page ) {
             return $assets;
         }
-        $assets['styles'][] = [ 'handle' => 'mspress-admin-exchange', 'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.css' ];
-        if ( $is_settings || $is_exchange_page ) {
-            $assets['scripts'][] = [ 'handle' => 'mspress-admin-exchange', 'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/js/exchange.js', 'deps' => [ 'mspress-bootstrap', 'mspress-bootstrap-select' ], 'in_footer' => true ];
+        $assets['styles'][] = [ 'handle' => 'mspress-admin-exchange', 'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.styles.css' ];
+        $script = 'exchange.settings';
+        if ( $is_exchange_page ) {
+            $script = 'exchange.templates';
+            if ( in_array( $page, [ 'mspress-exchange-route-trace' ], true ) || 'exchange-trace-rout' === $tab ) {
+                $script = 'exchange.trace';
+            } elseif ( in_array( $page, [ 'mspress-exchange-sent-log' ], true ) || 'exchange-sent-logs' === $tab ) {
+                $script = 'exchange.logs';
+            }
         }
+        $assets['scripts'][] = [ 'handle' => 'mspress-admin-' . $script, 'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/js/' . $script . '.js', 'deps' => [ 'mspress-bootstrap', 'mspress-bootstrap-select' ], 'in_footer' => true ];
         return $assets;
     }
 
