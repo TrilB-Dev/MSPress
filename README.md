@@ -119,10 +119,15 @@ Run the focused checks appropriate to the files you change:
 
 ```bash
 php -l path/to/changed-file.php
-composer test
+composer test:unit
+composer lint
+composer lint:docs
+composer check
 npm run build
 git diff --check
 ```
+
+`composer test` runs all configured PHPUnit suites. `composer lint:docs` checks WordPress inline documentation standards. `composer check` runs the full PHP test and coding-standard cycle used by CI.
 
 When changing translatable strings, regenerate the translation catalogs:
 

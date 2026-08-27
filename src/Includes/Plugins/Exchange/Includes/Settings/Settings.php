@@ -27,6 +27,8 @@ final class Settings {
             'enabled' => false,
             'default_sender' => '',
             'sender_profiles' => [],
+            'email_templates' => [],
+            'email_global' => [],
             'account' => [],
             'sent_logs' => [],
             'wordpress_mail_logs' => [],
@@ -44,7 +46,11 @@ final class Settings {
             wp_die( esc_html__( 'The security check failed. Please try again.', 'mspress' ), '', [ 'response' => 403 ] );
         }
         $input = RequestHelper::array( $_POST, 'settings' );
-        $this->sanitize( $input );
+        $reset = SanitizationHelper::text( $_POST['reset_template'] ?? '' );
+        if ( preg_match( '/^(admin|comments|multisite|user):([a-z0-9_-]+)$/', $reset, $matches ) ) {
+            unset( $input['email_templates'][ $matches[1] ][ $matches[2] ] );
+        }
+        $this->sanitize( $input, $reset );
         wp_safe_redirect( admin_url( 'admin.php?page=mspress-settings&tab=exchange-settings&updated=1' ) );
         exit;
     }
@@ -93,7 +99,7 @@ final class Settings {
         ];
     }
 
-    public function sanitize( $input ): array {
+    public function sanitize( $input, string $reset = '' ): array {
         $input = is_array( $input ) ? $input : [];
         $raw_profiles = $input['sender_profiles'] ?? [];
         if ( is_string( $raw_profiles ) ) {
@@ -127,12 +133,86 @@ final class Settings {
             'enabled' => ! empty( $input['enabled'] ),
             'default_sender' => sanitize_email( SanitizationHelper::text( $input['default_sender'] ?? '' ) ),
             'sender_profiles' => $profiles,
+            'email_templates' => $this->sanitize_email_templates( $input['email_templates'] ?? [], $reset ),
+            'email_global' => $this->sanitize_email_global( $input['email_global'] ?? [] ),
             'account' => is_array( $existing['account'] ?? null ) ? $existing['account'] : [],
             'sent_logs' => is_array( $existing['sent_logs'] ?? null ) ? $existing['sent_logs'] : [],
             'wordpress_mail_logs' => is_array( $existing['wordpress_mail_logs'] ?? null ) ? $existing['wordpress_mail_logs'] : [],
         ];
         BaseSettings::set_group( 'exchange', $input );
         return $input;
+    }
+
+    private function sanitize_email_templates( $templates, string $reset = '' ): array {
+        $existing = BaseSettings::get_group( 'exchange', [] ) ?? [];
+        $sanitized = is_array( $existing['email_templates'] ?? null ) ? $existing['email_templates'] : [];
+        if ( preg_match( '/^(admin|comments|multisite|user):([a-z0-9_-]+)$/', $reset, $matches ) ) {
+            unset( $sanitized[ $matches[1] ][ $matches[2] ] );
+        }
+        $catalogs = [
+            'admin' => dirname( __DIR__, 2 ) . '/Templates/WP/AdminEmail.php',
+            'comments' => dirname( __DIR__, 2 ) . '/Templates/WP/CommentsEmail.php',
+            'multisite' => dirname( __DIR__, 2 ) . '/Templates/WP/MultisiteEmail.php',
+            'user' => dirname( __DIR__, 2 ) . '/Templates/WP/UserEmail.php',
+        ];
+        foreach ( is_array( $templates ) ? $templates : [] as $category => $entries ) {
+            $category = SanitizationHelper::key( $category );
+            if ( ! in_array( $category, [ 'admin', 'comments', 'multisite', 'user' ], true ) || ! is_array( $entries ) ) {
+                continue;
+            }
+            if ( 'multisite' === $category && ! is_multisite() ) {
+                continue;
+            }
+            $catalog = is_readable( $catalogs[ $category ] ) ? require $catalogs[ $category ] : [];
+            foreach ( $entries as $template_id => $entry ) {
+                if ( ! is_array( $entry ) ) {
+                    continue;
+                }
+                $template_id = SanitizationHelper::key( $template_id );
+                if ( '' === $template_id || ! is_array( $catalog ) || ! array_key_exists( $template_id, $catalog ) ) {
+                    continue;
+                }
+                $sanitized[ $category ][ $template_id ] = [
+                    'sender' => sanitize_email( SanitizationHelper::text( $entry['sender'] ?? '' ) ),
+                    'recipient' => SanitizationHelper::text( $entry['recipient'] ?? '' ),
+                    'subject' => SanitizationHelper::text( $entry['subject'] ?? '' ),
+                    'html' => wp_kses_post( wp_unslash( $entry['html'] ?? '' ) ),
+                ];
+            }
+        }
+        return $sanitized;
+    }
+
+    private function sanitize_email_global( $global ): array {
+        $global = is_array( $global ) ? $global : [];
+        $header = is_array( $global['header'] ?? null ) ? $global['header'] : [];
+        $footer = is_array( $global['footer'] ?? null ) ? $global['footer'] : [];
+        $sanitize_color = static function ( $value, string $fallback = '' ): string {
+            $value = sanitize_hex_color( SanitizationHelper::text( $value ?? '' ) );
+            return is_string( $value ) ? $value : $fallback;
+        };
+        $sanitize_integer = static function ( $value, int $fallback = 0 ): int {
+            return max( 0, min( 200, SanitizationHelper::integer( $value ?? $fallback ) ) );
+        };
+        return [
+            'header' => [
+                'template' => SanitizationHelper::one_of( SanitizationHelper::key( $header['template'] ?? '' ), [ 'plain', 'brand', 'minimal' ], 'plain' ),
+                'background' => $sanitize_color( $header['background'] ?? '', '#ffffff' ),
+                'color' => $sanitize_color( $header['color'] ?? '', '#1d2327' ),
+                'font' => SanitizationHelper::text( $header['font'] ?? 'Arial' ),
+                'size' => $sanitize_integer( $header['size'] ?? 16, 16 ),
+                'weight' => SanitizationHelper::one_of( SanitizationHelper::key( $header['weight'] ?? '' ), [ '400', '500', '600', '700' ], '600' ),
+                'margin' => $sanitize_integer( $header['margin'] ?? 0 ),
+                'padding' => $sanitize_integer( $header['padding'] ?? 24 ),
+            ],
+            'footer' => [
+                'background' => $sanitize_color( $footer['background'] ?? '', '#f6f7f7' ),
+                'html' => wp_kses_post( wp_unslash( $footer['html'] ?? '' ) ),
+                'margin' => $sanitize_integer( $footer['margin'] ?? 0 ),
+                'padding' => $sanitize_integer( $footer['padding'] ?? 24 ),
+                'radius' => $sanitize_integer( $footer['radius'] ?? 0 ),
+            ],
+        ];
     }
 
     public function log_sent( array $entry ): void {
