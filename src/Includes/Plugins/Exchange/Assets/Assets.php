@@ -41,7 +41,7 @@ final class Assets {
             return $assets;
         }
         $assets['styles'][] = [ 'handle' => 'mspress-admin-exchange', 'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.css' ];
-        if ( $is_settings ) {
+        if ( $is_settings || $is_exchange_page ) {
             $assets['scripts'][] = [ 'handle' => 'mspress-admin-exchange', 'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/js/exchange.js', 'deps' => [ 'mspress-bootstrap', 'mspress-bootstrap-select' ], 'in_footer' => true ];
         }
         return $assets;

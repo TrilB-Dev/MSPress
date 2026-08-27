@@ -114,6 +114,7 @@
 		});
 		form.addEventListener('submit', function () {
 			if (window.tinymce && window.tinymce.get('mspress-email-html')) window.tinymce.get('mspress-email-html').save();
+			if (window.tinymce && window.tinymce.get('mspress-email-footer-html')) window.tinymce.get('mspress-email-footer-html').save();
 		});
 	});
 })();

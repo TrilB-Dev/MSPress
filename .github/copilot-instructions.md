@@ -121,6 +121,7 @@ All assets must flow through `src/Assets/Assets.php`.
   and `src/Includes/Plugins/PluginsInterface.php`.
 - Prefer the existing settings, sanitization, permission, form-field, AJAX,
   and response helpers over duplicating their behavior.
+- Any and all form elements must be rendered through `src/Includes/Functions/Helpers/FormFieldHelper.php`; no exceptions.
 - Use hooks, filters, provider interfaces, and generic metadata when extending
   core. Do not make shared services identify a provider by slug or class name.
 
