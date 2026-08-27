@@ -59,7 +59,7 @@ final class FontAwesome implements PluginInterface, SettingsProviderInterface, S
      */
     public function get_version(): string {
         if ( function_exists( 'FortAwesome\\fa' ) && class_exists( '\\FortAwesome\\FontAwesome' ) ) {
-            return FortAwesome\fa()->version();
+            return \FortAwesome\fa()->version();
         }else{
             return '1.0.0';
         }
