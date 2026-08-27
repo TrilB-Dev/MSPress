@@ -15,6 +15,7 @@ use MSPress\Includes\Plugins\I18nProviderInterface;
 use MSPress\Includes\Plugins\PluginInterface;
 use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
+use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\FontAwesome\Assets\Assets;
 use MSPress\Includes\Plugins\FontAwesome\Includes\IconPicker;
 use MSPress\Includes\Plugins\FontAwesome\API\FontAwesomeAPI;
@@ -143,7 +144,7 @@ final class FontAwesome implements PluginInterface, SettingsProviderInterface, S
      * This method registers the assets for the FontAwesome plugin using the
      * Assets class.
      */
-    public function register_assets(): void {
+    public function register_assets( CoreAssets $assets ): void {
         ( new Assets() )->register();
     }
     /**
@@ -195,7 +196,7 @@ final class FontAwesome implements PluginInterface, SettingsProviderInterface, S
      * Loads the FontAwesome package as part of this internal plugin.
      */
     private function load_vendor(): void {
-        $vendor_file = WIKIPRESS_DIR . 'vendor/fortawesome/wordpress-fontawesome/index.php';
+        $vendor_file = MSPRESS_DIR . 'vendor/fortawesome/wordpress-fontawesome/index.php';
         if ( is_readable( $vendor_file ) ) {
             require_once $vendor_file;
         }

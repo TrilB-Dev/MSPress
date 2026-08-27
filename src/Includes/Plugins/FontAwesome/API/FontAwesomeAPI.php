@@ -1,8 +1,8 @@
 <?php
 
-namespace WikiPress\Includes\Plugins\FontAwesome\API;
+namespace MSPress\Includes\Plugins\FontAwesome\API;
 
-use WikiPress\Includes\Plugins\FontAwesome\Includes\Settings\Settings;
+use MSPress\Includes\Plugins\FontAwesome\Includes\Settings\Settings;
 
 final class FontAwesomeAPI {
     public static function configure(): void {
@@ -22,7 +22,7 @@ final class FontAwesomeAPI {
             'technology'     => 'svg',
             'compat'         => true,
             'pseudoElements' => false,
-            'name'           => 'WikiPress',
+            'name'           => 'MSPress',
         ] );
     }
 

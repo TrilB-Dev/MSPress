@@ -1,9 +1,9 @@
 <?php
 
-namespace WikiPress\Includes\Plugins\FontAwesome\Assets;
+namespace MSPress\Includes\Plugins\FontAwesome\Assets;
 
-use WikiPress\Includes\Functions\Helpers\LoaderHelper;
-use WikiPress\Includes\Plugins\FontAwesome\Includes\Settings\Settings as FontAwesomeSettings;
+use MSPress\Includes\Functions\Helpers\LoaderHelper;
+use MSPress\Includes\Plugins\FontAwesome\Includes\Settings\Settings as FontAwesomeSettings;
 
 final class Assets {
     private LoaderHelper $loader;
@@ -25,7 +25,7 @@ final class Assets {
 
     private function enqueue_fontawesome_vendor_assets( string $hook_suffix ): void {
         $page = sanitize_key( $_GET['page'] ?? '' );
-        if ( false === strpos( $hook_suffix, 'wikipress' ) && 0 !== strpos( $page, 'wikipress' ) ) {
+        if ( false === strpos( $hook_suffix, 'mspress' ) && 0 !== strpos( $page, 'mspress' ) ) {
             return;
         }
 
@@ -69,28 +69,28 @@ final class Assets {
         }
 
         wp_enqueue_style(
-            'wikipress-fontawesome-icon-picker',
-            WIKIPRESS_URL . 'src/includes/Plugins/FontAwesome/Assets/dist/css/icon-picker.css',
+            'mspress-fontawesome-icon-picker',
+            MSPRESS_URL . 'src/Includes/Plugins/FontAwesome/Assets/dist/css/icon-picker.css',
             [],
-            WIKIPRESS_VERSION
+            MSPRESS_VERSION
         );
         wp_enqueue_script(
-            'wikipress-fontawesome-icon-picker',
-            WIKIPRESS_URL . 'src/includes/Plugins/FontAwesome/Assets/dist/js/icon-picker.js',
+            'mspress-fontawesome-icon-picker',
+            MSPRESS_URL . 'src/Includes/Plugins/FontAwesome/Assets/dist/js/icon-picker.js',
             [ 'jquery' ],
-            WIKIPRESS_VERSION,
+            MSPRESS_VERSION,
             true
         );
 
-        wp_localize_script( 'wikipress-fontawesome-icon-picker', 'wikipress_fa_picker', [
+        wp_localize_script( 'mspress-fontawesome-icon-picker', 'wikipress_fa_picker', [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce' => wp_create_nonce( 'wikipress_fontawesome_picker' ),
             'strings' => [
-                'search_placeholder' => __( 'Search icons...', 'wikipress' ),
-                'no_icons_found' => __( 'No icons found', 'wikipress' ),
-                'loading' => __( 'Loading...', 'wikipress' ),
-                'select_icon' => __( 'Select Icon', 'wikipress' ),
-                'close' => __( 'Close', 'wikipress' ),
+                'search_placeholder' => __( 'Search icons...', 'mspress' ),
+                'no_icons_found' => __( 'No icons found', 'mspress' ),
+                'loading' => __( 'Loading...', 'mspress' ),
+                'select_icon' => __( 'Select Icon', 'mspress' ),
+                'close' => __( 'Close', 'mspress' ),
             ],
         ] );
     }
@@ -101,7 +101,7 @@ final class Assets {
             return false;
         }
 
-        return strpos( $screen->id, 'wikipress' ) !== false
+        return strpos( $screen->id, 'mspress' ) !== false
             || in_array( $screen->id, [ 'post', 'page', 'custom_css', 'customize' ], true );
     }
 }
