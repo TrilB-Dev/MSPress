@@ -357,8 +357,14 @@ final class Settings {
 
         $email = EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) );
         $known = array_map( 'strtolower', array_filter( array_map( 'sanitize_email', RequestHelper::array( $_POST, 'known' ) ), 'is_email' ) );
-        if ( ! $exchange_settings || ! $exchange_settings->getPrimaryMailboxId() || ! is_string( $email ) || ! is_email( $email ) || in_array( strtolower( $email ), $known, true ) ) {
-            wp_send_json_success( [ 'mailboxes' => [] ] );
+        if ( ! $exchange_settings || ! $exchange_settings->getPrimaryMailboxId() ) {
+            wp_send_json_success( [ 'mailboxes' => [], 'reason' => 'no_exchange_mailbox' ] );
+        }
+        if ( ! is_string( $email ) || ! is_email( $email ) ) {
+            wp_send_json_success( [ 'mailboxes' => [], 'reason' => 'invalid_connected_account' ] );
+        }
+        if ( in_array( strtolower( $email ), $known, true ) ) {
+            wp_send_json_success( [ 'mailboxes' => [], 'reason' => 'already_configured' ] );
         }
 
         $mailboxes = [

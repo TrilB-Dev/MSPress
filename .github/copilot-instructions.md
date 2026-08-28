@@ -76,6 +76,7 @@ All assets must flow through `src/Assets/Assets.php`.
 
 - Plugin asset classes may define asset lists and page conditions, but must
   register them through the central `MSPress\Assets\Assets` service.
+- In JavaScript, use arrow functions (`() =>`) instead of `function ()` syntax.
 - Use the central page registry and its enqueue pipeline; do not call
   `wp_enqueue_style()` or `wp_enqueue_script()` directly from plugin code.
 - Do not add provider-specific `mspress_frontend_assets` or

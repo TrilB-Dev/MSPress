@@ -32,6 +32,12 @@ const extensionEntries = (pluginName, directoryName) => {
       'exchange.styles': `./src/Includes/Plugins/${directoryName}/Assets/scss/${name}.scss`,
     };
   }
+  if ( 'fontawesome' === name ) {
+    return {
+      'fontawesome.icon-picker-script': `./src/Includes/Plugins/${directoryName}/Assets/js/fontawesome.icon-picker.js`,
+      'fontawesome.icon-picker-style': `./src/Includes/Plugins/${directoryName}/Assets/scss/fontawesome.icon-picker.scss`,
+    };
+  }
 
   return {
     [name]: [
@@ -46,6 +52,8 @@ const extensionBuilds = [
   [ 'exchange', 'Exchange' ],
   [ 'onedrive', 'Onedrive' ],
   [ 'sharepoint', 'Sharepoint' ],
+  [ 'tinymce', 'TinyMCE' ],
+  [ 'fontawesome', 'FontAwesome' ],
 ];
 
 const shared = {
