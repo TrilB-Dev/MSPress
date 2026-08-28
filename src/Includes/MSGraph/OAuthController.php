@@ -97,6 +97,9 @@ final class OAuthController {
             wp_safe_redirect( admin_url() );
             exit;
         } catch ( \Throwable $exception ) {
+            if ( isset( $oauth_service ) && $oauth_service instanceof OAuthService ) {
+                $oauth_service->clear_oauth_transaction();
+            }
             $last_response = isset( $oauth_service ) && $oauth_service instanceof OAuthService
                 ? $oauth_service->get_last_oauth_response()
                 : null;
@@ -104,6 +107,7 @@ final class OAuthController {
             \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'MSGraph OAuth controller error: ' . $details );
             wp_die(
                 '<p>' . esc_html( __( 'Microsoft sign-in could not be completed.', 'mspress' ) ) . '</p>' .
+                '<p>' . esc_html( __( 'Return to the Exchange settings page and start a new connection. If this continues, verify the Microsoft app registration and consent settings.', 'mspress' ) ) . '</p>' .
                 '<p>' . esc_html( __( 'Full authorization server response:', 'mspress' ) ) . '</p>' .
                 '<pre style="white-space: pre-wrap; overflow-wrap: anywhere;">' . esc_html( $details ) . '</pre>'
             );

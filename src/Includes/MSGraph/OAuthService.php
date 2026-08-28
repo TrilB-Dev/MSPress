@@ -132,9 +132,23 @@ final class OAuthService {
                 'oauth_context' => is_array( $context ) ? $context : [],
             ];
         } catch (Exception $e) {
+            $this->clear_oauth_transaction();
             utilities::write_log('MS Graph OAuth callback error: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    /**
+     * Clear the stored state for the current OAuth transaction.
+     *
+     * @return void
+     */
+    public function clear_oauth_transaction(): void {
+        if ( session_status() === PHP_SESSION_ACTIVE ) {
+            unset( $_SESSION['mspress_oauth_state'], $_SESSION['mspress_oauth_pkce_code'], $_SESSION['mspress_oauth_context'] );
+        }
+        delete_option( 'mspress_oauth_state' );
+        delete_option( 'mspress_oauth_context' );
     }
     /**
      * Get the OAuth client instance.
