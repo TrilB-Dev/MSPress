@@ -1,10 +1,19 @@
 <?php
+/**
+ * PluginReset class for MSPress plugin.
+ *
+ * @package MSPress
+ * @subpackage Admin\Manager\Tools
+ * @since 1.0.0
+ */
 
 namespace MSPress\Admin\Manager\Tools;
 
+use MSPress\Admin\Manager\Manager;
 use MSPress\Includes\Functions\Helpers\AjaxHelper;
 use MSPress\Includes\Functions\Helpers\AlertHelper;
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
+use MSPress\Includes\Functions\Helpers\LoaderHelper;
 use MSPress\Includes\Functions\Helpers\PermissionHelper;
 use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
@@ -17,10 +26,23 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-final class PluginReset {
+final class PluginReset extends Manager {
     /**
-     * Resets the plugin settings to their default values.
+     * Register hooks owned by the plugin reset tool.
      *
+     * @since 1.0.0
+     * @param LoaderHelper|null $loader WordPress hook loader.
+     */
+    public function __construct( ?LoaderHelper $loader = null ) {
+        ( $loader ?? new LoaderHelper() )->register_component( $this, [
+            [ 'type' => 'action', 'hook' => 'admin_post_mspress_reset', 'callback' => 'handle_reset' ],
+        ] )->run();
+    }
+
+    /**
+     * Render the plugin reset tool content.
+     *
+    * @since 1.0.0
      * @return void
      */
     public function render_page_content(): void {
@@ -30,22 +52,44 @@ final class PluginReset {
         if ( '1' === RequestHelper::get_text( 'reset_failed' ) ) {
             AlertHelper::render_admin_notice( __( 'The selected MSPress data could not be reset.', 'mspress' ), 'error' );
         }
-        echo '<p>' . esc_html__( 'Reset MSPress settings and registered plugin data to their factory values. This does not delete WordPress content.', 'mspress' ) . '</p>';
-        echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
-        echo FormFieldHelper::input( 'action', 'mspress_reset', [ 'type' => 'hidden' ] );
-        echo FormFieldHelper::input( 'mspress_reset_nonce', wp_create_nonce( 'mspress_reset' ), [ 'type' => 'hidden' ] );
-        echo FormFieldHelper::label( 'mspress-reset-scope', __( 'Reset scope', 'mspress' ) );
-        echo FormFieldHelper::select( 'scope', $this->scope_options(), 'core', [ 'id' => 'mspress-reset-scope' ] );
-        echo '<fieldset class="mt-4" id="mspress-reset-plugins"><legend>' . esc_html__( 'Plugin data', 'mspress' ) . '</legend>';
+        ?>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5"><?php esc_html_e( 'Reset MSPress data', 'mspress' ); ?></h2>
+                <p class="text-secondary"><?php esc_html_e( 'Reset MSPress settings and registered plugin data to their factory values. This does not delete WordPress content.', 'mspress' ); ?></p>
+                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+                    <?php echo FormFieldHelper::input( 'action', 'mspress_reset', [ 'type' => 'hidden' ] ); ?>
+                    <?php wp_nonce_field( 'mspress_reset', 'mspress_reset_nonce' ); ?>
+                    <?php echo FormFieldHelper::label( 'mspress-reset-scope', __( 'Reset scope', 'mspress' ) ); ?>
+                    <?php echo FormFieldHelper::select( 'scope', $this->scope_options(), 'core', [ 'id' => 'mspress-reset-scope' ] ); ?>
+                    <fieldset class="mt-4" id="mspress-reset-plugins">
+                        <legend><?php esc_html_e( 'Plugin data', 'mspress' ); ?></legend>
+                        <?php
         foreach ( $this->plugin_options() as $slug => $plugin ) {
-            echo FormFieldHelper::checkbox( 'plugins[]', $slug, $plugin['name'], [ 'id' => 'mspress-reset-' . $slug ] );
+                            echo FormFieldHelper::checkbox( 'plugins[]', $slug, $plugin['name'], [ 'id' => 'mspress-reset-' . $slug ] );
         }
-        echo '</fieldset><div class="mt-4">' . FormFieldHelper::checkbox( 'confirm', '1', __( 'I understand that this action cannot be undone.', 'mspress' ), [ 'id' => 'mspress-reset-confirm', 'required' => true ] ) . '</div>';
-        echo '<div class="mt-4">' . FormFieldHelper::button( __( 'Reset selected data', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-danger' ] ) . '</div></form>';
+        ?>
+                    </fieldset>
+                    <div class="mt-4">
+                        <?php echo FormFieldHelper::checkbox( 'confirm', '1', __( 'I understand that this action cannot be undone.', 'mspress' ), [ 'id' => 'mspress-reset-confirm', 'required' => true ] ); ?>
+                    </div>
+                    <div class="mt-4">
+                        <?php echo FormFieldHelper::button( __( 'Reset selected data', 'mspress' ), [ 'type' => 'submit', 'class' => 'btn-danger' ] ); ?>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <?php
     }
 
+    /**
+     * Process a plugin reset request.
+     *
+     * @since 1.0.0
+     * @return void
+     */
     public function handle_reset(): void {
-        if ( ! PermissionHelper::can( 'mspress_tools_reset' ) || ! AjaxHelper::has_valid_nonce( 'mspress_reset', 'mspress_reset_nonce' ) ) {
+        if ( ! AjaxHelper::is_method( 'POST' ) || ! PermissionHelper::can( 'mspress_tools_reset' ) || ! AjaxHelper::has_valid_nonce( 'mspress_reset', 'mspress_reset_nonce' ) ) {
             wp_die( esc_html__( 'The reset request could not be authorized.', 'mspress' ), '', [ 'response' => 403 ] );
         }
         if ( ! RequestHelper::boolean( $_POST, 'confirm' ) ) {
@@ -91,6 +135,9 @@ final class PluginReset {
         $options = $this->plugin_options();
         $groups = [];
         foreach ( $plugins as $slug ) {
+            if ( ! is_scalar( $slug ) ) {
+                continue;
+            }
             $slug = sanitize_key( (string) $slug );
             if ( isset( $options[ $slug ] ) ) {
                 $groups[] = $options[ $slug ]['group'];

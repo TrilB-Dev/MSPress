@@ -3,8 +3,6 @@
  * ToolsManager class for MSPress plugin.
  *
  * @package MSPress
- * @subpackage Admin\Manager\Tools
- * @since 1.0.0
  */
 namespace MSPress\Admin\Manager\Tools;
 
@@ -53,8 +51,12 @@ final class ToolsManager extends Manager {
          * @since 1.0.0
          */
         $this->debug_manager = new DebugManager();
+        /**
+         * Initialize the Plugin Reset page.
+         *
+         * @since 1.0.0
+         */
         $this->reset_manager = new PluginReset();
-        add_action( 'admin_post_mspress_reset', [ $this->reset_manager, 'handle_reset' ] );
     }
     /**
      * Renders the tools page.
@@ -88,5 +90,6 @@ final class ToolsManager extends Manager {
      */
     public function register_assets( Assets $assets ): void {
         $this->register_page_assets( $assets, [ 'mspress-tools' ], 'debug' );
+        $this->register_page_assets( $assets, [ 'mspress-tools' ], 'reset' );
     }
 }
