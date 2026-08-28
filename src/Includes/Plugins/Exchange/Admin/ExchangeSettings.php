@@ -37,7 +37,7 @@ final class ExchangeSettings {
                     </div>
                     <h3 class="h6 mt-4"><?php esc_html_e( 'Sender profiles', 'mspress' ); ?></h3>
                     <p>
-                        <?php echo FormFieldHelper::button( __( 'Import Sender Profiles', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-exchange-profile-import' => true, 'data-bs-toggle' => 'modal', 'data-bs-target' => '#mspress-exchange-profile-import', 'data-bs-placement' => 'top', 'title' => __( 'Import the connected Microsoft 365 account as a sender profile.', 'mspress' ), 'aria-label' => __( 'Import Sender Profiles. Import the connected Microsoft 365 account as a sender profile.', 'mspress' ) ] ] ); ?>
+                        <?php echo FormFieldHelper::button( __( 'Add Sender Profile', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-secondary', 'attributes' => [ 'data-exchange-profile-import' => true, 'data-bs-toggle' => 'modal', 'data-bs-target' => '#mspress-exchange-profile-import', 'data-bs-placement' => 'top', 'title' => __( 'Add a sender profile for an Exchange mailbox.', 'mspress' ), 'aria-label' => __( 'Add Sender Profile. Add a sender profile for an Exchange mailbox.', 'mspress' ) ] ] ); ?>
                         <?php echo FormFieldHelper::button( __( 'Edit Sender Profiles', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-warning', 'attributes' => [ 'data-exchange-profile-edit' => true, 'data-bs-toggle' => 'modal', 'data-bs-target' => '#mspress-exchange-profile-edit', 'data-bs-placement' => 'top', 'title' => __( 'Edit the local names and mailbox types of saved sender profiles, or delete profiles.', 'mspress' ), 'aria-label' => __( 'Edit Sender Profiles. Edit the local names and mailbox types of saved sender profiles, or delete profiles.', 'mspress' ) ] ] ); ?>
                     </p>
 
@@ -100,27 +100,25 @@ final class ExchangeSettings {
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title fs-5" id="mspress-exchange-profile-import-title"><?php esc_html_e( 'Import sender profiles', 'mspress' ); ?></h2>
+                            <h2 class="modal-title fs-5" id="mspress-exchange-profile-import-title"><?php esc_html_e( 'Add sender profile', 'mspress' ); ?></h2>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?php esc_attr_e( 'Close', 'mspress' ); ?>"></button>
                         </div>
                         <div class="modal-body">
-                            <div data-exchange-import-status></div>
-                            <div class="table-responsive">
-                                <table class="widefat striped">
-                                    <thead>
-                                        <tr>
-                                            <th><?php esc_html_e( 'Email', 'mspress' ); ?></th>
-                                            <th><?php esc_html_e( 'Name', 'mspress' ); ?></th>
-                                            <th><?php esc_html_e( 'Type', 'mspress' ); ?></th>
-                                            <th><?php esc_html_e( 'Add', 'mspress' ); ?></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody data-exchange-import-rows></tbody>
-                                </table>
+                            <div data-exchange-import-status role="status" aria-live="polite"></div>
+                            <div data-exchange-profile-step-email>
+                                <?php echo FormFieldHelper::label( 'mspress-exchange-profile-email', __( 'Exchange mailbox address', 'mspress' ) ); ?>
+                                <?php echo FormFieldHelper::input( 'exchange_profile_email', '', [ 'type' => 'email', 'id' => 'mspress-exchange-profile-email', 'attributes' => [ 'autocomplete' => 'email', 'required' => true ] ] ); ?>
+                            </div>
+                            <div class="d-none" data-exchange-profile-step-details>
+                                <?php echo FormFieldHelper::label( 'mspress-exchange-profile-name', __( 'Profile name', 'mspress' ) ); ?>
+                                <?php echo FormFieldHelper::text_input( 'exchange_profile_name', '', [ 'id' => 'mspress-exchange-profile-name', 'attributes' => [ 'required' => true ] ] ); ?>
+                                <?php echo FormFieldHelper::label( 'mspress-exchange-profile-type', __( 'Mailbox type', 'mspress' ) ); ?>
+                                <?php echo FormFieldHelper::bootstrap_select( 'exchange_profile_type', [ 'data' => [ 'user' => __( 'User', 'mspress' ), 'shared' => __( 'Shared mailbox', 'mspress' ) ], 'selected' => 'shared', 'id' => 'mspress-exchange-profile-type', 'class' => 'form-select' ] ); ?>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><?php esc_html_e( 'Done', 'mspress' ); ?></button>
+                            <?php echo FormFieldHelper::button( __( 'Next', 'mspress' ), [ 'type' => 'button', 'attributes' => [ 'data-exchange-profile-next' => true ] ] ); ?>
+                            <?php echo FormFieldHelper::button( __( 'Save Sender Profile', 'mspress' ), [ 'type' => 'button', 'class' => 'd-none', 'attributes' => [ 'data-exchange-profile-save-new' => true ] ] ); ?>
                         </div>
                     </div>
                 </div>

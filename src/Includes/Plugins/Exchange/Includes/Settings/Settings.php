@@ -22,6 +22,7 @@ use MSPress\Includes\Functions\Helpers\PermissionHelper;
 use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\MSGraph\GraphService;
 use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
+use MSPress\Includes\Plugins\Exchange\Includes\Mail\ExchangeDiscovery;
 
 final class Settings {
     /**
@@ -41,6 +42,8 @@ final class Settings {
             'wordpress_mail_logs' => [],
         ] );
         add_action( 'wp_ajax_mspress_exchange_directory_mailboxes', [ $this, 'ajax_directory_mailboxes' ] );
+        add_action( 'wp_ajax_mspress_exchange_validate_mailbox', [ $this, 'ajax_validate_mailbox' ] );
+        add_action( 'wp_ajax_mspress_exchange_save_profile', [ $this, 'ajax_save_profile' ] );
         add_action( 'admin_post_mspress_exchange_save_settings', [ $this, 'save_admin_settings' ] );
         add_action( 'wp_mail_succeeded', [ $this, 'log_wordpress_mail' ] );
     }
@@ -251,7 +254,7 @@ final class Settings {
         $email = EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) );
         $connected = is_string( $email ) && is_email( $email );
         $oauth = GraphService::get_instance()->get_oauth_service();
-        $connect_url = $oauth ? $oauth->get_authorization_url( null, [ 'purpose' => 'exchange_connect' ], 'openid profile email offline_access User.Read.All' ) : '';
+        $connect_url = $oauth ? $oauth->get_authorization_url( null, [ 'purpose' => 'exchange_connect' ], 'openid profile email offline_access User.Read.All Mail.Read.Shared' ) : '';
 
         echo '<div class="d-flex flex-wrap align-items-center gap-3">';
         echo '<span class="badge ' . ( $connected ? 'text-bg-success' : 'text-bg-secondary' ) . '">' . esc_html( $connected ? __( 'Connected', 'mspress' ) : __( 'Not connected', 'mspress' ) ) . '</span>';
@@ -291,6 +294,7 @@ final class Settings {
             'refresh_token' => $encrypted_refresh,
             'expires' => SanitizationHelper::integer( $account['expires'] ?? 0 ),
         ];
+        $settings['sender_profiles'] = $this->add_profile( $settings['sender_profiles'] ?? [], $email, $account['display_name'] ?? '', 'user' );
         $saved = BaseSettings::set_group( 'exchange', $settings );
         \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence completed: saved=' . ( $saved ? 'yes' : 'no' ) );
     }
@@ -375,6 +379,79 @@ final class Settings {
             ],
         ];
         wp_send_json_success( [ 'mailboxes' => $mailboxes ] );
+    }
+
+    public function ajax_validate_mailbox(): void {
+        if ( ! AjaxHelper::authorized( 'mspress_exchange_settings', 'mspress_settings_plugins_int_edit' ) ) {
+            AjaxHelper::unauthorized( __( 'You are not authorized to validate Exchange mailboxes.', 'mspress' ) );
+        }
+        $email = sanitize_email( SanitizationHelper::text( $_POST['email'] ?? '' ) );
+        $graph = $this->get_delegated_graph();
+        if ( ! $graph ) {
+            wp_send_json_error( [ 'message' => __( 'Reconnect the Microsoft 365 account before validating a mailbox.', 'mspress' ) ], 400 );
+        }
+        $result = ExchangeDiscovery::validate( $graph, $email );
+        if ( empty( $result['valid'] ) ) {
+            wp_send_json_error( [ 'message' => 'access_denied' === ( $result['reason'] ?? '' ) ? __( 'The mailbox exists, but the connected account cannot access it.', 'mspress' ) : __( 'The mailbox address could not be found.', 'mspress' ) ], 400 );
+        }
+        wp_send_json_success( [ 'email' => $result['email'], 'name' => $result['name'] ] );
+    }
+
+    public function ajax_save_profile(): void {
+        if ( ! AjaxHelper::authorized( 'mspress_exchange_settings', 'mspress_settings_plugins_int_edit' ) ) {
+            AjaxHelper::unauthorized( __( 'You are not authorized to save sender profiles.', 'mspress' ) );
+        }
+        $email = sanitize_email( SanitizationHelper::text( $_POST['email'] ?? '' ) );
+        $name = SanitizationHelper::text( $_POST['name'] ?? '' );
+        $type = SanitizationHelper::one_of( SanitizationHelper::key( $_POST['type'] ?? 'user' ), [ 'user', 'shared' ], 'user' );
+        $graph = $this->get_delegated_graph();
+        if ( ! $graph ) {
+            wp_send_json_error( [ 'message' => __( 'Reconnect the Microsoft 365 account before saving a profile.', 'mspress' ) ], 400 );
+        }
+        $validation = ExchangeDiscovery::validate( $graph, $email );
+        if ( empty( $validation['valid'] ) ) {
+            wp_send_json_error( [ 'message' => __( 'Validate the mailbox before saving the sender profile.', 'mspress' ) ], 400 );
+        }
+        $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
+        $settings['sender_profiles'] = $this->add_profile( $settings['sender_profiles'] ?? [], $validation['email'], $name ?: $validation['name'], $type );
+        BaseSettings::set_group( 'exchange', $settings );
+        wp_send_json_success( [ 'message' => __( 'Sender profile saved.', 'mspress' ) ] );
+    }
+
+    private function add_profile( $profiles, string $email, string $name, string $type ): array {
+        $email = sanitize_email( $email );
+        foreach ( (array) $profiles as $profile ) {
+            $existing = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? '' ) );
+            if ( is_string( $existing ) && strtolower( $existing ) === strtolower( $email ) ) {
+                return (array) $profiles;
+            }
+        }
+        $encrypted = EncryptionHelper::encrypt( $email );
+        if ( null === $encrypted ) {
+            return (array) $profiles;
+        }
+        $profiles[] = [ 'address' => $encrypted, 'name' => SanitizationHelper::text( $name ), 'type' => $type, 'enabled' => true ];
+        return $profiles;
+    }
+
+    private function get_delegated_graph(): ?GraphServiceClient {
+        $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
+        $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
+        $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
+        if ( ! is_string( $token ) || '' === $token ) {
+            return null;
+        }
+        try {
+            $token_provider = new class( $token ) implements AccessTokenProvider {
+                private AllowedHostsValidator $allowed_hosts_validator;
+                public function __construct( private string $token ) { $this->allowed_hosts_validator = new AllowedHostsValidator( [ 'graph.microsoft.com' ] ); }
+                public function getAuthorizationTokenAsync( string $url, array $additionalAuthenticationContext = [] ): \Http\Promise\Promise { return $this->allowed_hosts_validator->isUrlHostValid( $url ) ? new FulfilledPromise( $this->token ) : new RejectedPromise( new \InvalidArgumentException( 'Host not allowed.' ) ); }
+                public function getAllowedHostsValidator(): AllowedHostsValidator { return $this->allowed_hosts_validator; }
+            };
+            return GraphServiceClient::createWithRequestAdapter( new GraphRequestAdapter( new BaseBearerTokenAuthenticationProvider( $token_provider ), null, null, new \GuzzleHttp\Client( \MSPress\Includes\MSGraph\TlsTransport::guzzle_options() ) ) );
+        } catch ( \Throwable $exception ) {
+            return null;
+        }
     }
 
     public function render_profiles( $value ): void {

@@ -2,64 +2,70 @@
 	'use strict';
 
 	document.addEventListener('DOMContentLoaded', () => {
-		var root = document.querySelector('[data-exchange-settings]');
+		const root = document.querySelector('[data-exchange-settings]');
 		if (!root || typeof bootstrap === 'undefined') return;
-		var importModalElement = document.getElementById('mspress-exchange-profile-import');
-		var editModalElement = document.getElementById('mspress-exchange-profile-edit');
-		var importButton = root.querySelector('[data-exchange-profile-import]');
-		var editButton = root.querySelector('[data-exchange-profile-edit]');
-		var profiles = root.querySelector('[data-exchange-profiles]');
-		if (!importModalElement || !editModalElement || !importButton || !editButton || !profiles) return;
-		var importModal = new bootstrap.Modal(importModalElement);
-		var editModal = new bootstrap.Modal(editModalElement);
-		var rows = importModalElement.querySelector('[data-exchange-import-rows]');
-		var status = importModalElement.querySelector('[data-exchange-import-status]');
-		if (!rows || !status) return;
-		importButton.addEventListener('click', () => {
-			status.textContent = 'Loading the connected account mailbox...';
-			rows.innerHTML = '';
-			importModal.show();
-			var body = new URLSearchParams({ action: 'mspress_exchange_directory_mailboxes', nonce: root.dataset.nonce });
-			Array.prototype.forEach.call(profiles.querySelectorAll('input[type="email"]'), function (input) { body.append('known[]', input.value); });
-			fetch(root.dataset.ajaxUrl, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }, body: body })
-				.then((response) => response.json())
+		const modalElement = document.getElementById('mspress-exchange-profile-import');
+		const addButton = root.querySelector('[data-exchange-profile-import]');
+		const email = modalElement?.querySelector('#mspress-exchange-profile-email');
+		const name = modalElement?.querySelector('#mspress-exchange-profile-name');
+		const type = modalElement?.querySelector('#mspress-exchange-profile-type');
+		const status = modalElement?.querySelector('[data-exchange-import-status]');
+		const emailStep = modalElement?.querySelector('[data-exchange-profile-step-email]');
+		const detailsStep = modalElement?.querySelector('[data-exchange-profile-step-details]');
+		const nextButton = modalElement?.querySelector('[data-exchange-profile-next]');
+		const saveButton = modalElement?.querySelector('[data-exchange-profile-save-new]');
+		if (!modalElement || !addButton || !email || !name || !type || !status || !emailStep || !detailsStep || !nextButton || !saveButton) return;
+
+		const modal = new bootstrap.Modal(modalElement);
+		let validatedEmail = '';
+		const request = (action, values) => fetch(root.dataset.ajaxUrl, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+			body: new URLSearchParams({ action, nonce: root.dataset.nonce, ...values })
+		}).then((response) => response.json());
+
+		const reset = () => {
+			validatedEmail = '';
+			email.value = '';
+			name.value = '';
+			emailStep.classList.remove('d-none');
+			detailsStep.classList.add('d-none');
+			nextButton.classList.remove('d-none');
+			saveButton.classList.add('d-none');
+			status.textContent = '';
+		};
+
+		addButton.addEventListener('click', () => { reset(); modal.show(); });
+		nextButton.addEventListener('click', () => {
+			if (!email.reportValidity()) return;
+			status.textContent = 'Validating mailbox access...';
+			nextButton.disabled = true;
+			request('mspress_exchange_validate_mailbox', { email: email.value })
 				.then((response) => {
-					if (!response.success) throw new Error(response.data && response.data.message ? response.data.message : 'Mailbox lookup failed.');
-					var reason = response.data.reason || '';
-					status.textContent = response.data.mailboxes.length ? '' : {
-						already_configured: 'The connected account mailbox is already configured.',
-						no_exchange_mailbox: 'The connected Microsoft 365 account does not have an Exchange mailbox.',
-						invalid_connected_account: 'The connected Microsoft 365 account email address could not be verified.'
-					}[reason] || 'No additional mailbox was returned for the connected account.';
-					response.data.mailboxes.forEach((mailbox) => {
-						var row = document.createElement('tr');
-						row.innerHTML = '<td>' + escapeHtml(mailbox.email) + '</td><td>' + escapeHtml(mailbox.name) + '</td><td><select><option value="user">User</option><option value="shared">Shared mailbox</option></select></td><td><input type="checkbox" checked></td>';
-						var add = row.querySelector('input');
-						add.addEventListener('change', () => { if (add.checked) appendProfile(mailbox, row.querySelector('select').value); else removeProfile(mailbox.email); });
-						row.querySelector('select').addEventListener('change', function () { if (add.checked) appendProfile(mailbox, this.value); });
-						rows.appendChild(row);
-						appendProfile(mailbox, 'user');
-					});
+					if (!response.success) throw new Error(response.data?.message || 'Mailbox validation failed.');
+					validatedEmail = response.data.email;
+					email.value = validatedEmail;
+					name.value = response.data.name || validatedEmail;
+					emailStep.classList.add('d-none');
+					detailsStep.classList.remove('d-none');
+					nextButton.classList.add('d-none');
+					saveButton.classList.remove('d-none');
+					status.textContent = 'Mailbox validated.';
 				})
-				.catch((error) => { status.textContent = error.message; });
+				.catch((error) => { status.textContent = error.message; })
+				.finally(() => { nextButton.disabled = false; });
 		});
-		profiles.addEventListener('click', (event) => {
-			var deleteButton = event.target.closest('[data-exchange-profile-delete]');
-			if (deleteButton) deleteButton.closest('tr').remove();
+
+		saveButton.addEventListener('click', () => {
+			if (!validatedEmail || !name.reportValidity()) return;
+			status.textContent = 'Saving sender profile...';
+			saveButton.disabled = true;
+			request('mspress_exchange_save_profile', { email: validatedEmail, name: name.value, type: type.value })
+				.then((response) => {
+					if (!response.success) throw new Error(response.data?.message || 'Sender profile could not be saved.');
+					window.location.reload();
+				})
+				.catch((error) => { status.textContent = error.message; saveButton.disabled = false; });
 		});
-		editButton.addEventListener('click', () => { editModal.show(); });
-		var saveButton = root.querySelector('[data-exchange-profile-save]');
-		if (saveButton) saveButton.addEventListener('click', () => { editModal.hide(); });
-		function appendProfile(mailbox, type) {
-			removeProfile(mailbox.email);
-			var index = profiles.querySelectorAll('tr').length;
-			var row = document.createElement('tr');
-			row.dataset.email = mailbox.email.toLowerCase();
-			row.innerHTML = '<td><input type="email" name="settings[sender_profiles][' + index + '][email]" value="' + escapeAttr(mailbox.email) + '" readonly></td><td><input type="text" name="settings[sender_profiles][' + index + '][name]" value="' + escapeAttr(mailbox.name) + '"></td><td><select name="settings[sender_profiles][' + index + '][type]"><option value="user"' + (type === 'user' ? ' selected' : '') + '>User</option><option value="shared"' + (type === 'shared' ? ' selected' : '') + '>Shared mailbox</option></select></td><td><input type="hidden" name="settings[sender_profiles][' + index + '][enabled]" value="0"><input type="checkbox" class="form-check-input" name="settings[sender_profiles][' + index + '][enabled]" value="1" checked aria-label="Enable sender profile"></td><td><button type="button" class="btn btn-danger" data-exchange-profile-delete aria-label="Delete profile"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></td>';
-			profiles.appendChild(row);
-		}
-		function removeProfile(email) { var existing = profiles.querySelector('tr[data-email="' + CSS.escape(email.toLowerCase()) + '"]'); if (existing) existing.remove(); }
-		function escapeHtml(value) { var div = document.createElement('div'); div.textContent = value; return div.innerHTML; }
-		function escapeAttr(value) { return escapeHtml(value).replace(/"/g, '&quot;'); }
 	});
 })();
