@@ -211,7 +211,8 @@ final class SettingsPlugins {
      * @param array $plugin The plugin data.
      */
     private function render_plugin_settings_modal( PluginInterface $plugin, array $settings_page, string $modal_id, bool $can_edit ): void {
-        $values = Settings::get_group( SanitizationHelper::key( $settings_page['slug'] ), [] ) ?? [];
+        $settings_group = SanitizationHelper::key( $settings_page['settings_group'] ?? $settings_page['slug'] );
+        $values = Settings::get_group( $settings_group, [] ) ?? [];
         ?>
         <div class="modal fade mspress-plugin-settings-modal" id="<?php echo esc_attr( $modal_id ); ?>" tabindex="-1" aria-labelledby="<?php echo esc_attr( $modal_id . '-label' ); ?>" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
