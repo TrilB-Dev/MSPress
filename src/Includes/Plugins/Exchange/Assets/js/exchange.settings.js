@@ -16,7 +16,7 @@
 		var status = importModalElement.querySelector('[data-exchange-import-status]');
 		if (!rows || !status) return;
 		importButton.addEventListener('click', function () {
-			status.textContent = 'Loading directory mailboxes...';
+			status.textContent = 'Loading the connected account mailbox...';
 			rows.innerHTML = '';
 			importModal.show();
 			var body = new URLSearchParams({ action: 'mspress_exchange_directory_mailboxes', nonce: root.dataset.nonce });
@@ -25,7 +25,7 @@
 				.then(function (response) { return response.json(); })
 				.then(function (response) {
 					if (!response.success) throw new Error(response.data && response.data.message ? response.data.message : 'Mailbox lookup failed.');
-					status.textContent = response.data.mailboxes.length ? '' : 'No new directory mailboxes were found.';
+					status.textContent = response.data.mailboxes.length ? '' : 'The connected account mailbox is already configured.';
 					response.data.mailboxes.forEach(function (mailbox) {
 						var row = document.createElement('tr');
 						row.innerHTML = '<td>' + escapeHtml(mailbox.email) + '</td><td>' + escapeHtml(mailbox.name) + '</td><td><select><option value="user">User</option><option value="shared">Shared mailbox</option></select></td><td><input type="checkbox" checked></td>';

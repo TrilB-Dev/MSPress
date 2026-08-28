@@ -244,7 +244,7 @@ final class Settings {
         $email = EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) );
         $connected = is_string( $email ) && is_email( $email );
         $oauth = GraphService::get_instance()->get_oauth_service();
-        $connect_url = $oauth ? $oauth->get_authorization_url( null, [ 'purpose' => 'exchange_connect' ], 'openid profile email offline_access User.Read Mail.ReadBasic User.ReadBasic.All' ) : '';
+        $connect_url = $oauth ? $oauth->get_authorization_url( null, [ 'purpose' => 'exchange_connect' ], 'openid profile email offline_access User.Read User.Read.All Mail.ReadBasic' ) : '';
 
         echo '<div class="d-flex flex-wrap align-items-center gap-3">';
         echo '<span class="badge ' . ( $connected ? 'text-bg-success' : 'text-bg-secondary' ) . '">' . esc_html( $connected ? __( 'Connected', 'mspress' ) : __( 'Not connected', 'mspress' ) ) . '</span>';
@@ -308,52 +308,48 @@ final class Settings {
 
         $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
         $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
-        $token = GraphService::get_instance()->getAccessToken();
+        $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
         if ( ! is_string( $token ) || '' === $token ) {
-            wp_send_json_error( [ 'message' => __( 'Microsoft Graph application access is unavailable. Check the MSPress Microsoft 365 connection settings and application consent.', 'mspress' ) ], 400 );
+            wp_send_json_error( [ 'message' => __( 'The connected Microsoft 365 account does not have a usable access token. Reconnect the account and try again.', 'mspress' ) ], 400 );
         }
 
-        $mailbox_url = 'https://graph.microsoft.com/v1.0/users?' . http_build_query( [
-            '$select' => 'displayName,mail,userPrincipalName',
-            '$top' => 999,
-        ], '', '&', PHP_QUERY_RFC3986 );
-        $response = $this->fetch_directory_mailboxes( $mailbox_url, $token );
+        $response = $this->fetch_graph_json( 'https://graph.microsoft.com/v1.0/me/settings/exchange', $token );
         if ( ! $response['success'] ) {
             $error = (string) ( $response['error'] ?? 'Unknown Microsoft Graph error.' );
             \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange mailbox import failed: ' . $error );
-            wp_send_json_error( [ 'message' => sprintf( __( 'Microsoft Graph could not return directory mailboxes: %s', 'mspress' ), $error ) ], 502 );
+            wp_send_json_error( [ 'message' => sprintf( __( 'Microsoft Graph could not return the connected user Exchange settings: %s', 'mspress' ), $error ) ], 502 );
         }
 
-        $body = json_decode( (string) $response['body'], true );
-        $mailboxes = [];
+        $exchange_settings = json_decode( (string) $response['body'], true );
+        $email = EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) );
         $known = array_map( 'strtolower', array_filter( array_map( 'sanitize_email', RequestHelper::array( $_POST, 'known' ) ), 'is_email' ) );
-        foreach ( (array) ( $body['value'] ?? [] ) as $mailbox ) {
-            $address = sanitize_email( SanitizationHelper::text( $mailbox['mail'] ?? $mailbox['userPrincipalName'] ?? '' ) );
-            if ( ! is_email( $address ) || in_array( strtolower( $address ), $known, true ) ) {
-                continue;
-            }
-            $mailboxes[] = [
-                'email' => $address,
-                'name' => SanitizationHelper::text( $mailbox['displayName'] ?? '' ),
-                'type' => 'user',
-            ];
+        if ( ! is_array( $exchange_settings ) || empty( $exchange_settings['primaryMailboxId'] ) || ! is_string( $email ) || ! is_email( $email ) || in_array( strtolower( $email ), $known, true ) ) {
+            wp_send_json_success( [ 'mailboxes' => [] ] );
         }
+
+        $mailboxes = [
+            [
+                'email' => sanitize_email( $email ),
+                'name' => SanitizationHelper::text( $account['display_name'] ?? '' ),
+                'type' => 'user',
+            ],
+        ];
         wp_send_json_success( [ 'mailboxes' => $mailboxes ] );
     }
 
     /**
-        * Retrieve directory users with the application access token using cURL.
+        * Retrieve a Microsoft Graph JSON resource using cURL.
      *
      * @return array{success: bool, body?: string, error?: string}
      */
-    private function fetch_directory_mailboxes( string $url, string $token ): array {
+    private function fetch_graph_json( string $url, string $token ): array {
         if ( ! function_exists( 'curl_init' ) ) {
             return [ 'success' => false, 'error' => 'PHP cURL extension is unavailable.' ];
         }
 
         $parts = wp_parse_url( $url );
         if ( ! is_array( $parts ) || 'https' !== strtolower( (string) ( $parts['scheme'] ?? '' ) ) || 'graph.microsoft.com' !== strtolower( (string) ( $parts['host'] ?? '' ) ) ) {
-            return [ 'success' => false, 'error' => 'Invalid Microsoft Graph directory URL.' ];
+            return [ 'success' => false, 'error' => 'Invalid Microsoft Graph URL.' ];
         }
 
         $handle = curl_init( $url );

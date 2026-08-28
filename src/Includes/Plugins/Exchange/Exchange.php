@@ -26,6 +26,8 @@ use MSPress\Includes\Plugins\Exchange\Admin\EmailTemplates;
 use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
 use MSPress\Includes\Plugins\Exchange\Admin\TraceRout;
 use MSPress\Includes\Plugins\Exchange\Admin\SentLogs;
+use MSPress\Includes\Functions\Helpers\EncryptionHelper;
+use MSPress\Includes\Settings\Settings as BaseSettings;
 
 class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, AdminSidebarProviderInterface, AdminMenuProviderInterface, CapabilitiesProviderInterface {
     /**
@@ -159,6 +161,14 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @return array<int, array<string, mixed>>
      */
     public function get_admin_sidebar(): array {
+        $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
+        $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
+        $email = EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) );
+
+        if ( ! is_string( $email ) || ! is_email( $email ) ) {
+            return [];
+        }
+
         return [
             [
                 'type' => 'group',
