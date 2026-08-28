@@ -2,7 +2,7 @@
 
 namespace MSPress\Includes\Functions\Admin;
 
-use MSPress\Admin\Manager\Tools\PluginReset;
+use MSPress\Admin\Manager\Tools\MSPressReset;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -15,6 +15,6 @@ class FunctionsReset {
      * @return void
      */
     public static function reset_settings(): void {
-        ( new PluginReset() )->handle_reset();
+        ( new MSPressReset() )->handle_reset();
     }
 }

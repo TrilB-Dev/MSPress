@@ -8,7 +8,7 @@ namespace MSPress\Admin\Manager\Tools;
 
 use MSPress\Admin\Manager\Manager;
 use MSPress\Admin\Manager\Tools\DebugManager;
-use MSPress\Admin\Manager\Tools\PluginReset;
+use MSPress\Admin\Manager\Tools\MSPressReset;
 use MSPress\Assets\Assets;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\PermissionHelper;
@@ -24,13 +24,19 @@ final class ToolsManager extends Manager {
      */
     protected $page;
     /**
-     * `Constructor` method for the `ToolsManager` class.
+     * DebugManager instance for managing the debug tool.
      *
      * @since 1.0.0
-     * @return void
+     * @var DebugManager $debug_manager The debug manager instance.
      */
     private DebugManager $debug_manager;
-    private PluginReset $reset_manager;
+    /**
+     * MSPressReset instance for managing the plugin reset tool.
+     *
+     * @since 1.0.0
+     * @var MSPressReset $reset_manager The reset manager instance.
+     */
+    private MSPressReset $reset_manager;
 
     /**
      * `Constructor` method for the `ToolsManager` class.
@@ -56,7 +62,7 @@ final class ToolsManager extends Manager {
          *
          * @since 1.0.0
          */
-        $this->reset_manager = new PluginReset();
+        $this->reset_manager = new MSPressReset();
     }
     /**
      * Renders the tools page.
@@ -90,6 +96,5 @@ final class ToolsManager extends Manager {
      */
     public function register_assets( Assets $assets ): void {
         $this->register_page_assets( $assets, [ 'mspress-tools' ], 'debug' );
-        $this->register_page_assets( $assets, [ 'mspress-tools' ], 'reset' );
     }
 }

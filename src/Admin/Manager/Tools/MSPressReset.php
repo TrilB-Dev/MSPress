@@ -1,6 +1,6 @@
 <?php
 /**
- * PluginReset class for MSPress plugin.
+ * MSPressReset class for MSPress plugin.
  *
  * @package MSPress
  * @subpackage Admin\Manager\Tools
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-final class PluginReset extends Manager {
+final class MSPressReset extends Manager {
     /**
      * Register hooks owned by the plugin reset tool.
      *
@@ -62,7 +62,7 @@ final class PluginReset extends Manager {
                     <?php wp_nonce_field( 'mspress_reset', 'mspress_reset_nonce' ); ?>
                     <?php echo FormFieldHelper::label( 'mspress-reset-scope', __( 'Reset scope', 'mspress' ) ); ?>
                     <?php echo FormFieldHelper::select( 'scope', $this->scope_options(), 'core', [ 'id' => 'mspress-reset-scope' ] ); ?>
-                    <fieldset class="mt-4" id="mspress-reset-plugins">
+                    <fieldset class="mt-4" id="mspress-reset-plugins" data-mspress-reset-plugins>
                         <legend><?php esc_html_e( 'Plugin data', 'mspress' ); ?></legend>
                         <?php
         foreach ( $this->plugin_options() as $slug => $plugin ) {
