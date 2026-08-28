@@ -10,8 +10,10 @@ namespace MSPress\Admin\Manager\Tools;
 
 use MSPress\Admin\Manager\Manager;
 use MSPress\Admin\Manager\Tools\DebugManager;
+use MSPress\Admin\Manager\Tools\PluginReset;
 use MSPress\Assets\Assets;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
+use MSPress\Includes\Functions\Helpers\PermissionHelper;
 
 
 final class ToolsManager extends Manager {
@@ -30,6 +32,7 @@ final class ToolsManager extends Manager {
      * @return void
      */
     private DebugManager $debug_manager;
+    private PluginReset $reset_manager;
 
     /**
      * `Constructor` method for the `ToolsManager` class.
@@ -50,6 +53,8 @@ final class ToolsManager extends Manager {
          * @since 1.0.0
          */
         $this->debug_manager = new DebugManager();
+        $this->reset_manager = new PluginReset();
+        add_action( 'admin_post_mspress_reset', [ $this->reset_manager, 'handle_reset' ] );
     }
     /**
      * Renders the tools page.
@@ -59,14 +64,19 @@ final class ToolsManager extends Manager {
      */
     public function render(): void {
         $tool = SanitizationHelper::key( $_GET['tool'] ?? 'debug', 'debug' );
-        if ( 'debug' !== $tool ) {
+        if ( ! in_array( $tool, [ 'debug', 'reset' ], true ) ) {
             $tool = 'debug';
         }
-        if ( ! current_user_can( 'mspress_tools_debug' ) ) {
+        $capability = 'reset' === $tool ? 'mspress_tools_reset' : 'mspress_tools_debug';
+        if ( ! PermissionHelper::can( $capability ) ) {
             wp_die( esc_html__( 'You are not authorized to access this MSPress tool.', 'mspress' ) );
         }
-        $this->header( __( 'Debug', 'mspress' ) );
-        $this->debug_manager->render_page_content();
+        $this->header( 'reset' === $tool ? __( 'Plugin Reset', 'mspress' ) : __( 'Debug', 'mspress' ) );
+        if ( 'reset' === $tool ) {
+            $this->reset_manager->render_page_content();
+        } else {
+            $this->debug_manager->render_page_content();
+        }
         $this->footer();
     }
     /**

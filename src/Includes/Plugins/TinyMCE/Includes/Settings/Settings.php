@@ -77,6 +77,7 @@ final class Settings {
     public function get_settings_page(): array {
         return [
             'slug' => self::GROUP,
+            'settings_group' => self::GROUP,
             'label' => __( 'TinyMCE', 'mspress' ),
             'title' => __( 'TinyMCE integration', 'mspress' ),
             'layout' => 'table',

@@ -99,7 +99,9 @@ interface SettingsPageProviderInterface {
      * Returns the plugin settings tab and field definitions.
      *
     * The returned array may include `layout` with a value of `table` or
-    * `box` to control the presentation of the plugin settings modal.
+    * `box` to control the presentation of the plugin settings modal. The
+    * optional `settings_group` value identifies the settings storage owned by
+    * the provider for maintenance operations.
     *
     * @return array<string, mixed>
      */
@@ -109,7 +111,7 @@ interface SettingsPageProviderInterface {
      * Sanitizes and persists the plugin settings.
      *
      * @param mixed $input Submitted settings.
-     * @return array<string, mixed>
+    * @return array<string, mixed>
      */
     public function sanitize_settings( $input ): array;
 }

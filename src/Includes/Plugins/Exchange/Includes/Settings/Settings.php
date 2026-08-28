@@ -68,6 +68,7 @@ final class Settings {
     public function get_settings_page(): array {
         return [
             'slug' => 'exchange-settings',
+            'settings_group' => 'exchange',
             'label' => __( 'Exchange', 'mspress' ),
             'title' => __( 'Microsoft Exchange email settings', 'mspress' ),
             'layout' => 'table',

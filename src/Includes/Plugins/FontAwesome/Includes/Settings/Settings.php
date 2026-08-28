@@ -34,6 +34,7 @@ final class Settings {
     public function get_settings_page(): array {
         return [
             'slug' => 'fontawesome',
+            'settings_group' => 'fontawesome',
             'label' => __( 'Font Awesome', 'mspress' ),
             'title' => __( 'Font Awesome integration', 'mspress' ),
             'layout' => 'table',

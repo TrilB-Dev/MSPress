@@ -28,6 +28,7 @@ final class Settings {
     public function get_settings_page(): array {
         return [
             'slug' => 'onedrive',
+            'settings_group' => 'onedrive',
             'label' => __( 'OneDrive', 'mspress' ),
             'title' => __( 'OneDrive plugin settings', 'mspress' ),
             'layout' => 'table',

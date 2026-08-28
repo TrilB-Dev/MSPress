@@ -152,6 +152,44 @@ final class Settings {
     public static function set_group( string $group, array $settings ): bool {
         return SettingsManager::set_group( $group, $settings );
     }
+
+    /**
+     * Restore a settings group to its registered factory defaults.
+     *
+     * @param string $group The settings group name.
+     * @return bool True on success, false on failure.
+     */
+    public static function reset_group( string $group ): bool {
+        return SettingsManager::reset_group( $group );
+    }
+
+    /**
+     * Restore multiple settings groups to their registered factory defaults.
+     *
+     * @param array<int, string> $groups Settings group names.
+     * @return bool True when every group was restored.
+     */
+    public static function reset_groups( array $groups ): bool {
+        return SettingsManager::reset_groups( $groups );
+    }
+
+    /**
+     * Remove all MSPress settings and restore registered factory defaults.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public static function reset_all(): bool {
+        return SettingsManager::reset_all();
+    }
+
+    /**
+     * Return the names of core settings groups.
+     *
+     * @return array<int, string> Core settings group names.
+     */
+    public static function core_groups(): array {
+        return SettingsManager::core_groups();
+    }
     /**
      * Delete a group of settings by group name.
      *

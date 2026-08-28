@@ -140,6 +140,7 @@ final class FunctionsSidebar {
 				'icon'  => 'fa-solid fa-toolbox',
 				'items' => [
 					'mspress-tools&tool=debug'     => [ 'label' => __( 'Debug', 'mspress' ), 'icon' => 'fa-solid fa-bug-slash', 'capability' => 'mspress_tools_debug' ],
+					'mspress-tools&tool=reset'     => [ 'label' => __( 'Plugin Reset', 'mspress' ), 'icon' => 'fa-solid fa-rotate-left', 'capability' => 'mspress_tools_reset' ],
 				],
 			],
 		];

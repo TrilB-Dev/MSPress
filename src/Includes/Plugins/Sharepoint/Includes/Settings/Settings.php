@@ -16,7 +16,7 @@ final class Settings {
      * @return array The settings array.
      */
     public function register(): void {
-        BaseSettings::register_group( 'demo', [
+        BaseSettings::register_group( 'sharepoint', [
             'sharepoint_setting_1' => '',
             'sharepoint_setting_2' => false,
         ] );
@@ -25,6 +25,7 @@ final class Settings {
     public function get_settings_page(): array {
         return [
             'slug' => 'sharepoint',
+            'settings_group' => 'sharepoint',
             'label' => __( 'SharePoint', 'mspress' ),
             'title' => __( 'SharePoint plugin settings', 'mspress' ),
             'layout' => 'table',

@@ -165,6 +165,15 @@ final class SettingsManager {
             'tools' => [ 'debug_logging' => false, 'console_logging' => false ],
         ];
     }
+
+    /**
+     * Return the names of core settings groups.
+     *
+     * @return array<int, string> Core settings group names.
+     */
+    public static function core_groups(): array {
+        return array_keys( self::defaults() );
+    }
     /**
      * Get all settings for a specific group.
      *
@@ -192,6 +201,51 @@ final class SettingsManager {
             'autoload' => 'yes',
             'updated_at' => current_time( 'mysql' ),
         ], [ '%s', '%s', '%s', '%s' ] );
+    }
+
+    /**
+     * Restore a registered settings group to its factory defaults.
+     *
+     * @param string $group The settings group name.
+     * @return bool True on success, false on failure.
+     */
+    public static function reset_group( string $group ): bool {
+        $group = self::normalize_group( $group );
+        $defaults = self::registered_defaults()[ $group ] ?? [];
+
+        return self::set_group( $group, is_array( $defaults ) ? $defaults : [] );
+    }
+
+    /**
+     * Restore multiple registered settings groups to their factory defaults.
+     *
+     * @param array<int, string> $groups Settings group names.
+     * @return bool True when every group was restored.
+     */
+    public static function reset_groups( array $groups ): bool {
+        $success = true;
+        foreach ( $groups as $group ) {
+            if ( ! is_string( $group ) || ! self::reset_group( $group ) ) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Remove all MSPress settings and restore every registered default.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public static function reset_all(): bool {
+        global $wpdb;
+
+        if ( false === $wpdb->query( 'DELETE FROM ' . self::table_name() ) ) {
+            return false;
+        }
+
+        return self::reset_groups( array_keys( self::registered_defaults() ) );
     }
     /**
      * Register a group of settings with default values.

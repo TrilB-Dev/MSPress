@@ -16,7 +16,7 @@ final class Settings {
      * @return array The settings array.
      */
     public function register(): void {
-        BaseSettings::register_group( 'demo', [
+        BaseSettings::register_group( 'entra', [
             'entra_setting_1' => '',
             'entra_setting_2' => false,
         ] );
@@ -25,6 +25,7 @@ final class Settings {
     public function get_settings_page(): array {
         return [
             'slug' => 'entra',
+            'settings_group' => 'entra',
             'label' => __( 'Entra', 'mspress' ),
             'title' => __( 'Entra plugin settings', 'mspress' ),
             'layout' => 'table',
