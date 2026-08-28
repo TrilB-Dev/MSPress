@@ -5,10 +5,11 @@ namespace MSPress\Includes\Plugins\Onedrive\Includes\OneDrive;
 use Http\Promise\FulfilledPromise;
 use Http\Promise\RejectedPromise;
 use Microsoft\Graph\GraphServiceClient;
+use Microsoft\Graph\GraphRequestAdapter;
 use Microsoft\Kiota\Abstractions\Authentication\AccessTokenProvider;
 use Microsoft\Kiota\Abstractions\Authentication\AllowedHostsValidator;
 use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
-use MSPress\Includes\MSGraph\GraphService;
+use MSPress\Includes\MSGraph\TlsTransport;
 
 final class OneDriveClientService {
     public function __construct(private OneDriveTokenService $tokens) {
@@ -36,9 +37,15 @@ final class OneDriveClientService {
             }
         };
 
-        return GraphServiceClient::createWithAuthenticationProvider(
-            new BaseBearerTokenAuthenticationProvider($token_provider)
+        $authentication_provider = new BaseBearerTokenAuthenticationProvider($token_provider);
+        $request_adapter = new GraphRequestAdapter(
+            $authentication_provider,
+            null,
+            null,
+            new \GuzzleHttp\Client(TlsTransport::guzzle_options())
         );
+
+        return GraphServiceClient::createWithRequestAdapter($request_adapter);
     }
 
     public function create_http_client(): ?\GuzzleHttp\Client {

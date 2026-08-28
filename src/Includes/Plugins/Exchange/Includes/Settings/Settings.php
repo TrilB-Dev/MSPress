@@ -6,6 +6,13 @@
  * @since 1.0.0
  */
 namespace MSPress\Includes\Plugins\Exchange\Includes\Settings;
+use Http\Promise\FulfilledPromise;
+use Http\Promise\RejectedPromise;
+use Microsoft\Graph\GraphServiceClient;
+use Microsoft\Graph\GraphRequestAdapter;
+use Microsoft\Kiota\Abstractions\Authentication\AccessTokenProvider;
+use Microsoft\Kiota\Abstractions\Authentication\AllowedHostsValidator;
+use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
 use MSPress\Includes\Settings\Settings as BaseSettings;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
@@ -244,7 +251,7 @@ final class Settings {
         $email = EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) );
         $connected = is_string( $email ) && is_email( $email );
         $oauth = GraphService::get_instance()->get_oauth_service();
-        $connect_url = $oauth ? $oauth->get_authorization_url( null, [ 'purpose' => 'exchange_connect' ], 'openid profile email offline_access User.Read User.Read.All Mail.ReadBasic' ) : '';
+        $connect_url = $oauth ? $oauth->get_authorization_url( null, [ 'purpose' => 'exchange_connect' ], 'openid profile email offline_access User.Read.All' ) : '';
 
         echo '<div class="d-flex flex-wrap align-items-center gap-3">';
         echo '<span class="badge ' . ( $connected ? 'text-bg-success' : 'text-bg-secondary' ) . '">' . esc_html( $connected ? __( 'Connected', 'mspress' ) : __( 'Not connected', 'mspress' ) ) . '</span>';
@@ -313,17 +320,44 @@ final class Settings {
             wp_send_json_error( [ 'message' => __( 'The connected Microsoft 365 account does not have a usable access token. Reconnect the account and try again.', 'mspress' ) ], 400 );
         }
 
-        $response = $this->fetch_graph_json( 'https://graph.microsoft.com/v1.0/me/settings/exchange', $token );
-        if ( ! $response['success'] ) {
-            $error = (string) ( $response['error'] ?? 'Unknown Microsoft Graph error.' );
+        try {
+            $token_provider = new class( $token ) implements AccessTokenProvider {
+                private AllowedHostsValidator $allowed_hosts_validator;
+
+                public function __construct( private string $token ) {
+                    $this->allowed_hosts_validator = new AllowedHostsValidator( [ 'graph.microsoft.com' ] );
+                }
+
+                public function getAuthorizationTokenAsync( string $url, array $additionalAuthenticationContext = [] ): \Http\Promise\Promise {
+                    if ( ! $this->allowed_hosts_validator->isUrlHostValid( $url ) ) {
+                        return new RejectedPromise( new \InvalidArgumentException( 'Host not allowed for Graph token requests.' ) );
+                    }
+
+                    return new FulfilledPromise( $this->token );
+                }
+
+                public function getAllowedHostsValidator(): AllowedHostsValidator {
+                    return $this->allowed_hosts_validator;
+                }
+            };
+            $authentication_provider = new BaseBearerTokenAuthenticationProvider( $token_provider );
+            $request_adapter = new GraphRequestAdapter(
+                $authentication_provider,
+                null,
+                null,
+                new \GuzzleHttp\Client( \MSPress\Includes\MSGraph\TlsTransport::guzzle_options() )
+            );
+            $graph = GraphServiceClient::createWithRequestAdapter( $request_adapter );
+            $exchange_settings = $graph->me()->settings()->exchange()->get()->wait();
+        } catch ( \Throwable $exception ) {
+            $error = $exception->getMessage();
             \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange mailbox import failed: ' . $error );
-            wp_send_json_error( [ 'message' => sprintf( __( 'Microsoft Graph could not return the connected user Exchange settings: %s', 'mspress' ), $error ) ], 502 );
+            wp_send_json_error( [ 'message' => __( 'Microsoft Graph could not return the connected user Exchange settings. Reconnect the account and try again.', 'mspress' ) ], 502 );
         }
 
-        $exchange_settings = json_decode( (string) $response['body'], true );
         $email = EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) );
         $known = array_map( 'strtolower', array_filter( array_map( 'sanitize_email', RequestHelper::array( $_POST, 'known' ) ), 'is_email' ) );
-        if ( ! is_array( $exchange_settings ) || empty( $exchange_settings['primaryMailboxId'] ) || ! is_string( $email ) || ! is_email( $email ) || in_array( strtolower( $email ), $known, true ) ) {
+        if ( ! $exchange_settings || ! $exchange_settings->getPrimaryMailboxId() || ! is_string( $email ) || ! is_email( $email ) || in_array( strtolower( $email ), $known, true ) ) {
             wp_send_json_success( [ 'mailboxes' => [] ] );
         }
 
@@ -335,61 +369,6 @@ final class Settings {
             ],
         ];
         wp_send_json_success( [ 'mailboxes' => $mailboxes ] );
-    }
-
-    /**
-        * Retrieve a Microsoft Graph JSON resource using cURL.
-     *
-     * @return array{success: bool, body?: string, error?: string}
-     */
-    private function fetch_graph_json( string $url, string $token ): array {
-        if ( ! function_exists( 'curl_init' ) ) {
-            return [ 'success' => false, 'error' => 'PHP cURL extension is unavailable.' ];
-        }
-
-        $parts = wp_parse_url( $url );
-        if ( ! is_array( $parts ) || 'https' !== strtolower( (string) ( $parts['scheme'] ?? '' ) ) || 'graph.microsoft.com' !== strtolower( (string) ( $parts['host'] ?? '' ) ) ) {
-            return [ 'success' => false, 'error' => 'Invalid Microsoft Graph URL.' ];
-        }
-
-        $handle = curl_init( $url );
-        if ( false === $handle ) {
-            return [ 'success' => false, 'error' => 'Could not initialize cURL.' ];
-        }
-
-        curl_setopt_array( $handle, [
-            CURLOPT_HTTPGET => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
-            CURLOPT_USERAGENT => 'MSPress/1.0',
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer ' . $token,
-                'Accept: application/json',
-            ],
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2 | CURL_SSLVERSION_MAX_TLSv1_2,
-        ] );
-
-        $body = curl_exec( $handle );
-        $curl_error = curl_error( $handle );
-        $status_code = (int) curl_getinfo( $handle, CURLINFO_HTTP_CODE );
-        curl_close( $handle );
-
-        if ( false === $body ) {
-            return [ 'success' => false, 'error' => 'cURL error: ' . ( $curl_error ?: 'Unknown transport error.' ) ];
-        }
-
-        if ( 200 !== $status_code ) {
-            $error_body = json_decode( (string) $body, true );
-            $graph_error = is_array( $error_body['error'] ?? null ) ? $error_body['error'] : [];
-            $error_code = (string) ( $graph_error['code'] ?? 'HTTP ' . $status_code );
-            $error_message = (string) ( $graph_error['message'] ?? 'No Graph error details returned.' );
-            return [ 'success' => false, 'error' => $error_code . ': ' . $error_message ];
-        }
-
-        return [ 'success' => true, 'body' => (string) $body ];
     }
 
     public function render_profiles( $value ): void {

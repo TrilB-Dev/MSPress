@@ -12,8 +12,8 @@ use MSPress\Includes\Settings\Settings;
 /**
  * MS Graph API Integration Class
  *
- * IMPORTANT: Intelephense reports "Undefined method" errors for Microsoft Graph SDK v2.x methods.
- * These are FALSE POSITIVES - the SDK generates methods dynamically at runtime based on OpenAPI specs.
+ * IMPORTANT: Intelephense may report "Undefined method" errors for generated Microsoft Graph SDK methods.
+ * These are FALSE POSITIVES - the SDK generates request builders from the OpenAPI specification.
  * The code is functionally correct and will work properly. These warnings can be safely ignored.
  *
  * Suppression comments (@phpstan-ignore-next-line) have been added above problematic method calls

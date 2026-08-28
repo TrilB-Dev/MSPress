@@ -16,7 +16,7 @@
 	},
 	"minimum-stability": "stable",
     "require": {
-		"microsoft/microsoft-graph": "^2.56",
+		"microsoft/microsoft-graph": "^3.5.0",
         "paragonie/sodium_compat": "^2.4",
         "laminas/laminas-httphandlerrunner": "^2.13",
         "paragonie/random-lib": "^2.0",
