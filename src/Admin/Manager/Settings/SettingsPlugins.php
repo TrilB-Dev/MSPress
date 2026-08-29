@@ -187,7 +187,7 @@ final class SettingsPlugins {
                     <span class="fw-semibold"><?php echo esc_html( $plugin->get_name() ); ?></span>
                 </div>
                 <div class="card-body d-flex flex-column">
-                    <span class="mspress-plugin-icon dashicons dashicons-admin-plugins" aria-hidden="true"></span>
+                    <?php $this->render_plugin_icon( $plugin ); ?>
                     <p class="card-text text-secondary mt-3"><?php echo esc_html( $plugin->get_description() ); ?></p>
                     <p class="card-text mb-2"><span class="text-secondary"><?php esc_html_e( 'Author:', 'mspress' ); ?></span> <?php echo esc_html( $plugin->get_author() ); ?></p>
                     <p class="card-text mb-2"><span class="text-secondary"><?php esc_html_e( 'Version:', 'mspress' ); ?></span> <?php echo esc_html( $plugin->get_version() ); ?></p>
@@ -203,6 +203,37 @@ final class SettingsPlugins {
         if ( ! empty( $settings_page['fields'] ) ) {
             $this->render_plugin_settings_modal( $plugin, $settings_page, $modal_id, $can_edit );
         }
+    }
+
+    /**
+     * Render a plugin icon from its declared icon variant.
+     *
+     * @param PluginInterface $plugin The plugin instance.
+     */
+    private function render_plugin_icon( PluginInterface $plugin ): void {
+        $icon = $plugin->get_icon();
+
+        if ( is_array( $icon ) && ! empty( $icon[0] ) ) {
+            $icon_classes = array_filter(
+                array_map( 'sanitize_html_class', preg_split( '/\s+/', trim( $icon[0] ) ) ?: [] )
+            );
+            $icon_class = implode( ' ', $icon_classes );
+            if ( '' === $icon_class ) {
+                $icon_class = 'dashicons dashicons-admin-plugins';
+            }
+            $color = isset( $icon[1] ) ? sanitize_hex_color( $icon[1] ) : '';
+            $style = $color ? 'color: ' . esc_attr( $color ) . ';' : '';
+
+            printf( '<i class="mspress-plugin-icon %1$s" style="%2$s" aria-hidden="true"></i>', esc_attr( $icon_class ), esc_attr( $style ) );
+            return;
+        }
+
+        if ( is_string( $icon ) && '' !== $icon ) {
+            printf( '<img src="%1$s" class="mspress-plugin-icon" alt="" aria-hidden="true" />', esc_url( $icon ) );
+            return;
+        }
+
+        echo '<span class="mspress-plugin-icon dashicons dashicons-admin-plugins" aria-hidden="true"></span>';
     }
     /**
      * Render a card for a third-party plugin.

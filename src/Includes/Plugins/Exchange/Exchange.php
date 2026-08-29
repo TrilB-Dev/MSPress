@@ -27,6 +27,7 @@ use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
 use MSPress\Includes\Plugins\Exchange\Admin\TraceRout;
 use MSPress\Includes\Plugins\Exchange\Admin\SentLogs;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
+use MSPress\Includes\Functions\Helpers\MSIconHelper;
 use MSPress\Includes\Settings\Settings as BaseSettings;
 
 class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, AdminSidebarProviderInterface, AdminMenuProviderInterface, CapabilitiesProviderInterface {
@@ -45,6 +46,14 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      */
     public function get_name(): string {
         return 'Exchange';
+    }
+    /**
+     * Get the plugin icon.
+     *
+     * @return string The plugin icon.
+     */
+    public function get_icon(): string {
+        return MSIconHelper::get_icon( 'microsoft-exchange', 'svg' );
     }
     /**
      * Get the plugin version.

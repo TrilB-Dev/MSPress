@@ -1,4 +1,17 @@
 .mspress-admin {
+	.mspress-plugin-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		flex: 0 0 3rem;
+		font-size: 3rem;
+		line-height: 1;
+		object-fit: contain;
+		color: var(--bs-primary);
+	}
+
 	.nav-tabs {
 		border-bottom-color: var(--bs-border-color);
 

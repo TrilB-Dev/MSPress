@@ -20,6 +20,7 @@ use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Onedrive\Includes\Includes;
 use MSPress\Includes\Plugins\Onedrive\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Onedrive\Includes\Core\Capabilities;
+use MSPress\Includes\Functions\Helpers\MSIconHelper;
 
 class OneDrive implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, CapabilitiesProviderInterface {
     /**
@@ -37,6 +38,14 @@ class OneDrive implements PluginInterface, SettingsProviderInterface, SettingsPa
      */
     public function get_name(): string {
         return 'OneDrive';
+    }
+    /**
+     * Get the plugin icon.
+     *
+     * @return string The plugin icon.
+     */
+    public function get_icon(): string {
+        return MSIconHelper::get_icon( 'onedrive', 'svg' );
     }
     /**
      * Get the plugin version.

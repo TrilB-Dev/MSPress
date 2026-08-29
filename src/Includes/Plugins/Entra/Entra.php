@@ -20,6 +20,7 @@ use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Entra\Includes\Includes;
 use MSPress\Includes\Plugins\Entra\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Entra\Includes\Core\Capabilities;
+use MSPress\Includes\Functions\Helpers\MSIconHelper;
 
 class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, CapabilitiesProviderInterface {
     /**
@@ -37,6 +38,14 @@ class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageP
      */
     public function get_name(): string {
         return 'Entra';
+    }
+    /**
+     * Get the plugin icon.
+     *
+     * @return string The plugin icon.
+     */
+    public function get_icon(): string {
+        return MSIconHelper::get_icon( 'entra-id', 'svg' );
     }
     /**
      * Get the plugin version.

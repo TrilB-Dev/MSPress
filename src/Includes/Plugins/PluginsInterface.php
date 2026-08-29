@@ -29,6 +29,15 @@ interface PluginInterface {
      */
     public function get_name(): string;
     /**
+     * Get the plugin icon.
+     *
+     * Image-based icons return the full image URL. FontAwesome icons return
+     * an array containing the icon class and optional color.
+     *
+     * @return string|array{0: string, 1?: string} The plugin icon.
+     */
+    public function get_icon(): string|array;
+    /**
      * Get the plugin version.
      *
      * @return string The plugin version.

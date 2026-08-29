@@ -20,6 +20,7 @@ use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Sharepoint\Includes\Includes;
 use MSPress\Includes\Plugins\Sharepoint\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Sharepoint\Includes\Core\Capabilities;
+use MSPress\Includes\Functions\Helpers\MSIconHelper;
 
 class Sharepoint implements PluginInterface, SettingsProviderInterface, SettingsPageProviderInterface, AssetsProviderInterface, I18nProviderInterface, ShortcodeProviderInterface, CapabilitiesProviderInterface {
     /**
@@ -37,6 +38,14 @@ class Sharepoint implements PluginInterface, SettingsProviderInterface, Settings
      */
     public function get_name(): string {
         return 'Sharepoint';
+    }
+    /**
+     * Get the plugin icon.
+     *
+     * @return string The plugin icon.
+     */
+    public function get_icon(): string {
+        return MSIconHelper::get_icon( 'sharepoint', 'svg' );
     }
     /**
      * Get the plugin version.

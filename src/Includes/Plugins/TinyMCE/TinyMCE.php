@@ -13,6 +13,7 @@ use MSPress\Includes\Plugins\I18nProviderInterface;
 use MSPress\Includes\Plugins\PluginInterface;
 use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
+use MSPress\Includes\Functions\Helpers\ImageHelper;
 use MSPress\Includes\Plugins\TinyMCE\Assets\Assets;
 use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\TinyMCE\Includes\Includes;
@@ -42,6 +43,14 @@ final class TinyMCE implements PluginInterface, SettingsProviderInterface, Setti
      */
     public function get_version(): string {
         return '1.0.0';
+    }
+    /**
+     * Get the plugin icon.
+     *
+     * @return string The plugin icon.
+     */
+    public function get_icon(): string {
+        return ImageHelper::get_image_url( 'tinymce-plugin', 'icons/tinymce.svg' );
     }
     /**
      * Get the plugin author.
