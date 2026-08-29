@@ -27,9 +27,14 @@ final class SettingsManager extends Manager {
      * @var SettingsPlugins $plugins_page The SettingsPlugins instance.
      */
     private SettingsPlugins $plugins_page;
-
+    /**
+     * The SettingsConnection instance.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var SettingsConnection $connection_page The SettingsConnection instance.
+     */
     private SettingsConnection $connection_page;
-
     /**
      * The Page variable.
      *
@@ -58,6 +63,11 @@ final class SettingsManager extends Manager {
          * @since 1.0.0
          */
         $this->plugins_page = new SettingsPlugins();
+        /**
+         * Initialize the Connection Settings page.
+         *
+         * @since 1.0.0
+         */
         $this->connection_page = new SettingsConnection();
     }
     /**

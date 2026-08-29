@@ -26,7 +26,7 @@ final class TinyMCE implements PluginInterface, SettingsProviderInterface, Setti
      * @return string The plugin slug.
      */
     public function get_slug(): string {
-        return 'tinymce-plugin';
+        return 'mspress-tinymce';
     }
     /**
      * Get the plugin name.
@@ -50,7 +50,7 @@ final class TinyMCE implements PluginInterface, SettingsProviderInterface, Setti
      * @return string The plugin icon.
      */
     public function get_icon(): string {
-        return ImageHelper::get_image_url( 'tinymce-plugin', 'icons/tinymce.svg' );
+        return Assets::get_image( 'logo/tinymce.svg' );
     }
     /**
      * Get the plugin author.
@@ -58,7 +58,7 @@ final class TinyMCE implements PluginInterface, SettingsProviderInterface, Setti
      * @return string The plugin author.
      */
     public function get_author(): string {
-        return 'MSPress Team';
+        return 'TrilB.Dev Team';
     }
     /**
      * Get the plugin author URI.

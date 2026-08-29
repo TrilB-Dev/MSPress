@@ -10,6 +10,7 @@ namespace MSPress\Assets;
 
 use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
+use MSPress\Includes\Functions\Helpers\ImageHelper;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -180,7 +181,7 @@ final class Assets {
      * @param array $assets The assets to enqueue.
      * @return void
      */
-    private function enqueue_bundle( array $assets ): void {
+    public function enqueue_bundle( array $assets ): void {
         if ( ! empty( $assets['enqueue_media'] ) && function_exists( 'wp_enqueue_media' ) ) {
             wp_enqueue_media();
         }
@@ -213,5 +214,14 @@ final class Assets {
                 }
             }
         }
+    }
+    /**
+     * Get an image asset URL from the core Images directory.
+     *
+     * @param string $file The image path relative to Assets/images.
+     * @return string The image URL, or an empty string when the path is invalid.
+     */
+    public static function get_image( string $file ): string {
+        return ImageHelper::get_image_url( 'core', $file );
     }
 }

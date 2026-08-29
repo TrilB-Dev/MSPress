@@ -45,7 +45,7 @@ class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageP
      * @return string The plugin icon.
      */
     public function get_icon(): string {
-        return MSIconHelper::get_icon( 'entra-id', 'svg' );
+        return MSIconHelper::get_icon( 'entra', 'svg' );
     }
     /**
      * Get the plugin version.
@@ -61,7 +61,7 @@ class Entra implements PluginInterface, SettingsProviderInterface, SettingsPageP
      * @return string The plugin author.
      */
     public function get_author(): string {
-        return 'MrTrilB';
+        return 'TrilB.Dev Team';
     }
     /**
      * Get the plugin author URI.

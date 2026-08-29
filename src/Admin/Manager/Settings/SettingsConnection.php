@@ -17,6 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class SettingsConnection {
+    /**
+     * Render the Microsoft Graph connection settings page.
+     *
+     * @return void
+     */
     public function render(): void {
         if ( 'POST' === strtoupper( (string) ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) ) {
             if ( isset( $_POST['mspress_connection_save'] ) ) {
@@ -74,7 +79,13 @@ final class SettingsConnection {
         </form>
         <?php
     }
-
+    /**
+     * Save the Microsoft Graph connection settings.
+     *
+     * @since 1.0.0
+     * @access private
+     * @return void
+     */
     private function save(): void {
         if ( ! current_user_can( 'mspress_settings_connection_edit' ) || ! check_admin_referer( 'mspress_save_connection', 'mspress_connection_nonce' ) ) {
             wp_die( esc_html__( 'You are not authorized to save the Microsoft Graph connection.', 'mspress' ) );
@@ -112,7 +123,13 @@ final class SettingsConnection {
 
         add_settings_error( 'mspress_connection', 'saved', __( 'Microsoft Graph connection settings saved.', 'mspress' ), 'updated' );
     }
-
+    /**
+     * Add the MSPress encryption key to wp-config.php.
+     *
+     * @since 1.0.0
+     * @access private
+     * @return void
+     */
     private function add_encryption_key(): void {
         if ( ! current_user_can( 'mspress_settings_connection_edit' ) || ! check_admin_referer( 'mspress_add_encryption_key', 'mspress_encryption_key_nonce' ) ) {
             wp_die( esc_html__( 'You are not authorized to add the MSPress encryption key.', 'mspress' ) );
@@ -127,7 +144,14 @@ final class SettingsConnection {
 
         add_settings_error( 'mspress_connection', 'key_failed', __( 'The encryption key could not be added automatically. Check that wp-config.php is writable and add the key manually.', 'mspress' ) );
     }
-
+    /**
+     * Render the form for adding the MSPress encryption key when it is missing.
+     *
+     * @since 1.0.0
+     * @access private
+     * @param bool $can_edit Whether the current user can edit the connection settings.
+     * @return void
+     */
     private function render_missing_key( bool $can_edit ): void {
         ?>
         <?php settings_errors( 'mspress_connection' ); ?>
@@ -149,7 +173,14 @@ final class SettingsConnection {
         </form>
         <?php
     }
-
+    /**
+     * Decrypt and display a stored credential.
+     *
+     * @since 1.0.0
+     * @access private
+     * @param string $encrypted The encrypted credential.
+     * @return string The decrypted credential, or an empty string if decryption fails.
+     */
     private function display_credential( $encrypted ): string {
         if ( ! is_string( $encrypted ) || '' === $encrypted || ! EncryptionHelper::has_runtime_key() ) {
             return '';

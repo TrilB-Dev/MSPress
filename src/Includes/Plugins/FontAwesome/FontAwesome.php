@@ -58,7 +58,7 @@ final class FontAwesome implements PluginInterface, SettingsProviderInterface, S
      * @return array{0: string, 1: string} The plugin icon class and color.
      */
     public function get_icon(): array {
-        return ['fab fa-font-awesome', '#183153'];
+        return ['fab fa-font-awesome', '#74c1fcff'];
     }
     /**
      * Get the plugin version.
@@ -78,7 +78,7 @@ final class FontAwesome implements PluginInterface, SettingsProviderInterface, S
      * @return string The plugin author.
      */
     public function get_author(): string {
-        return 'MSPress Team';
+        return 'TrilB.Dev Team';
     }
     /**
      * Get the plugin author URI.

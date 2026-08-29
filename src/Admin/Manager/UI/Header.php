@@ -8,6 +8,8 @@
  */
 namespace MSPress\Admin\Manager\UI;
 
+use MSPress\Assets\Assets;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -50,7 +52,7 @@ final class Header {
 			<nav class="navbar navbar-expand-lg" aria-label="<?php esc_attr_e( 'MSPress header navigation', 'mspress' ); ?>"> 
 				<div class="container-fluid mspress-shell px-3 px-lg-4">
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=mspress' ) ); ?>">
-						<img class="navbar-brand d-flex align-items-center gap-2" src="<?php echo esc_url( MSPRESS_ASSETS_URL . '/images/logo/MSPress-Logo.svg' ); ?>" alt="" />
+						<img class="navbar-brand d-flex align-items-center gap-2" src="<?php echo esc_url( Assets::get_image( 'logo/MSPress-Logo.svg' ) ); ?>" alt="" />
 					</a>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mspress-header-menu" aria-controls="mspress-header-menu" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle header navigation', 'mspress' ); ?>">
 						<span class="navbar-toggler-icon"></span>

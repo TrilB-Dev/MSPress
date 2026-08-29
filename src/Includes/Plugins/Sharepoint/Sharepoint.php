@@ -61,7 +61,7 @@ class Sharepoint implements PluginInterface, SettingsProviderInterface, Settings
      * @return string The plugin author.
      */
     public function get_author(): string {
-        return 'MrTrilB';
+        return 'TrilB.Dev Team';
     }
     /**
      * Get the plugin author URI.

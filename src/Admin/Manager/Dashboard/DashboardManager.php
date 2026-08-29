@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * DashboardManager class for the MSPress plugin.
+ *
+ * @package MSPress
+ */
 namespace MSPress\Admin\Manager\Dashboard;
 
 use MSPress\Admin\Manager\Manager;
@@ -51,7 +55,12 @@ final class DashboardManager extends Manager {
         $this->render_cards();
         $this->footer();
     }
-
+    /**
+     * Registers the assets for the dashboard page.
+     *
+     * @param Assets $assets The assets manager.
+     * @return void
+     */
     private function render_statuses(): void {
         $statuses = [
             [
@@ -90,7 +99,12 @@ final class DashboardManager extends Manager {
         </section>
         <?php
     }
-
+    /**
+     * Render the dashboard cards section.
+     *
+     * @since 1.0.0
+     * @return void
+     */
     private function render_cards(): void {
         $filtered_cards = apply_filters( 'mspress_dashboard_cards', [] );
         $cards = is_array( $filtered_cards ) ? array_filter( $filtered_cards, [ $this, 'can_render' ] ) : [];
@@ -121,14 +135,25 @@ final class DashboardManager extends Manager {
         </section>
         <?php
     }
-
+    /**
+     * Render a status card for the dashboard.
+     *
+     * @since 1.0.0
+     * @param array $status The status information.
+     * @return void
+     */
     private function status_card( array $status ): void {
         $state = in_array( $status['state'] ?? '', [ 'connected', 'ready', 'warning', 'error', 'disabled' ], true ) ? $status['state'] : 'warning';
         $state_labels = [ 'connected' => __( 'Connected', 'mspress' ), 'ready' => __( 'Ready', 'mspress' ), 'warning' => __( 'Attention needed', 'mspress' ), 'error' => __( 'Unavailable', 'mspress' ), 'disabled' => __( 'Disabled', 'mspress' ) ];
         $content = '<span class="mspress-summary-icon dashicons ' . esc_attr( $status['icon'] ?? 'dashicons-admin-generic' ) . '" aria-hidden="true"></span><span class="text-uppercase small fw-semibold text-secondary">' . esc_html( $status['label'] ?? __( 'Service', 'mspress' ) ) . '</span><strong class="h5 mb-1">' . esc_html( $state_labels[ $state ] ) . '</strong><span class="small text-secondary">' . esc_html( $status['message'] ?? '' ) . '</span>';
         $this->linked_dashboard_item( $content, $status['url'] ?? '' );
     }
-
+    /**
+     * Render a dashboard card.
+     *
+     * @param array $card The card information.
+     * @return void
+     */
     private function dashboard_card( array $card ): void {
         $content = '<span class="mspress-summary-icon dashicons ' . esc_attr( $card['icon'] ?? 'dashicons-admin-generic' ) . '" aria-hidden="true"></span><span class="fw-semibold text-body">' . esc_html( $card['title'] ?? __( 'Service', 'mspress' ) ) . '</span>';
         if ( isset( $card['value'] ) ) {
@@ -138,12 +163,24 @@ final class DashboardManager extends Manager {
         $this->linked_dashboard_item( $content, $card['url'] ?? '' );
     }
 
+    /**
+     * Render a linked dashboard item.
+     *
+     * @param string $content The content of the item.
+     * @param string $url The URL to link to.
+     * @return void
+     */
     private function linked_dashboard_item( string $content, string $url ): void {
         $tag = '' !== $url ? 'a' : 'div';
         $attributes = '' !== $url ? ' href="' . esc_url( $url ) . '"' : '';
         echo '<' . $tag . $attributes . ' class="mspress-summary-card h-100 d-flex flex-column gap-1">' . $content . '</' . $tag . '>';
     }
-
+    /**
+     * Get the current state of the Microsoft Graph connection.
+     *
+     * @since 1.0.0
+     * @return string The state of the Microsoft Graph connection.
+     */
     private function graph_state(): string {
         $graph = GraphService::get_instance();
         if ( null !== $graph->get_connection_error() ) {
@@ -151,7 +188,12 @@ final class DashboardManager extends Manager {
         }
         return null !== $graph->get_graph() ? 'connected' : 'error';
     }
-
+    /**
+     * Get a message describing the current state of the Microsoft Graph connection.
+     *
+     * @since 1.0.0
+     * @return string A message describing the current state of the Microsoft Graph connection.
+     */
     private function graph_message(): string {
         $graph = GraphService::get_instance();
         if ( null !== $graph->get_connection_error() ) {
@@ -160,11 +202,22 @@ final class DashboardManager extends Manager {
 
         return null !== $graph->get_graph() ? __( 'Microsoft Graph connection is active.', 'mspress' ) : __( 'Configure Microsoft Graph credentials to activate this service.', 'mspress' );
     }
-
+    /**
+     * Check if a dashboard item can be rendered based on its capability requirement.
+     *
+     * @since 1.0.0
+     * @param array $item The dashboard item to check.
+     * @return bool True if the item can be rendered, false otherwise.
+     */
     private function can_render( $item ): bool {
         return is_array( $item ) && ( empty( $item['capability'] ) || current_user_can( $item['capability'] ) );
     }
-
+    /**
+     * Register assets for the dashboard page.
+     *
+     * @since 1.0.0
+     * @param Assets $assets The Assets instance to register assets with.
+     */
     public function register_assets( Assets $assets ): void {
         $this->register_page_assets( $assets, [ 'mspress' ], 'dashboard' );
     }

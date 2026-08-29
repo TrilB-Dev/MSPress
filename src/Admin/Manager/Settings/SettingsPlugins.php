@@ -136,7 +136,8 @@ final class SettingsPlugins {
         return $pages;
     }
     /**
-    * Render the MSPress plugins section.
+     * Render the MSPress plugins section.
+     *
      * @since 1.0.0
      */
     private function render_mspress_plugins(): void {
@@ -152,6 +153,7 @@ final class SettingsPlugins {
     }
     /**
      * Render the third-party plugins section.
+     * 
      * @since 1.0.0
      */
     private function render_third_party_plugins(): void {
@@ -283,17 +285,31 @@ final class SettingsPlugins {
         </div>
         <?php
     }
-
+    /**
+     * Render a card for a plugin.
+     *
+     * @param PluginInterface $plugin The plugin instance.
+     */
     private function can_view_plugin( PluginInterface $plugin ): bool {
         $capability = $this->is_internal_plugin( $plugin ) ? 'mspress_settings_plugins_int_view' : 'mspress_settings_plugins_ext_view';
         return current_user_can( $capability );
     }
-
+    /**
+     * Check if the current user can edit the settings of a plugin.
+     *
+     * @param PluginInterface $plugin The plugin instance.
+     * @return bool True if the user can edit, false otherwise.
+     */
     private function can_edit_plugin( PluginInterface $plugin ): bool {
         $capability = $this->is_internal_plugin( $plugin ) ? 'mspress_settings_plugins_int_edit' : 'mspress_settings_plugins_ext_edit';
         return current_user_can( $capability );
     }
-
+    /**
+     * Check if a plugin is an internal MSPress plugin.
+     *
+     * @param PluginInterface $plugin The plugin instance.
+     * @return bool True if the plugin is internal, false otherwise.
+     */
     private function is_internal_plugin( PluginInterface $plugin ): bool {
         return 0 === strpos( get_class( $plugin ), 'MSPress\\Includes\\Plugins\\' );
     }

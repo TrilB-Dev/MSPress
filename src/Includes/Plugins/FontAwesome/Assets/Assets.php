@@ -4,6 +4,7 @@ namespace MSPress\Includes\Plugins\FontAwesome\Assets;
 
 use MSPress\Includes\Functions\Helpers\LoaderHelper;
 use MSPress\Includes\Plugins\FontAwesome\Includes\Settings\Settings as FontAwesomeSettings;
+use MSPress\Includes\Functions\Helpers\ImageHelper;
 
 final class Assets {
     private LoaderHelper $loader;
@@ -103,5 +104,14 @@ final class Assets {
 
         return strpos( $screen->id, 'mspress' ) !== false
             || in_array( $screen->id, [ 'post', 'page', 'custom_css', 'customize' ], true );
+    }
+    /**
+     * Get an image asset URL from the core Images directory.
+     *
+     * @param string $file The image path relative to Assets/images.
+     * @return string The image URL, or an empty string when the path is invalid.
+     */
+    public static function get_image( string $file ): string {
+        return ImageHelper::get_image_url( 'mspress-fontawesome', $file );
     }
 }

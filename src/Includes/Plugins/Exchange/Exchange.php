@@ -37,7 +37,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @return string The plugin slug.
      */
     public function get_slug(): string {
-        return 'exchange-plugin';
+        return 'mspress-exchange';
     }
     /**
      * Get the plugin name.
@@ -53,7 +53,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @return string The plugin icon.
      */
     public function get_icon(): string {
-        return MSIconHelper::get_icon( 'microsoft-exchange', 'svg' );
+        return MSIconHelper::get_icon( 'exchange', 'svg' );
     }
     /**
      * Get the plugin version.
@@ -69,7 +69,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @return string The plugin author.
      */
     public function get_author(): string {
-        return 'MrTrilB';
+        return 'TrilB.Dev Team';
     }
     /**
      * Get the plugin author URI.
