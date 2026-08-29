@@ -272,7 +272,14 @@ final class Settings {
         if ( $connect_url ) {
             ?>
             <a class="button button-primary" href="<?php echo esc_url( $connect_url ); ?>">
-                <i class="mspress-icon" src="<?php echo MSIconHelper::get_icon('exchange', 'svg'); ?>"></i>
+                <img
+                    class="mspress-icon"
+                    src="<?php echo esc_url( MSIconHelper::get_icon( 'exchange', 'svg' ) ); ?>"
+                    alt=""
+                    width="20"
+                    height="20"
+                    aria-hidden="true"
+                >
                 <?php echo esc_html( $connected ? __( 'Reconnect account', 'mspress' ) : __( 'Connect Microsoft 365 account', 'mspress' ) ); ?>
             </a>
             <?php
