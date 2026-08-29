@@ -43,13 +43,22 @@ final class Assets {
      * @return void
      */
     public function register(): void {
+        $admin_styles = [
+            'styles' => [
+                [
+                    'handle' => 'mspress-admin-exchange',
+                    'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.styles.css',
+                ],
+            ],
+        ];
+
         $this->assets->register_page( 'mspress', [ 'scripts' => $this->register_frontend_assets( [] )['scripts'] ] );
-        $this->assets->register_page( 'mspress-settings', $this->register_admin_assets( [] ) );
-        $this->assets->register_page( 'mspress-exchange', $this->register_admin_assets( [] ) );
-        $this->assets->register_page( 'mspress-exchange-settings', $this->register_admin_assets( [] ) );
-        $this->assets->register_page( 'mspress-exchange-email-templates', $this->register_admin_assets( [] ) );
-        $this->assets->register_page( 'mspress-exchange-route-trace', $this->register_admin_assets( [] ) );
-        $this->assets->register_page( 'mspress-exchange-sent-log', $this->register_admin_assets( [] ) );
+        $this->assets->register_page( 'mspress-settings', $admin_styles );
+        $this->assets->register_page( 'mspress-exchange', $admin_styles );
+        $this->assets->register_page( 'mspress-exchange-settings', $admin_styles );
+        $this->assets->register_page( 'mspress-exchange-email-templates', $admin_styles );
+        $this->assets->register_page( 'mspress-exchange-route-trace', $admin_styles );
+        $this->assets->register_page( 'mspress-exchange-sent-log', $admin_styles );
     }
     /**
      * Registers the admin assets for the Exchange plugin.
