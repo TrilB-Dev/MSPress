@@ -24,7 +24,8 @@ final class MSIconHelper {
         foreach ( self::icons() as $slug => $icon ) {
             if ( $lookup === self::normalize_name( $slug ) || $lookup === self::normalize_name( $icon['name'] ) ) {
                 $file = pathinfo( $icon['file'], PATHINFO_FILENAME ) . '.' . $filetype;
-                $location = dirname( $icon['location'] ) . '/' . $file;
+                $location = trim( $icon['location'], '/' );
+                $location = ( '' !== $location ? $location . '/' : '' ) . $file;
                 return MSPRESS_ASSETS_URL . '/images/microsoft-icons/' . $location;
             }
         }
