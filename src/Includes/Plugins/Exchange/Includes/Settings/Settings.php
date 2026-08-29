@@ -279,6 +279,8 @@ final class Settings {
                     class="mspress-button-icon"
                     src="<?php echo esc_url( MSIconHelper::get_icon( 'exchange', 'svg' ) ); ?>"
                     aria-hidden="true"
+                    height="30"
+                    width="30"
                 >
                 <?php echo esc_html( $connected ? __( 'Reconnect account', 'mspress' ) : __( 'Connect Microsoft 365 account', 'mspress' ) ); ?>
             </a>
