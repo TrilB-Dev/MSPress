@@ -452,13 +452,11 @@ final class SettingsPlugins {
                     'tooltip_icon' => (string) ( $field['tooltip_icon'] ?? '' ),
                 ]
             );
-            if ( 'table' === $layout ) {?>
-                echo '<tr'
-                    . ( $wrapper_attributes ? ' ' . $wrapper_attributes : '' )
-                    . '><th scope="row" class="w-50">'
-                    . wp_kses_post( $label )
-                    . '</th><td>';
-            <?php } else {?>
+            if ( 'table' === $layout ) { ?>
+                <tr<?php echo $wrapper_attributes ? ' ' . $wrapper_attributes : ''; ?>>
+                    <th scope="row" class="w-50"><?php echo wp_kses_post( $label ); ?></th>
+                    <td>
+            <?php } else { ?>
                 <article class="mspress-plugin-settings-field card h-100"<?php echo $wrapper_attributes ? ' ' . $wrapper_attributes : ''; ?>>
                     <div class="card-body">
                         <div class="mspress-plugin-settings-field-header d-flex align-items-start justify-content-between gap-3">
