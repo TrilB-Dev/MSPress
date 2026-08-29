@@ -324,11 +324,11 @@ final class SettingsPlugins {
         $layout = SanitizationHelper::key( $settings_page['layout'] ?? 'box', 'box' );
         $layout = in_array( $layout, [ 'table', 'box' ], true ) ? $layout : 'box';
 
-        if ( 'table' === $layout ) {
-            echo '<div class="mspress-plugin-settings-fields mspress-plugin-settings-fields-table"><table class="table align-middle"><tbody>';
-        } else {
-            echo '<div class="mspress-plugin-settings-fields mspress-plugin-settings-fields-box">';
-        }
+        if ( 'table' === $layout ) {?>
+            <div class="mspress-plugin-settings-fields mspress-plugin-settings-fields-table"><table class="table align-middle"><tbody><?php
+        } else {?>
+            <div class="mspress-plugin-settings-fields mspress-plugin-settings-fields-box">
+        <?php }
 
         foreach ( $settings_page['fields'] as $field ) {
             $key = SanitizationHelper::key( $field['key'] ?? '' );
@@ -357,19 +357,34 @@ final class SettingsPlugins {
                 'tooltip_type' => SanitizationHelper::key( $field['tooltip_type'] ?? 'question', 'question' ),
                 'tooltip_icon' => (string) ( $field['tooltip_icon'] ?? '' ),
             ] );
-            if ( 'table' === $layout ) {
+            if ( 'table' === $layout ) {?>
                 echo '<tr' . ( $wrapper_attributes ? ' ' . $wrapper_attributes : '' ) . '><th scope="row" class="w-50">' . wp_kses_post( $label ) . '</th><td>';
-            } else {
-                echo '<article class="mspress-plugin-settings-field card h-100"' . ( $wrapper_attributes ? ' ' . $wrapper_attributes : '' ) . '><div class="card-body">';
-                echo '<div class="mspress-plugin-settings-field-header d-flex align-items-start justify-content-between gap-3">' . wp_kses_post( $label );
-                if ( 'checkbox' === $type ) {
-                    echo FormFieldHelper::switch( $name, '1', '', [ 'id' => $id, 'checked' => ! empty( $value ), 'wrapper_class' => 'ms-auto flex-shrink-0' ] );
-                }
-                echo '</div>';
-                if ( ! empty( $field['description'] ) ) {
-                    echo '<p class="mspress-plugin-settings-field-description text-secondary mb-3">' . esc_html( (string) $field['description'] ) . '</p>';
-                }
-            }
+            <?php } else {?>
+                <article class="mspress-plugin-settings-field card h-100"<?php echo $wrapper_attributes ? ' ' . $wrapper_attributes : ''; ?>>
+                    <div class="card-body">
+                        <div class="mspress-plugin-settings-field-header d-flex align-items-start justify-content-between gap-3">
+                            <?php echo wp_kses_post( $label ); ?>
+                <?php if ( 'checkbox' === $type ) {
+                    echo FormFieldHelper::switch( 
+                        $name, 
+                        '1', 
+                        '', 
+                        [ 
+                            'id' => $id, 
+                            'checked' => ! empty( $value ), 
+                            'wrapper_class' => 'ms-auto flex-shrink-0' 
+                        ] 
+                    );
+                }?>
+                        </div>
+                        <?php if ( ! empty( $field['description'] ) ) {?>
+                            <p class="mspress-plugin-settings-field-description text-secondary mb-3">
+                                <?php echo esc_html( (string) $field['description'] ); ?>
+                            </p>
+                        <?php }?>
+                    </div>
+                </article>
+            <?php }
             if ( 'custom' === $type && ! empty( $field['render'] ) && is_callable( $field['render'] ) ) {
                 call_user_func( $field['render'], $value, $name, $id );
             } elseif ( 'table' === $layout && 'select' === $type ) {
@@ -393,11 +408,13 @@ final class SettingsPlugins {
             echo 'table' === $layout ? '</td></tr>' : '</div></article>';
         }
 
-        if ( 'table' === $layout ) {
-            echo '</tbody></table></div>';
-        } else {
-            echo '</div>';
-        }
+        if ( 'table' === $layout ) {?>
+            </tbody>
+        </table>
+    </div>
+        <?php } else { ?>
+            </div>
+        <?php }
     }
     /**
      * Render a card for a third-party plugin.
@@ -412,16 +429,53 @@ final class SettingsPlugins {
             <article class="card mspress-plugin-card shadow-sm h-100 w-100">
                 <div class="card-header d-flex align-items-center gap-2">
                     <?php /* translators: %s is the plugin name. */ ?>
-                    <?php echo FormFieldHelper::switch( 'mspress-third-party-status', '1', '', [ 'id' => 'mspress-third-party-status-' . SanitizationHelper::key( $file ), 'checked' => $active, 'disabled' => true, 'aria-label' => sprintf( __( 'Enable %s', 'mspress' ), $plugin['Name'] ?? $file ) ] ); ?>
-                    <span class="fw-semibold"><?php echo esc_html( $plugin['Name'] ?? $file ); ?></span>
+                    <?php echo FormFieldHelper::switch( 
+                        'mspress-third-party-status', 
+                        '1', 
+                        '', 
+                        [ 
+                            'id' => 'mspress-third-party-status-' . SanitizationHelper::key( $file ), 
+                            'checked' => $active, 
+                            'disabled' => true, 
+                            'aria-label' => sprintf( __( 'Enable %s', 'mspress' ), $plugin['Name'] ?? $file ) 
+                            ] 
+                        ); ?>
+                    <span class="fw-semibold">
+                        <?php echo esc_html( $plugin['Name'] ?? $file ); ?>
+                    </span>
                 </div>
                 <div class="card-body d-flex flex-column">
                     <span class="mspress-plugin-icon dashicons dashicons-admin-plugins" aria-hidden="true"></span>
-                    <p class="card-text text-secondary mt-3"><?php echo esc_html( $plugin['Description'] ?? __( 'No description provided.', 'mspress' ) ); ?></p>
-                    <p class="card-text mb-2"><span class="text-secondary"><?php esc_html_e( 'Author:', 'mspress' ); ?></span> <?php echo esc_html( $plugin['AuthorName'] ?? wp_strip_all_tags( $plugin['Author'] ?? __( 'Unknown', 'mspress' ) ) ); ?></p>
-                    <p class="card-text mb-2"><span class="text-secondary"><?php esc_html_e( 'Version:', 'mspress' ); ?></span> <?php echo esc_html( $plugin['Version'] ?? __( 'Unknown', 'mspress' ) ); ?></p>
-                    <p class="card-text mb-3"><span class="text-secondary"><?php esc_html_e( 'Docs:', 'mspress' ); ?></span> <?php if ( ! empty( $plugin['PluginURI'] ) ) : ?><a href="<?php echo esc_url( $plugin['PluginURI'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View documentation', 'mspress' ); ?></a><?php else : ?><?php esc_html_e( 'Not available', 'mspress' ); ?><?php endif; ?></p>
-                    <a href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>" class="btn btn-primary mt-auto"><?php esc_html_e( 'Settings', 'mspress' ); ?></a>
+                    <p class="card-text text-secondary mt-3">
+                        <?php echo esc_html( $plugin['Description'] ?? __( 'No description provided.', 'mspress' ) ); ?>
+                    </p>
+                    <p class="card-text mb-2">
+                        <span class="text-secondary">
+                            <?php esc_html_e( 'Author:', 'mspress' ); ?>
+                        </span>
+                        <?php echo esc_html( $plugin['AuthorName'] ?? wp_strip_all_tags( $plugin['Author'] ?? __( 'Unknown', 'mspress' ) ) ); ?>
+                    </p>
+                    <p class="card-text mb-2">
+                        <span class="text-secondary">
+                            <?php esc_html_e( 'Version:', 'mspress' ); ?>
+                        </span>
+                        <?php echo esc_html( $plugin['Version'] ?? __( 'Unknown', 'mspress' ) ); ?>
+                    </p>
+                    <p class="card-text mb-3">
+                        <span class="text-secondary">
+                            <?php esc_html_e( 'Docs:', 'mspress' ); ?>
+                        </span> 
+                        <?php if ( ! empty( $plugin['PluginURI'] ) ) : ?>
+                            <a href="<?php echo esc_url( $plugin['PluginURI'] ); ?>" target="_blank" rel="noopener noreferrer">
+                                <?php esc_html_e( 'View documentation', 'mspress' ); ?>
+                            </a>
+                        <?php else : ?>
+                            <?php esc_html_e( 'Not available', 'mspress' ); ?>
+                        <?php endif; ?>
+                    </p>
+                    <a href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>" class="btn btn-primary mt-auto">
+                        <?php esc_html_e( 'Settings', 'mspress' ); ?>
+                    </a>
                 </div>
             </article>
         </div>

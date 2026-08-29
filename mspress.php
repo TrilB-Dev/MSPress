@@ -33,11 +33,11 @@ define( 'MSPRESS_ASSETS_URL', MSPRESS_URL . 'src/Assets' );
 define( 'MSPRESS_ADMIN', MSPRESS_DIR . 'src/Admin' );
 define( 'MSPRESS_ADMIN_URL', MSPRESS_URL . 'src/Admin' );
 define( 'MSPRESS_LANGUAGES', MSPRESS_DIR . 'src/languages' );
-define( 'MSPRESS_INCLUDES', MSPRESS_DIR . 'src/includes' );
+define( 'MSPRESS_INCLUDES', MSPRESS_DIR . 'src/Includes' );
 define( 'MSPRESS_CORE', MSPRESS_INCLUDES . '/Core' );
 define( 'MSPRESS_SETTINGS', MSPRESS_INCLUDES . '/Settings' );
 define( 'MSPRESS_PLUGINS', MSPRESS_INCLUDES . '/Plugins' );
-define( 'MSPRESS_PLUGINS_URL', MSPRESS_URL . 'src/includes/Plugins' );
+define( 'MSPRESS_PLUGINS_URL', MSPRESS_URL . 'src/Includes/Plugins' );
 
 /**
  * Composer autoloader.
