@@ -18,7 +18,7 @@ use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 final class SettingsPlugins {
     /**
      * Check if a settings page exists for the given slug.
-     *
+        *
      * @param string $slug The slug of the settings page.
      * @return bool True if the settings page exists, false otherwise.
      */
@@ -38,7 +38,9 @@ final class SettingsPlugins {
             return false;
         }
 
-        $capability = SanitizationHelper::key( $page['capability'] ?? 'mspress_settings_plugins_int_view' );
+        $capability = SanitizationHelper::key(
+            $page['capability'] ?? 'mspress_settings_plugins_int_view'
+        );
         return '' !== $capability && current_user_can( $capability );
     }
     /**
@@ -69,16 +71,39 @@ final class SettingsPlugins {
                 [
                     'description' => (string) ( $field['description'] ?? '' ),
                     'tooltip' => (string) ( $field['tooltip'] ?? '' ),
-                    'tooltip_type' => SanitizationHelper::key( $field['tooltip_type'] ?? 'question', 'question' ),
+                    'tooltip_type' => SanitizationHelper::key(
+                        $field['tooltip_type'] ?? 'question',
+                        'question'
+                    ),
                     'tooltip_icon' => (string) ( $field['tooltip_icon'] ?? '' ),
                 ]
             );
             if ( 'select' === $type ) {
-                echo FormFieldHelper::select( $name, (array) ( $field['options'] ?? [] ), $value, [ 'id' => 'mspress-' . $key ] );
+                echo FormFieldHelper::select(
+                    $name,
+                    (array) ( $field['options'] ?? [] ),
+                    $value,
+                    [ 'id' => 'mspress-' . $key ]
+                );
             } elseif ( 'text' === $type ) {
-                echo FormFieldHelper::input( $name, is_scalar( $value ) ? (string) $value : '', [ 'id' => 'mspress-' . $key, 'type' => 'text' ] );
+                echo FormFieldHelper::input(
+                    $name,
+                    is_scalar( $value ) ? (string) $value : '',
+                    [
+                        'id' => 'mspress-' . $key,
+                        'type' => 'text',
+                    ]
+                );
             } else {
-                echo FormFieldHelper::checkbox( $name, '1', '', [ 'id' => 'mspress-' . $key, 'checked' => ! empty( $value ) ] );
+                echo FormFieldHelper::checkbox(
+                    $name,
+                    '1',
+                    '',
+                    [
+                        'id' => 'mspress-' . $key,
+                        'checked' => ! empty( $value ),
+                    ]
+                );
             }
             echo '</div>';
         }
@@ -96,7 +121,11 @@ final class SettingsPlugins {
         }
 
         $page = $this->settings_pages()[ $tab ] ?? null;
-        if ( is_array( $page ) && ! empty( $page['render_page'] ) && is_callable( $page['render_page'] ) ) {
+        if (
+            is_array( $page )
+            && ! empty( $page['render_page'] )
+            && is_callable( $page['render_page'] )
+        ) {
             call_user_func( $page['render_page'] );
             return;
         }
@@ -111,18 +140,32 @@ final class SettingsPlugins {
     private function settings_pages(): array {
         $pages = [];
         foreach ( Plugins::get_instance()->get_registered_plugins() as $plugin ) {
-            if ( ! $plugin instanceof PluginInterface || ! $plugin instanceof SettingsPageProviderInterface || ! Plugins::get_instance()->is_plugin_enabled( $plugin->get_slug() ) ) {
+            if (
+                ! $plugin instanceof PluginInterface
+                || ! $plugin instanceof SettingsPageProviderInterface
+                || ! Plugins::get_instance()->is_plugin_enabled( $plugin->get_slug() )
+            ) {
                 continue;
             }
 
             $page = $plugin->get_settings_page();
-            if ( empty( $page['slug'] ) || empty( $page['label'] ) || ( empty( $page['fields'] ) && empty( $page['render_page'] ) ) ) {
+            if (
+                empty( $page['slug'] )
+                || empty( $page['label'] )
+                || ( empty( $page['fields'] ) && empty( $page['render_page'] ) )
+            ) {
                 continue;
             }
             $pages[ SanitizationHelper::key( $page['slug'] ) ] = $page;
 
             foreach ( $page['tabs'] ?? [] as $tab ) {
-                if ( ! is_array( $tab ) || empty( $tab['slug'] ) || empty( $tab['label'] ) || empty( $tab['render_page'] ) || ! is_callable( $tab['render_page'] ) ) {
+                if (
+                    ! is_array( $tab )
+                    || empty( $tab['slug'] )
+                    || empty( $tab['label'] )
+                    || empty( $tab['render_page'] )
+                    || ! is_callable( $tab['render_page'] )
+                ) {
                     continue;
                 }
 
@@ -163,7 +206,9 @@ final class SettingsPlugins {
         ?>
         <div class="row g-4">
             <?php foreach ( get_plugins() as $file => $plugin ) : ?>
-                <?php if ( function_exists( 'plugin_basename' ) && plugin_basename( MSPRESS_FILE ) === $file ) { continue; } ?>
+                <?php if ( function_exists( 'plugin_basename' ) && plugin_basename( MSPRESS_FILE ) === $file ) : ?>
+                    <?php continue; ?>
+                <?php endif; ?>
                 <?php $this->render_third_party_plugin_card( $file, $plugin ); ?>
             <?php endforeach; ?>
         </div>
@@ -177,7 +222,9 @@ final class SettingsPlugins {
      */
     private function render_mspress_plugin_card( $plugin ): void {
         $enabled = Plugins::get_instance()->is_plugin_enabled( $plugin->get_slug() );
-        $settings_page = $plugin instanceof SettingsPageProviderInterface ? $plugin->get_settings_page() : [];
+        $settings_page = $plugin instanceof SettingsPageProviderInterface
+            ? $plugin->get_settings_page()
+            : [];
         $modal_id = SanitizationHelper::key( $plugin->get_slug() );
         $can_edit = $this->can_edit_plugin( $plugin );
         ?>
@@ -185,7 +232,22 @@ final class SettingsPlugins {
             <article class="card mspress-plugin-card shadow-sm h-100 w-100">
                 <div class="card-header d-flex align-items-center gap-2">
                     <?php /* translators: %s is the plugin name. */ ?>
-                    <?php echo FormFieldHelper::switch( 'mspress-plugin-status', '1', '', [ 'id' => 'mspress-plugin-status-' . SanitizationHelper::key( $plugin->get_slug() ), 'checked' => $enabled, 'disabled' => ! $can_edit, 'data-mspress-plugin-toggle' => 'true', 'data-plugin-slug' => $plugin->get_slug(), 'aria-label' => sprintf( __( 'Enable %s', 'mspress' ), $plugin->get_name() ) ] ); ?>
+                    <?php echo FormFieldHelper::switch(
+                        'mspress-plugin-status',
+                        '1',
+                        '',
+                        [
+                            'id' => 'mspress-plugin-status-' . SanitizationHelper::key( $plugin->get_slug() ),
+                            'checked' => $enabled,
+                            'disabled' => ! $can_edit,
+                            'data-mspress-plugin-toggle' => 'true',
+                            'data-plugin-slug' => $plugin->get_slug(),
+                            'aria-label' => sprintf(
+                                __( 'Enable %s', 'mspress' ),
+                                $plugin->get_name()
+                            ),
+                        ]
+                    ); ?>
                     <span class="fw-semibold"><?php echo esc_html( $plugin->get_name() ); ?></span>
                 </div>
                 <div class="card-body d-flex flex-column">
@@ -195,7 +257,15 @@ final class SettingsPlugins {
                     <p class="card-text mb-2"><span class="text-secondary"><?php esc_html_e( 'Version:', 'mspress' ); ?></span> <?php echo esc_html( $plugin->get_version() ); ?></p>
                     <p class="card-text mb-3"><span class="text-secondary"><?php esc_html_e( 'Docs:', 'mspress' ); ?></span> <a href="<?php echo esc_url( $plugin->get_uri() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View documentation', 'mspress' ); ?></a></p>
                     <?php if ( ! empty( $settings_page['fields'] ) ) : ?>
-                        <?php echo FormFieldHelper::button( __( 'Settings', 'mspress' ), [ 'type' => 'button', 'class' => 'btn-primary mt-auto', 'data-bs-toggle' => 'modal', 'data-bs-target' => '#' . $modal_id ] ); ?>
+                        <?php echo FormFieldHelper::button(
+                            __( 'Settings', 'mspress' ),
+                            [
+                                'type' => 'button',
+                                'class' => 'btn-primary mt-auto',
+                                'data-bs-toggle' => 'modal',
+                                'data-bs-target' => '#' . $modal_id,
+                            ]
+                        ); ?>
                     <?php endif; ?>
                 </div>
             </article>
@@ -226,16 +296,21 @@ final class SettingsPlugins {
             $color = isset( $icon[1] ) ? sanitize_hex_color( $icon[1] ) : '';
             $style = $color ? 'color: ' . esc_attr( $color ) . ';' : '';
 
-            printf( '<i class="mspress-plugin-icon %1$s" style="%2$s" aria-hidden="true"></i>', esc_attr( $icon_class ), esc_attr( $style ) );
+            printf(
+                '<i class="mspress-plugin-icon %1$s" style="%2$s" aria-hidden="true"></i>',
+                esc_attr( $icon_class ),
+                esc_attr( $style )
+            );
             return;
         }
 
         if ( is_string( $icon ) && '' !== $icon ) {
             printf( '<img src="%1$s" class="mspress-plugin-icon" alt="" aria-hidden="true" />', esc_url( $icon ) );
             return;
-        }
+        }?>
 
-        echo '<span class="mspress-plugin-icon dashicons dashicons-admin-plugins" aria-hidden="true"></span>';
+        <span class="mspress-plugin-icon dashicons dashicons-admin-plugins" aria-hidden="true"></span>';
+    <?php
     }
     /**
      * Render a card for a third-party plugin.
@@ -243,7 +318,12 @@ final class SettingsPlugins {
      * @param string $file The plugin file path.
      * @param array $plugin The plugin data.
      */
-    private function render_plugin_settings_modal( PluginInterface $plugin, array $settings_page, string $modal_id, bool $can_edit ): void {
+    private function render_plugin_settings_modal(
+        PluginInterface $plugin,
+        array $settings_page,
+        string $modal_id,
+        bool $can_edit
+    ): void {
         $settings_group = SanitizationHelper::key( $settings_page['settings_group'] ?? $settings_page['slug'] );
         $values = Settings::get_group( $settings_group, [] ) ?? [];
         ?>
@@ -291,7 +371,9 @@ final class SettingsPlugins {
      * @param PluginInterface $plugin The plugin instance.
      */
     private function can_view_plugin( PluginInterface $plugin ): bool {
-        $capability = $this->is_internal_plugin( $plugin ) ? 'mspress_settings_plugins_int_view' : 'mspress_settings_plugins_ext_view';
+        $capability = $this->is_internal_plugin( $plugin )
+            ? 'mspress_settings_plugins_int_view'
+            : 'mspress_settings_plugins_ext_view';
         return current_user_can( $capability );
     }
     /**
@@ -301,7 +383,9 @@ final class SettingsPlugins {
      * @return bool True if the user can edit, false otherwise.
      */
     private function can_edit_plugin( PluginInterface $plugin ): bool {
-        $capability = $this->is_internal_plugin( $plugin ) ? 'mspress_settings_plugins_int_edit' : 'mspress_settings_plugins_ext_edit';
+        $capability = $this->is_internal_plugin( $plugin )
+            ? 'mspress_settings_plugins_int_edit'
+            : 'mspress_settings_plugins_ext_edit';
         return current_user_can( $capability );
     }
     /**
@@ -322,7 +406,11 @@ final class SettingsPlugins {
      */
     private function render_plugin_settings_fields( array $settings_page, array $values, string $prefix ): void {
         $layout = SanitizationHelper::key( $settings_page['layout'] ?? 'box', 'box' );
-        $layout = in_array( $layout, [ 'table', 'box' ], true ) ? $layout : 'box';
+        $layout = in_array(
+            $layout,
+            [ 'table', 'box' ],
+            true
+        ) ? $layout : 'box';
 
         if ( 'table' === $layout ) {?>
             <div class="mspress-plugin-settings-fields mspress-plugin-settings-fields-table"><table class="table align-middle"><tbody><?php
@@ -352,30 +440,41 @@ final class SettingsPlugins {
                 $wrapper_attributes['data-mspress-visible-when'] = wp_json_encode( $field['visible_when'] );
             }
             $wrapper_attributes = FormFieldHelper::attributes_to_string( $wrapper_attributes );
-            $label = FormFieldHelper::label( $id, (string) ( $field['label'] ?? $key ), [
-                'tooltip' => (string) ( $field['tooltip'] ?? '' ),
-                'tooltip_type' => SanitizationHelper::key( $field['tooltip_type'] ?? 'question', 'question' ),
-                'tooltip_icon' => (string) ( $field['tooltip_icon'] ?? '' ),
-            ] );
+            $label = FormFieldHelper::label(
+                $id,
+                (string) ( $field['label'] ?? $key ),
+                [
+                    'tooltip' => (string) ( $field['tooltip'] ?? '' ),
+                    'tooltip_type' => SanitizationHelper::key(
+                        $field['tooltip_type'] ?? 'question',
+                        'question'
+                    ),
+                    'tooltip_icon' => (string) ( $field['tooltip_icon'] ?? '' ),
+                ]
+            );
             if ( 'table' === $layout ) {?>
-                echo '<tr' . ( $wrapper_attributes ? ' ' . $wrapper_attributes : '' ) . '><th scope="row" class="w-50">' . wp_kses_post( $label ) . '</th><td>';
+                echo '<tr'
+                    . ( $wrapper_attributes ? ' ' . $wrapper_attributes : '' )
+                    . '><th scope="row" class="w-50">'
+                    . wp_kses_post( $label )
+                    . '</th><td>';
             <?php } else {?>
                 <article class="mspress-plugin-settings-field card h-100"<?php echo $wrapper_attributes ? ' ' . $wrapper_attributes : ''; ?>>
                     <div class="card-body">
                         <div class="mspress-plugin-settings-field-header d-flex align-items-start justify-content-between gap-3">
                             <?php echo wp_kses_post( $label ); ?>
                 <?php if ( 'checkbox' === $type ) {
-                    echo FormFieldHelper::switch( 
-                        $name, 
-                        '1', 
-                        '', 
-                        [ 
-                            'id' => $id, 
-                            'checked' => ! empty( $value ), 
-                            'wrapper_class' => 'ms-auto flex-shrink-0' 
-                        ] 
+                    echo FormFieldHelper::switch(
+                        $name,
+                        '1',
+                        '',
+                        [
+                            'id' => $id,
+                            'checked' => ! empty( $value ),
+                            'wrapper_class' => 'ms-auto flex-shrink-0',
+                        ]
                     );
-                }?>
+                } ?>
                         </div>
                         <?php if ( ! empty( $field['description'] ) ) {?>
                             <p class="mspress-plugin-settings-field-description text-secondary mb-3">
@@ -388,22 +487,91 @@ final class SettingsPlugins {
             if ( 'custom' === $type && ! empty( $field['render'] ) && is_callable( $field['render'] ) ) {
                 call_user_func( $field['render'], $value, $name, $id );
             } elseif ( 'table' === $layout && 'select' === $type ) {
-                echo FormFieldHelper::select( $name, (array) ( $field['options'] ?? [] ), $value, [ 'id' => $id, 'attributes' => $field['attributes'] ?? [] ] );
+                echo FormFieldHelper::select(
+                    $name,
+                    (array) ( $field['options'] ?? [] ),
+                    $value,
+                    [
+                        'id' => $id,
+                        'attributes' => $field['attributes'] ?? [],
+                    ]
+                );
             } elseif ( 'table' === $layout && 'multiselect' === $type ) {
-                echo FormFieldHelper::bootstrap_multiselect( $name, [ 'id' => $id, 'data' => (array) ( $field['options'] ?? [] ), 'selected' => (array) $value, 'dropup_auto' => $field['dropup_auto'] ?? true, 'show_tick' => $field['show_tick'] ?? null, 'selection_indicator' => $field['selection_indicator'] ?? null, 'attributes' => $field['attributes'] ?? [] ] );
+                echo FormFieldHelper::bootstrap_multiselect(
+                    $name,
+                    [
+                        'id' => $id,
+                        'data' => (array) ( $field['options'] ?? [] ),
+                        'selected' => (array) $value,
+                        'dropup_auto' => $field['dropup_auto'] ?? true,
+                        'show_tick' => $field['show_tick'] ?? null,
+                        'selection_indicator' => $field['selection_indicator'] ?? null,
+                        'attributes' => $field['attributes'] ?? [],
+                    ]
+                );
             } elseif ( 'table' === $layout && 'text' === $type ) {
-                echo FormFieldHelper::input( $name, is_scalar( $value ) ? (string) $value : '', [ 'id' => $id, 'type' => 'text' ] );
+                echo FormFieldHelper::input(
+                    $name,
+                    is_scalar( $value ) ? (string) $value : '',
+                    [
+                        'id' => $id,
+                        'type' => 'text',
+                    ]
+                );
             } elseif ( 'table' === $layout ) {
-                echo FormFieldHelper::checkbox( $name, '1', '', [ 'id' => $id, 'checked' => ! empty( $value ) ] );
+                echo FormFieldHelper::checkbox(
+                    $name,
+                    '1',
+                    '',
+                    [
+                        'id' => $id,
+                        'checked' => ! empty( $value ),
+                    ]
+                );
             } elseif ( 'select' === $type ) {
-                echo FormFieldHelper::select( $name, (array) ( $field['options'] ?? [] ), $value, [ 'id' => $id, 'attributes' => $field['attributes'] ?? [] ] );
+                echo FormFieldHelper::select(
+                    $name,
+                    (array) ( $field['options'] ?? [] ),
+                    $value,
+                    [
+                        'id' => $id,
+                        'attributes' => $field['attributes'] ?? [],
+                    ]
+                );
             } elseif ( 'multiselect' === $type ) {
-                echo FormFieldHelper::bootstrap_multiselect( $name, [ 'id' => $id, 'data' => (array) ( $field['options'] ?? [] ), 'selected' => (array) $value, 'dropup_auto' => $field['dropup_auto'] ?? true, 'show_tick' => $field['show_tick'] ?? null, 'selection_indicator' => $field['selection_indicator'] ?? null, 'attributes' => $field['attributes'] ?? [] ] );
+                echo FormFieldHelper::bootstrap_multiselect(
+                    $name,
+                    [
+                        'id' => $id,
+                        'data' => (array) ( $field['options'] ?? [] ),
+                        'selected' => (array) $value,
+                        'dropup_auto' => $field['dropup_auto'] ?? true,
+                        'show_tick' => $field['show_tick'] ?? null,
+                        'selection_indicator' => $field['selection_indicator'] ?? null,
+                        'attributes' => $field['attributes'] ?? [],
+                    ]
+                );
             } elseif ( in_array( $type, [ 'text', 'email', 'url', 'number' ], true ) ) {
-                echo FormFieldHelper::input( $name, is_scalar( $value ) ? (string) $value : '', [ 'id' => $id, 'type' => $type ] );
+                echo FormFieldHelper::input(
+                    $name,
+                    is_scalar( $value ) ? (string) $value : '',
+                    [
+                        'id' => $id,
+                        'type' => $type,
+                    ]
+                );
             } elseif ( 'textarea' === $type ) {
-                $textarea_value = is_scalar( $value ) ? (string) $value : wp_json_encode( $value, JSON_PRETTY_PRINT );
-                echo FormFieldHelper::textarea( $name, (string) $textarea_value, [ 'id' => $id, 'rows' => 6 ] );
+                $textarea_value = is_scalar( $value )
+                    ? (string) $value
+                    : wp_json_encode( $value, JSON_PRETTY_PRINT );
+                echo FormFieldHelper::textarea(
+                    $name,
+                    (string) $textarea_value,
+                    [
+                        'id' => $id,
+                        'rows' => 6,
+                    ]
+                );
             }
             echo 'table' === $layout ? '</td></tr>' : '</div></article>';
         }
@@ -429,17 +597,20 @@ final class SettingsPlugins {
             <article class="card mspress-plugin-card shadow-sm h-100 w-100">
                 <div class="card-header d-flex align-items-center gap-2">
                     <?php /* translators: %s is the plugin name. */ ?>
-                    <?php echo FormFieldHelper::switch( 
-                        'mspress-third-party-status', 
-                        '1', 
-                        '', 
-                        [ 
-                            'id' => 'mspress-third-party-status-' . SanitizationHelper::key( $file ), 
-                            'checked' => $active, 
-                            'disabled' => true, 
-                            'aria-label' => sprintf( __( 'Enable %s', 'mspress' ), $plugin['Name'] ?? $file ) 
-                            ] 
-                        ); ?>
+                    <?php echo FormFieldHelper::switch(
+                        'mspress-third-party-status',
+                        '1',
+                        '',
+                        [
+                            'id' => 'mspress-third-party-status-' . SanitizationHelper::key( $file ),
+                            'checked' => $active,
+                            'disabled' => true,
+                            'aria-label' => sprintf(
+                                __( 'Enable %s', 'mspress' ),
+                                $plugin['Name'] ?? $file
+                            ),
+                        ]
+                    ); ?>
                     <span class="fw-semibold">
                         <?php echo esc_html( $plugin['Name'] ?? $file ); ?>
                     </span>

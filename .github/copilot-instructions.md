@@ -159,6 +159,13 @@ and test or call site. Preserve existing public interfaces unless a contract
 change is required, and update every internal implementation when a provider
 interface changes.
 
+- Format PHP for readability across the entire touched file: expand arrays,
+  function calls, and complex expressions into clearly indented multiline
+  blocks instead of dense inline code. Remove trailing whitespace while
+  formatting, and preserve behavior.
+- Do not place HTML markup inside PHP `echo` statements. Keep markup in PHP
+  template blocks and use `echo` only for escaped values or plain text.
+
 Validate focused PHP with `php -l`, changed JavaScript with `node --check`, and
 run focused tests before broader checks. Run `npm run build` when JavaScript,
 SCSS, webpack entries, or asset registration changes. Review generated assets
