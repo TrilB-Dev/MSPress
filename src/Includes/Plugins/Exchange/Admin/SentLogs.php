@@ -40,20 +40,81 @@ class SentLogs {
         $logs = array_values( $unique_logs );
         usort( $logs, static fn( array $first, array $second ): int => strcmp( (string) ( $second['date'] ?? '' ), (string) ( $first['date'] ?? '' ) ) );
         $discovered = WPEmailDiscovery::discover();
-        echo '<div class="card mspress-exchange-page-card"><div class="card-header"><h2 class="h5 mb-0">' . esc_html__( 'Sent email log', 'mspress' ) . '</h2></div><div class="card-body"><div class="table-responsive"><table class="widefat striped"><thead><tr><th>' . esc_html__( 'Date', 'mspress' ) . '</th><th>' . esc_html__( 'Sender', 'mspress' ) . '</th><th>' . esc_html__( 'Recipients', 'mspress' ) . '</th><th>' . esc_html__( 'Subject', 'mspress' ) . '</th></tr></thead><tbody>';
+        ?>
+        <div class="card mspress-exchange-page-card">
+            <div class="card-header">
+                <h2 class="h5 mb-0"><?php esc_html_e( 'Sent email log', 'mspress' ); ?></h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="widefat striped">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e( 'Date', 'mspress' ); ?></th>
+                                <th><?php esc_html_e( 'Sender', 'mspress' ); ?></th>
+                                <th><?php esc_html_e( 'Recipients', 'mspress' ); ?></th>
+                                <th><?php esc_html_e( 'Subject', 'mspress' ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                <?php
         foreach ( $logs as $log ) {
-            echo '<tr><td>' . esc_html( $log['date'] ?? '' ) . '</td><td>' . esc_html( $log['sender'] ?? '' ) . '</td><td>' . esc_html( $log['to'] ?? '' ) . '</td><td>' . esc_html( $log['subject'] ?? '' ) . '</td></tr>';
+            ?>
+                            <tr>
+                                <td><?php echo esc_html( $log['date'] ?? '' ); ?></td>
+                                <td><?php echo esc_html( $log['sender'] ?? '' ); ?></td>
+                                <td><?php echo esc_html( $log['to'] ?? '' ); ?></td>
+                                <td><?php echo esc_html( $log['subject'] ?? '' ); ?></td>
+                            </tr>
+            <?php
         }
         if ( ! $logs ) {
-            echo '<tr><td colspan="4">' . esc_html__( 'No WordPress emails have been sent yet.', 'mspress' ) . '</td></tr>';
+            ?>
+                            <tr>
+                                <td colspan="4"><?php esc_html_e( 'No WordPress emails have been sent yet.', 'mspress' ); ?></td>
+                            </tr>
+            <?php
         }
-        echo '</tbody></table></div><h2 class="h5 mt-4">' . esc_html__( 'WordPress email sources found', 'mspress' ) . '</h2><div class="table-responsive"><table class="widefat striped"><thead><tr><th>' . esc_html__( 'Source', 'mspress' ) . '</th><th>' . esc_html__( 'Path', 'mspress' ) . '</th><th>' . esc_html__( 'wp_mail() calls', 'mspress' ) . '</th><th>' . esc_html__( 'Template directory', 'mspress' ) . '</th></tr></thead><tbody>';
+        ?>
+                        </tbody>
+                    </table>
+                </div>
+                <h2 class="h5 mt-4"><?php esc_html_e( 'WordPress email sources found', 'mspress' ); ?></h2>
+                <div class="table-responsive">
+                    <table class="widefat striped">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e( 'Source', 'mspress' ); ?></th>
+                                <th><?php esc_html_e( 'Path', 'mspress' ); ?></th>
+                                <th><?php esc_html_e( 'wp_mail() calls', 'mspress' ); ?></th>
+                                <th><?php esc_html_e( 'Template directory', 'mspress' ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                <?php
         foreach ( $discovered as $item ) {
-            echo '<tr><td>' . esc_html( $item['source'] ) . '</td><td><code>' . esc_html( $item['path'] ) . '</code></td><td>' . esc_html( (string) $item['mail_calls'] ) . '</td><td>' . esc_html( ! empty( $item['template_directory'] ) ? __( 'Yes', 'mspress' ) : __( 'No', 'mspress' ) ) . '</td></tr>';
+            ?>
+                            <tr>
+                                <td><?php echo esc_html( $item['source'] ); ?></td>
+                                <td><code><?php echo esc_html( $item['path'] ); ?></code></td>
+                                <td><?php echo esc_html( (string) $item['mail_calls'] ); ?></td>
+                                <td><?php echo esc_html( ! empty( $item['template_directory'] ) ? __( 'Yes', 'mspress' ) : __( 'No', 'mspress' ) ); ?></td>
+                            </tr>
+            <?php
         }
         if ( ! $discovered ) {
-            echo '<tr><td colspan="4">' . esc_html__( 'No WordPress email sources were found.', 'mspress' ) . '</td></tr>';
+            ?>
+                            <tr>
+                                <td colspan="4"><?php esc_html_e( 'No WordPress email sources were found.', 'mspress' ); ?></td>
+                            </tr>
+            <?php
         }
-        echo '</tbody></table></div></div></div>';
+        ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <?php
     }
 }

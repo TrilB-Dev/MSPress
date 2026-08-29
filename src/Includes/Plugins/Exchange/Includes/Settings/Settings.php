@@ -19,6 +19,7 @@ use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
 use MSPress\Includes\Functions\Helpers\AjaxHelper;
 use MSPress\Includes\Functions\Helpers\PermissionHelper;
+use MSPress\Includes\Functions\Helpers\MSIconHelper;
 use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\MSGraph\GraphService;
 use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
@@ -257,16 +258,31 @@ final class Settings {
         $oauth = GraphService::get_instance()->get_oauth_service();
         $connect_url = $oauth ? $oauth->get_authorization_url( null, [ 'purpose' => 'exchange_connect' ], 'openid profile email offline_access User.Read.All Mail.Read.Shared' ) : '';
 
-        echo '<div class="d-flex flex-wrap align-items-center gap-3">';
-        echo '<span class="badge ' . ( $connected ? 'text-bg-success' : 'text-bg-secondary' ) . '">' . esc_html( $connected ? __( 'Connected', 'mspress' ) : __( 'Not connected', 'mspress' ) ) . '</span>';
+        ?>
+        <div class="d-flex flex-wrap align-items-center gap-3">
+            <span class="badge <?php echo esc_attr( $connected ? 'text-bg-success' : 'text-bg-secondary' ); ?>">
+                <?php echo esc_html( $connected ? __( 'Connected', 'mspress' ) : __( 'Not connected', 'mspress' ) ); ?>
+            </span>
+        <?php
         if ( $connected ) {
-            echo '<strong>' . esc_html( $email ) . '</strong>';
+            ?>
+            <strong><?php echo esc_html( $email ); ?></strong>
+            <?php
         }
         if ( $connect_url ) {
-            echo '<a class="button button-primary" href="' . esc_url( $connect_url ) . '">' . esc_html( $connected ? __( 'Reconnect account', 'mspress' ) : __( 'Connect Microsoft 365 account', 'mspress' ) ) . '</a>';
+            ?>
+            <a class="button button-primary" href="<?php echo esc_url( $connect_url ); ?>">
+                <i class="mspress-icon" src="<?php echo MSIconHelper::get_icon('exchange', 'svg'); ?>"></i>
+                <?php echo esc_html( $connected ? __( 'Reconnect account', 'mspress' ) : __( 'Connect Microsoft 365 account', 'mspress' ) ); ?>
+            </a>
+            <?php
         }
-        echo '</div>';
-        echo '<p class="description mt-2 mb-0">' . esc_html__( 'The connected account must also have Exchange access to any shared mailbox used for sending. Consent and mailbox delegation are separate from importing an address.', 'mspress' ) . '</p>';
+        ?>
+        </div>
+        <p class="description mt-2 mb-0">
+            <?php esc_html_e( 'The connected account must also have Exchange access to any shared mailbox used for sending. Consent and mailbox delegation are separate from importing an address.', 'mspress' ); ?>
+        </p>
+        <?php
     }
 
     public function save_connected_account( array $account ): void {
@@ -458,24 +474,100 @@ final class Settings {
     public function render_profiles( $value ): void {
         $profiles = is_array( $value ) ? $value : [];
         if ( ! $profiles ) {
-            echo '<p class="text-secondary mb-0">' . esc_html__( 'No sender profiles configured yet.', 'mspress' ) . '</p>';
+            ?>
+            <p class="text-secondary mb-0">
+                <?php esc_html_e( 'No sender profiles configured yet.', 'mspress' ); ?>
+            </p>
+            <?php
             return;
         }
 
-        echo '<div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>' . esc_html__( 'Email', 'mspress' ) . '</th><th>' . esc_html__( 'Name', 'mspress' ) . '</th><th>' . esc_html__( 'Type', 'mspress' ) . '</th><th>' . esc_html__( 'Enabled', 'mspress' ) . '</th></tr></thead><tbody>';
+        ?>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>
+                            <?php esc_html_e( 'Email', 'mspress' ); ?>
+                        </th>
+                        <th>
+                            <?php esc_html_e( 'Name', 'mspress' ); ?>
+                        </th>
+                        <th>
+                            <?php esc_html_e( 'Type', 'mspress' ); ?>
+                        </th>
+                        <th>
+                            <?php esc_html_e( 'Enabled', 'mspress' ); ?>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+        <?php
         foreach ( $profiles as $index => $profile ) {
             if ( ! is_array( $profile ) ) {
                 continue;
             }
             $email = EncryptionHelper::decrypt( (string) ( $profile['address'] ?? $profile['email'] ?? '' ) );
             $prefix = 'settings[sender_profiles][' . absint( $index ) . ']';
-            echo '<tr>';
-            echo '<td>' . FormFieldHelper::input( $prefix . '[email]', is_string( $email ) ? $email : '', [ 'type' => 'email', 'class' => 'form-control' ] ) . '</td>';
-            echo '<td>' . FormFieldHelper::input( $prefix . '[name]', (string) ( $profile['name'] ?? '' ), [ 'type' => 'text', 'class' => 'form-control' ] ) . '</td>';
-            echo '<td>' . FormFieldHelper::select( $prefix . '[type]', [ 'user' => __( 'User', 'mspress' ), 'shared' => __( 'Shared mailbox', 'mspress' ) ], (string) ( $profile['type'] ?? 'user' ), [ 'class' => 'form-select' ] ) . '</td>';
-            echo '<td>' . FormFieldHelper::checkbox( $prefix . '[enabled]', '1', '', [ 'checked' => ! empty( $profile['enabled'] ), 'class' => 'form-check-input' ] ) . '</td>';
-            echo '</tr>';
+            ?>
+                    <tr>
+                        <td>
+                            <?php
+                            echo FormFieldHelper::input(
+                                $prefix . '[email]',
+                                is_string( $email ) ? $email : '',
+                                [
+                                    'type' => 'email',
+                                    'class' => 'form-control',
+                                ]
+                            );
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            echo FormFieldHelper::input(
+                                $prefix . '[name]',
+                                (string) ( $profile['name'] ?? '' ),
+                                [
+                                    'type' => 'text',
+                                    'class' => 'form-control',
+                                ]
+                            );
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            echo FormFieldHelper::select(
+                                $prefix . '[type]',
+                                [
+                                    'user' => __( 'User', 'mspress' ),
+                                    'shared' => __( 'Shared mailbox', 'mspress' ),
+                                ],
+                                (string) ( $profile['type'] ?? 'user' ),
+                                [ 'class' => 'form-select' ]
+                            );
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            echo FormFieldHelper::checkbox(
+                                $prefix . '[enabled]',
+                                '1',
+                                '',
+                                [
+                                    'checked' => ! empty( $profile['enabled'] ),
+                                    'class' => 'form-check-input',
+                                ]
+                            );
+                            ?>
+                        </td>
+                    </tr>
+            <?php
         }
-        echo '</tbody></table></div>';
+        ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
     }
 }
