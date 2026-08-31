@@ -448,7 +448,7 @@ class RoleManager {
         $graph = $msgraph->get_graph();
 
         // Get user's group memberships
-        $memberOf = $graph->users($ms365_user_id)->memberOf()->get();
+        $memberOf = $graph->users()->byUserId($ms365_user_id)->memberOf()->get()->wait();
         $user_groups = [];
 
         foreach ($memberOf->getValue() as $group) {
@@ -534,7 +534,7 @@ class RoleManager {
         $graph = $msgraph->get_graph();
 
         try {
-            $memberOf = $graph->users($ms365_user_id)->memberOf()->get();
+            $memberOf = $graph->users()->byUserId($ms365_user_id)->memberOf()->get()->wait();
 
             foreach ($memberOf->getValue() as $group) {
                 if (in_array($group->getId(), $managed_groups)) {

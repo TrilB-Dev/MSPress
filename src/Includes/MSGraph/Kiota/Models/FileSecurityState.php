@@ -1,0 +1,182 @@
+<?php
+
+namespace MSPress\Includes\MSGraph\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class FileSecurityState implements AdditionalDataHolder, Parsable 
+{
+    /**
+     * @var array<string, mixed>|null $additionalData Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+    */
+    private ?array $additionalData = null;
+    
+    /**
+     * @var FileHash|null $fileHash Complex type containing file hashes (cryptographic and location-sensitive).
+    */
+    private ?FileHash $fileHash = null;
+    
+    /**
+     * @var string|null $name File name (without path).
+    */
+    private ?string $name = null;
+    
+    /**
+     * @var string|null $odataType The OdataType property
+    */
+    private ?string $odataType = null;
+    
+    /**
+     * @var string|null $path Full file path of the file/imageFile.
+    */
+    private ?string $path = null;
+    
+    /**
+     * @var string|null $riskScore Provider generated/calculated risk score of the alert file. Recommended value range of 0-1, which equates to a percentage.
+    */
+    private ?string $riskScore = null;
+    
+    /**
+     * Instantiates a new FileSecurityState and sets the default values.
+    */
+    public function __construct() {
+        $this->setAdditionalData([]);
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return FileSecurityState
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): FileSecurityState {
+        return new FileSecurityState();
+    }
+
+    /**
+     * Gets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @return array<string, mixed>|null
+    */
+    public function getAdditionalData(): ?array {
+        return $this->additionalData;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return  [
+            'fileHash' => fn(ParseNode $n) => $o->setFileHash($n->getObjectValue([FileHash::class, 'createFromDiscriminatorValue'])),
+            'name' => fn(ParseNode $n) => $o->setName($n->getStringValue()),
+            '@odata.type' => fn(ParseNode $n) => $o->setOdataType($n->getStringValue()),
+            'path' => fn(ParseNode $n) => $o->setPath($n->getStringValue()),
+            'riskScore' => fn(ParseNode $n) => $o->setRiskScore($n->getStringValue()),
+        ];
+    }
+
+    /**
+     * Gets the fileHash property value. Complex type containing file hashes (cryptographic and location-sensitive).
+     * @return FileHash|null
+    */
+    public function getFileHash(): ?FileHash {
+        return $this->fileHash;
+    }
+
+    /**
+     * Gets the name property value. File name (without path).
+     * @return string|null
+    */
+    public function getName(): ?string {
+        return $this->name;
+    }
+
+    /**
+     * Gets the @odata.type property value. The OdataType property
+     * @return string|null
+    */
+    public function getOdataType(): ?string {
+        return $this->odataType;
+    }
+
+    /**
+     * Gets the path property value. Full file path of the file/imageFile.
+     * @return string|null
+    */
+    public function getPath(): ?string {
+        return $this->path;
+    }
+
+    /**
+     * Gets the riskScore property value. Provider generated/calculated risk score of the alert file. Recommended value range of 0-1, which equates to a percentage.
+     * @return string|null
+    */
+    public function getRiskScore(): ?string {
+        return $this->riskScore;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        $writer->writeObjectValue('fileHash', $this->getFileHash());
+        $writer->writeStringValue('name', $this->getName());
+        $writer->writeStringValue('@odata.type', $this->getOdataType());
+        $writer->writeStringValue('path', $this->getPath());
+        $writer->writeStringValue('riskScore', $this->getRiskScore());
+        $writer->writeAdditionalData($this->getAdditionalData());
+    }
+
+    /**
+     * Sets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @param array<string,mixed> $value Value to set for the AdditionalData property.
+    */
+    public function setAdditionalData(?array $value): void {
+        $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the fileHash property value. Complex type containing file hashes (cryptographic and location-sensitive).
+     * @param FileHash|null $value Value to set for the fileHash property.
+    */
+    public function setFileHash(?FileHash $value): void {
+        $this->fileHash = $value;
+    }
+
+    /**
+     * Sets the name property value. File name (without path).
+     * @param string|null $value Value to set for the name property.
+    */
+    public function setName(?string $value): void {
+        $this->name = $value;
+    }
+
+    /**
+     * Sets the @odata.type property value. The OdataType property
+     * @param string|null $value Value to set for the @odata.type property.
+    */
+    public function setOdataType(?string $value): void {
+        $this->odataType = $value;
+    }
+
+    /**
+     * Sets the path property value. Full file path of the file/imageFile.
+     * @param string|null $value Value to set for the path property.
+    */
+    public function setPath(?string $value): void {
+        $this->path = $value;
+    }
+
+    /**
+     * Sets the riskScore property value. Provider generated/calculated risk score of the alert file. Recommended value range of 0-1, which equates to a percentage.
+     * @param string|null $value Value to set for the riskScore property.
+    */
+    public function setRiskScore(?string $value): void {
+        $this->riskScore = $value;
+    }
+
+}

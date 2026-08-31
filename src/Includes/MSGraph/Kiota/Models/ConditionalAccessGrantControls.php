@@ -1,0 +1,220 @@
+<?php
+
+namespace MSPress\Includes\MSGraph\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use Microsoft\Kiota\Abstractions\Types\TypeUtils;
+
+class ConditionalAccessGrantControls implements AdditionalDataHolder, Parsable 
+{
+    /**
+     * @var array<string, mixed>|null $additionalData Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+    */
+    private ?array $additionalData = null;
+    
+    /**
+     * @var AuthenticationStrengthPolicy|null $authenticationStrength The authenticationStrength property
+    */
+    private ?AuthenticationStrengthPolicy $authenticationStrength = null;
+    
+    /**
+     * @var array<ConditionalAccessGrantControl>|null $builtInControls List of values of built-in controls required by the policy. Possible values: block, mfa, compliantDevice, domainJoinedDevice, approvedApplication, compliantApplication, passwordChange, unknownFutureValue, riskRemediation.  Use the Prefer: include-unknown-enum-members request header to get the following value in this evolvable enum: riskRemediation.
+    */
+    private ?array $builtInControls = null;
+    
+    /**
+     * @var array<string>|null $customAuthenticationFactors List of custom controls IDs required by the policy. For more information, see Custom controls.
+    */
+    private ?array $customAuthenticationFactors = null;
+    
+    /**
+     * @var string|null $odataType The OdataType property
+    */
+    private ?string $odataType = null;
+    
+    /**
+     * @var string|null $operator Defines the relationship of the grant controls. Possible values: AND, OR.
+    */
+    private ?string $operator = null;
+    
+    /**
+     * @var array<string>|null $termsOfUse List of terms of use IDs required by the policy.
+    */
+    private ?array $termsOfUse = null;
+    
+    /**
+     * Instantiates a new ConditionalAccessGrantControls and sets the default values.
+    */
+    public function __construct() {
+        $this->setAdditionalData([]);
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return ConditionalAccessGrantControls
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): ConditionalAccessGrantControls {
+        return new ConditionalAccessGrantControls();
+    }
+
+    /**
+     * Gets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @return array<string, mixed>|null
+    */
+    public function getAdditionalData(): ?array {
+        return $this->additionalData;
+    }
+
+    /**
+     * Gets the authenticationStrength property value. The authenticationStrength property
+     * @return AuthenticationStrengthPolicy|null
+    */
+    public function getAuthenticationStrength(): ?AuthenticationStrengthPolicy {
+        return $this->authenticationStrength;
+    }
+
+    /**
+     * Gets the builtInControls property value. List of values of built-in controls required by the policy. Possible values: block, mfa, compliantDevice, domainJoinedDevice, approvedApplication, compliantApplication, passwordChange, unknownFutureValue, riskRemediation.  Use the Prefer: include-unknown-enum-members request header to get the following value in this evolvable enum: riskRemediation.
+     * @return array<ConditionalAccessGrantControl>|null
+    */
+    public function getBuiltInControls(): ?array {
+        return $this->builtInControls;
+    }
+
+    /**
+     * Gets the customAuthenticationFactors property value. List of custom controls IDs required by the policy. For more information, see Custom controls.
+     * @return array<string>|null
+    */
+    public function getCustomAuthenticationFactors(): ?array {
+        return $this->customAuthenticationFactors;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return  [
+            'authenticationStrength' => fn(ParseNode $n) => $o->setAuthenticationStrength($n->getObjectValue([AuthenticationStrengthPolicy::class, 'createFromDiscriminatorValue'])),
+            'builtInControls' => fn(ParseNode $n) => $o->setBuiltInControls($n->getCollectionOfEnumValues(ConditionalAccessGrantControl::class)),
+            'customAuthenticationFactors' => function (ParseNode $n) {
+                $val = $n->getCollectionOfPrimitiveValues();
+                if (is_array($val)) {
+                    TypeUtils::validateCollectionValues($val, 'string');
+                }
+                /** @var array<string>|null $val */
+                $this->setCustomAuthenticationFactors($val);
+            },
+            '@odata.type' => fn(ParseNode $n) => $o->setOdataType($n->getStringValue()),
+            'operator' => fn(ParseNode $n) => $o->setOperator($n->getStringValue()),
+            'termsOfUse' => function (ParseNode $n) {
+                $val = $n->getCollectionOfPrimitiveValues();
+                if (is_array($val)) {
+                    TypeUtils::validateCollectionValues($val, 'string');
+                }
+                /** @var array<string>|null $val */
+                $this->setTermsOfUse($val);
+            },
+        ];
+    }
+
+    /**
+     * Gets the @odata.type property value. The OdataType property
+     * @return string|null
+    */
+    public function getOdataType(): ?string {
+        return $this->odataType;
+    }
+
+    /**
+     * Gets the operator property value. Defines the relationship of the grant controls. Possible values: AND, OR.
+     * @return string|null
+    */
+    public function getOperator(): ?string {
+        return $this->operator;
+    }
+
+    /**
+     * Gets the termsOfUse property value. List of terms of use IDs required by the policy.
+     * @return array<string>|null
+    */
+    public function getTermsOfUse(): ?array {
+        return $this->termsOfUse;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        $writer->writeObjectValue('authenticationStrength', $this->getAuthenticationStrength());
+        $writer->writeCollectionOfEnumValues('builtInControls', $this->getBuiltInControls());
+        $writer->writeCollectionOfPrimitiveValues('customAuthenticationFactors', $this->getCustomAuthenticationFactors());
+        $writer->writeStringValue('@odata.type', $this->getOdataType());
+        $writer->writeStringValue('operator', $this->getOperator());
+        $writer->writeCollectionOfPrimitiveValues('termsOfUse', $this->getTermsOfUse());
+        $writer->writeAdditionalData($this->getAdditionalData());
+    }
+
+    /**
+     * Sets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @param array<string,mixed> $value Value to set for the AdditionalData property.
+    */
+    public function setAdditionalData(?array $value): void {
+        $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the authenticationStrength property value. The authenticationStrength property
+     * @param AuthenticationStrengthPolicy|null $value Value to set for the authenticationStrength property.
+    */
+    public function setAuthenticationStrength(?AuthenticationStrengthPolicy $value): void {
+        $this->authenticationStrength = $value;
+    }
+
+    /**
+     * Sets the builtInControls property value. List of values of built-in controls required by the policy. Possible values: block, mfa, compliantDevice, domainJoinedDevice, approvedApplication, compliantApplication, passwordChange, unknownFutureValue, riskRemediation.  Use the Prefer: include-unknown-enum-members request header to get the following value in this evolvable enum: riskRemediation.
+     * @param array<ConditionalAccessGrantControl>|null $value Value to set for the builtInControls property.
+    */
+    public function setBuiltInControls(?array $value): void {
+        $this->builtInControls = $value;
+    }
+
+    /**
+     * Sets the customAuthenticationFactors property value. List of custom controls IDs required by the policy. For more information, see Custom controls.
+     * @param array<string>|null $value Value to set for the customAuthenticationFactors property.
+    */
+    public function setCustomAuthenticationFactors(?array $value): void {
+        $this->customAuthenticationFactors = $value;
+    }
+
+    /**
+     * Sets the @odata.type property value. The OdataType property
+     * @param string|null $value Value to set for the @odata.type property.
+    */
+    public function setOdataType(?string $value): void {
+        $this->odataType = $value;
+    }
+
+    /**
+     * Sets the operator property value. Defines the relationship of the grant controls. Possible values: AND, OR.
+     * @param string|null $value Value to set for the operator property.
+    */
+    public function setOperator(?string $value): void {
+        $this->operator = $value;
+    }
+
+    /**
+     * Sets the termsOfUse property value. List of terms of use IDs required by the policy.
+     * @param array<string>|null $value Value to set for the termsOfUse property.
+    */
+    public function setTermsOfUse(?array $value): void {
+        $this->termsOfUse = $value;
+    }
+
+}

@@ -1,0 +1,107 @@
+<?php
+
+namespace MSPress\Includes\MSGraph\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use Microsoft\Kiota\Abstractions\Types\TypeUtils;
+
+class X509CertificateCombinationConfiguration extends AuthenticationCombinationConfiguration implements Parsable 
+{
+    /**
+     * @var array<string>|null $allowedIssuerSkis A list of allowed subject key identifier values.
+    */
+    private ?array $allowedIssuerSkis = null;
+    
+    /**
+     * @var array<string>|null $allowedPolicyOIDs A list of allowed policy OIDs.
+    */
+    private ?array $allowedPolicyOIDs = null;
+    
+    /**
+     * Instantiates a new X509CertificateCombinationConfiguration and sets the default values.
+    */
+    public function __construct() {
+        parent::__construct();
+        $this->setOdataType('#microsoft.graph.x509CertificateCombinationConfiguration');
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return X509CertificateCombinationConfiguration
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): X509CertificateCombinationConfiguration {
+        return new X509CertificateCombinationConfiguration();
+    }
+
+    /**
+     * Gets the allowedIssuerSkis property value. A list of allowed subject key identifier values.
+     * @return array<string>|null
+    */
+    public function getAllowedIssuerSkis(): ?array {
+        return $this->allowedIssuerSkis;
+    }
+
+    /**
+     * Gets the allowedPolicyOIDs property value. A list of allowed policy OIDs.
+     * @return array<string>|null
+    */
+    public function getAllowedPolicyOIDs(): ?array {
+        return $this->allowedPolicyOIDs;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return array_merge(parent::getFieldDeserializers(), [
+            'allowedIssuerSkis' => function (ParseNode $n) {
+                $val = $n->getCollectionOfPrimitiveValues();
+                if (is_array($val)) {
+                    TypeUtils::validateCollectionValues($val, 'string');
+                }
+                /** @var array<string>|null $val */
+                $this->setAllowedIssuerSkis($val);
+            },
+            'allowedPolicyOIDs' => function (ParseNode $n) {
+                $val = $n->getCollectionOfPrimitiveValues();
+                if (is_array($val)) {
+                    TypeUtils::validateCollectionValues($val, 'string');
+                }
+                /** @var array<string>|null $val */
+                $this->setAllowedPolicyOIDs($val);
+            },
+        ]);
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        parent::serialize($writer);
+        $writer->writeCollectionOfPrimitiveValues('allowedIssuerSkis', $this->getAllowedIssuerSkis());
+        $writer->writeCollectionOfPrimitiveValues('allowedPolicyOIDs', $this->getAllowedPolicyOIDs());
+    }
+
+    /**
+     * Sets the allowedIssuerSkis property value. A list of allowed subject key identifier values.
+     * @param array<string>|null $value Value to set for the allowedIssuerSkis property.
+    */
+    public function setAllowedIssuerSkis(?array $value): void {
+        $this->allowedIssuerSkis = $value;
+    }
+
+    /**
+     * Sets the allowedPolicyOIDs property value. A list of allowed policy OIDs.
+     * @param array<string>|null $value Value to set for the allowedPolicyOIDs property.
+    */
+    public function setAllowedPolicyOIDs(?array $value): void {
+        $this->allowedPolicyOIDs = $value;
+    }
+
+}

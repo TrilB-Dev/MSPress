@@ -1,0 +1,215 @@
+<?php
+
+namespace MSPress\Includes\Plugins\SharePoint\Includes\Kiota\Models;
+
+use DateTime;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class BrowseSessionBase extends Entity implements Parsable 
+{
+    /**
+     * @var string|null $backupSizeInBytes The size of the backup in bytes.
+    */
+    private ?string $backupSizeInBytes = null;
+    
+    /**
+     * @var DateTime|null $createdDateTime The date and time when the browse session was created. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
+    */
+    private ?DateTime $createdDateTime = null;
+    
+    /**
+     * @var PublicError|null $error Contains the error details if the browse session creation fails.
+    */
+    private ?PublicError $error = null;
+    
+    /**
+     * @var DateTime|null $expirationDateTime The date and time after which the browse session is deleted automatically.
+    */
+    private ?DateTime $expirationDateTime = null;
+    
+    /**
+     * @var DateTime|null $restorePointDateTime The date and time of the restore point on which the browse session is created.
+    */
+    private ?DateTime $restorePointDateTime = null;
+    
+    /**
+     * @var string|null $restorePointId The restorePointId property
+    */
+    private ?string $restorePointId = null;
+    
+    /**
+     * @var BrowseSessionStatus|null $status The status property
+    */
+    private ?BrowseSessionStatus $status = null;
+    
+    /**
+     * Instantiates a new BrowseSessionBase and sets the default values.
+    */
+    public function __construct() {
+        parent::__construct();
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return BrowseSessionBase
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): BrowseSessionBase {
+        $mappingValueNode = $parseNode->getChildNode("@odata.type");
+        if ($mappingValueNode !== null) {
+            $mappingValue = $mappingValueNode->getStringValue();
+            switch ($mappingValue) {
+                case '#microsoft.graph.oneDriveForBusinessBrowseSession': return new OneDriveForBusinessBrowseSession();
+                case '#microsoft.graph.sharePointBrowseSession': return new SharePointBrowseSession();
+            }
+        }
+        return new BrowseSessionBase();
+    }
+
+    /**
+     * Gets the backupSizeInBytes property value. The size of the backup in bytes.
+     * @return string|null
+    */
+    public function getBackupSizeInBytes(): ?string {
+        return $this->backupSizeInBytes;
+    }
+
+    /**
+     * Gets the createdDateTime property value. The date and time when the browse session was created. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
+     * @return DateTime|null
+    */
+    public function getCreatedDateTime(): ?DateTime {
+        return $this->createdDateTime;
+    }
+
+    /**
+     * Gets the error property value. Contains the error details if the browse session creation fails.
+     * @return PublicError|null
+    */
+    public function getError(): ?PublicError {
+        return $this->error;
+    }
+
+    /**
+     * Gets the expirationDateTime property value. The date and time after which the browse session is deleted automatically.
+     * @return DateTime|null
+    */
+    public function getExpirationDateTime(): ?DateTime {
+        return $this->expirationDateTime;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return array_merge(parent::getFieldDeserializers(), [
+            'backupSizeInBytes' => fn(ParseNode $n) => $o->setBackupSizeInBytes($n->getStringValue()),
+            'createdDateTime' => fn(ParseNode $n) => $o->setCreatedDateTime($n->getDateTimeValue()),
+            'error' => fn(ParseNode $n) => $o->setError($n->getObjectValue([PublicError::class, 'createFromDiscriminatorValue'])),
+            'expirationDateTime' => fn(ParseNode $n) => $o->setExpirationDateTime($n->getDateTimeValue()),
+            'restorePointDateTime' => fn(ParseNode $n) => $o->setRestorePointDateTime($n->getDateTimeValue()),
+            'restorePointId' => fn(ParseNode $n) => $o->setRestorePointId($n->getStringValue()),
+            'status' => fn(ParseNode $n) => $o->setStatus($n->getEnumValue(BrowseSessionStatus::class)),
+        ]);
+    }
+
+    /**
+     * Gets the restorePointDateTime property value. The date and time of the restore point on which the browse session is created.
+     * @return DateTime|null
+    */
+    public function getRestorePointDateTime(): ?DateTime {
+        return $this->restorePointDateTime;
+    }
+
+    /**
+     * Gets the restorePointId property value. The restorePointId property
+     * @return string|null
+    */
+    public function getRestorePointId(): ?string {
+        return $this->restorePointId;
+    }
+
+    /**
+     * Gets the status property value. The status property
+     * @return BrowseSessionStatus|null
+    */
+    public function getStatus(): ?BrowseSessionStatus {
+        return $this->status;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        parent::serialize($writer);
+        $writer->writeStringValue('backupSizeInBytes', $this->getBackupSizeInBytes());
+        $writer->writeDateTimeValue('createdDateTime', $this->getCreatedDateTime());
+        $writer->writeObjectValue('error', $this->getError());
+        $writer->writeDateTimeValue('expirationDateTime', $this->getExpirationDateTime());
+        $writer->writeDateTimeValue('restorePointDateTime', $this->getRestorePointDateTime());
+        $writer->writeStringValue('restorePointId', $this->getRestorePointId());
+        $writer->writeEnumValue('status', $this->getStatus());
+    }
+
+    /**
+     * Sets the backupSizeInBytes property value. The size of the backup in bytes.
+     * @param string|null $value Value to set for the backupSizeInBytes property.
+    */
+    public function setBackupSizeInBytes(?string $value): void {
+        $this->backupSizeInBytes = $value;
+    }
+
+    /**
+     * Sets the createdDateTime property value. The date and time when the browse session was created. The timestamp type represents date and time information using ISO 8601 format and is always in UTC. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z.
+     * @param DateTime|null $value Value to set for the createdDateTime property.
+    */
+    public function setCreatedDateTime(?DateTime $value): void {
+        $this->createdDateTime = $value;
+    }
+
+    /**
+     * Sets the error property value. Contains the error details if the browse session creation fails.
+     * @param PublicError|null $value Value to set for the error property.
+    */
+    public function setError(?PublicError $value): void {
+        $this->error = $value;
+    }
+
+    /**
+     * Sets the expirationDateTime property value. The date and time after which the browse session is deleted automatically.
+     * @param DateTime|null $value Value to set for the expirationDateTime property.
+    */
+    public function setExpirationDateTime(?DateTime $value): void {
+        $this->expirationDateTime = $value;
+    }
+
+    /**
+     * Sets the restorePointDateTime property value. The date and time of the restore point on which the browse session is created.
+     * @param DateTime|null $value Value to set for the restorePointDateTime property.
+    */
+    public function setRestorePointDateTime(?DateTime $value): void {
+        $this->restorePointDateTime = $value;
+    }
+
+    /**
+     * Sets the restorePointId property value. The restorePointId property
+     * @param string|null $value Value to set for the restorePointId property.
+    */
+    public function setRestorePointId(?string $value): void {
+        $this->restorePointId = $value;
+    }
+
+    /**
+     * Sets the status property value. The status property
+     * @param BrowseSessionStatus|null $value Value to set for the status property.
+    */
+    public function setStatus(?BrowseSessionStatus $value): void {
+        $this->status = $value;
+    }
+
+}

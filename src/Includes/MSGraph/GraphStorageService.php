@@ -94,12 +94,13 @@ final class GraphStorageService {
         if (!$graph) {
             throw new Exception('Graph client not initialized');
         }
+        $sharepoint = $this->graph->get_sharepoint_client();
 
         try {
             $site_list = [];
 
             try {
-                $sites_response = $graph->sites()->get()->wait();
+                $sites_response = $sharepoint->sites()->get()->wait();
                 $sites = $sites_response->getValue();
             } catch (Exception $siteException) {
                 utilities::write_log('MS Graph list_sharepoint_sites SDK retrieval failed: ' . $siteException->getMessage());
@@ -185,12 +186,13 @@ final class GraphStorageService {
         if (!$graph) {
             throw new Exception('Graph client not initialized');
         }
+        $sharepoint = $this->graph->get_sharepoint_client();
 
         try {
             $drive_list = [];
 
             try {
-                $drives_response = $graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                $drives_response = $sharepoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                 $drives = $drives_response->getValue();
             } catch (Exception $driveException) {
                 utilities::write_log('MS Graph list_site_drives drive retrieval failed: ' . $driveException->getMessage());
@@ -199,7 +201,7 @@ final class GraphStorageService {
 
             if (empty($drives)) {
                 utilities::write_log('MS Graph list_site_drives falling back to lists() for site ' . $site_id);
-                $lists_response = $graph->sites()->bySiteId($site_id)->lists()->get()->wait();
+                $lists_response = $sharepoint->sites()->bySiteId($site_id)->lists()->get()->wait();
                 $drives = $lists_response->getValue();
 
                 foreach ($drives as $list) {

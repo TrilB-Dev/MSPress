@@ -24,7 +24,7 @@ use MSPress\Includes\Plugins\Exchange\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\Capabilities;
 use MSPress\Includes\Plugins\Exchange\Admin\EmailTemplates;
 use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
-use MSPress\Includes\Plugins\Exchange\Admin\TraceRout;
+use MSPress\Includes\Plugins\Exchange\Admin\TraceRoute;
 use MSPress\Includes\Plugins\Exchange\Admin\SentLogs;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\MSIconHelper;
@@ -135,10 +135,34 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
                 'callback' => [ ExchangeSettings::class, 'render' ],
                 'capability' => 'mspress_settings_plugins_view',
                 'children' => [
-                    [ 'page_title' => __( 'Exchange Settings', 'mspress' ), 'menu_title' => __( 'Exchange Settings', 'mspress' ), 'menu_slug' => 'mspress-exchange-settings', 'callback' => [ ExchangeSettings::class, 'render' ], 'capability' => 'mspress_settings_plugins_view' ],
-                    [ 'page_title' => __( 'Email Templates', 'mspress' ), 'menu_title' => __( 'Email Templates', 'mspress' ), 'menu_slug' => 'mspress-exchange-email-templates', 'callback' => [ EmailTemplates::class, 'render' ], 'capability' => 'edit_posts' ],
-                    [ 'page_title' => __( 'Route Trace', 'mspress' ), 'menu_title' => __( 'Route Trace', 'mspress' ), 'menu_slug' => 'mspress-exchange-route-trace', 'callback' => [ TraceRout::class, 'render' ], 'capability' => 'mspress_tools_debug' ],
-                    [ 'page_title' => __( 'Sent Log', 'mspress' ), 'menu_title' => __( 'Sent Log', 'mspress' ), 'menu_slug' => 'mspress-exchange-sent-log', 'callback' => [ SentLogs::class, 'render' ], 'capability' => 'mspress_tools_debug' ],
+                    [
+                        'page_title' => __( 'Exchange Settings', 'mspress' ),
+                        'menu_title' => __( 'Exchange Settings', 'mspress' ),
+                        'menu_slug' => 'mspress-exchange-settings',
+                        'callback' => [ ExchangeSettings::class, 'render' ],
+                        'capability' => 'mspress_settings_plugins_view',
+                    ],
+                    [
+                        'page_title' => __( 'Email Templates', 'mspress' ),
+                        'menu_title' => __( 'Email Templates', 'mspress' ),
+                        'menu_slug' => 'mspress-exchange-email-templates',
+                        'callback' => [ EmailTemplates::class, 'render' ],
+                        'capability' => 'edit_posts',
+                    ],
+                    [
+                        'page_title' => __( 'Route Trace', 'mspress' ),
+                        'menu_title' => __( 'Route Trace', 'mspress' ),
+                        'menu_slug' => 'mspress-exchange-route-trace',
+                        'callback' => [ TraceRoute::class, 'render' ],
+                        'capability' => 'mspress_tools_debug',
+                    ],
+                    [
+                        'page_title' => __( 'Sent Log', 'mspress' ),
+                        'menu_title' => __( 'Sent Log', 'mspress' ),
+                        'menu_slug' => 'mspress-exchange-sent-log',
+                        'callback' => [ SentLogs::class, 'render' ],
+                        'capability' => 'mspress_tools_debug',
+                    ],
                 ],
             ],
         ];

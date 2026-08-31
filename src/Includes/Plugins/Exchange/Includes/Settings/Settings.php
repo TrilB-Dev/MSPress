@@ -8,11 +8,10 @@
 namespace MSPress\Includes\Plugins\Exchange\Includes\Settings;
 use Http\Promise\FulfilledPromise;
 use Http\Promise\RejectedPromise;
-use Microsoft\Graph\GraphServiceClient;
-use Microsoft\Graph\GraphRequestAdapter;
 use Microsoft\Kiota\Abstractions\Authentication\AccessTokenProvider;
 use Microsoft\Kiota\Abstractions\Authentication\AllowedHostsValidator;
 use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
+use Microsoft\Kiota\Http\GuzzleRequestAdapter;
 use MSPress\Includes\Settings\Settings as BaseSettings;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
@@ -23,6 +22,7 @@ use MSPress\Includes\Functions\Helpers\MSIconHelper;
 use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\MSGraph\GraphService;
 use MSPress\Includes\Plugins\Exchange\Admin\ExchangeSettings;
+use MSPress\Includes\Plugins\Exchange\Includes\Kiota\Exchange;
 use MSPress\Includes\Plugins\Exchange\Includes\Mail\ExchangeDiscovery;
 
 final class Settings {
@@ -97,7 +97,7 @@ final class Settings {
                     'label' => __( 'Route Trace', 'mspress' ),
                     'title' => __( 'Exchange route trace', 'mspress' ),
                     'capability' => 'mspress_tools_debug',
-                    'render_page' => [ \MSPress\Includes\Plugins\Exchange\Admin\TraceRout::class, 'render' ],
+                    'render_page' => [ \MSPress\Includes\Plugins\Exchange\Admin\TraceRoute::class, 'render' ],
                 ],
                 [
                     'slug' => 'exchange-sent-logs',
@@ -371,13 +371,13 @@ final class Settings {
                 }
             };
             $authentication_provider = new BaseBearerTokenAuthenticationProvider( $token_provider );
-            $request_adapter = new GraphRequestAdapter(
+            $request_adapter = new GuzzleRequestAdapter(
                 $authentication_provider,
                 null,
                 null,
                 new \GuzzleHttp\Client( \MSPress\Includes\MSGraph\TlsTransport::guzzle_options() )
             );
-            $graph = GraphServiceClient::createWithRequestAdapter( $request_adapter );
+            $graph = new Exchange( $request_adapter );
             $exchange_settings = $graph->me()->settings()->exchange()->get()->wait();
         } catch ( \Throwable $exception ) {
             $error = $exception->getMessage();
@@ -460,21 +460,21 @@ final class Settings {
         return $profiles;
     }
 
-    private function get_delegated_graph(): ?GraphServiceClient {
-        $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
-        $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
-        $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
-        if ( ! is_string( $token ) || '' === $token ) {
-            return null;
-        }
+    private function get_delegated_graph(): ?Exchange {
         try {
+            $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
+            $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
+            $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
+            if ( ! is_string( $token ) || '' === $token ) {
+                return null;
+            }
             $token_provider = new class( $token ) implements AccessTokenProvider {
                 private AllowedHostsValidator $allowed_hosts_validator;
                 public function __construct( private string $token ) { $this->allowed_hosts_validator = new AllowedHostsValidator( [ 'graph.microsoft.com' ] ); }
                 public function getAuthorizationTokenAsync( string $url, array $additionalAuthenticationContext = [] ): \Http\Promise\Promise { return $this->allowed_hosts_validator->isUrlHostValid( $url ) ? new FulfilledPromise( $this->token ) : new RejectedPromise( new \InvalidArgumentException( 'Host not allowed.' ) ); }
                 public function getAllowedHostsValidator(): AllowedHostsValidator { return $this->allowed_hosts_validator; }
             };
-            return GraphServiceClient::createWithRequestAdapter( new GraphRequestAdapter( new BaseBearerTokenAuthenticationProvider( $token_provider ), null, null, new \GuzzleHttp\Client( \MSPress\Includes\MSGraph\TlsTransport::guzzle_options() ) ) );
+            return new Exchange( new GuzzleRequestAdapter( new BaseBearerTokenAuthenticationProvider( $token_provider ), null, null, new \GuzzleHttp\Client( \MSPress\Includes\MSGraph\TlsTransport::guzzle_options() ) ) );
         } catch ( \Throwable $exception ) {
             return null;
         }

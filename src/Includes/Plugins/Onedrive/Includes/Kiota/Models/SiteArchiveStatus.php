@@ -1,0 +1,12 @@
+<?php
+
+namespace MSPress\Includes\Plugins\OneDrive\Includes\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Enum;
+
+class SiteArchiveStatus extends Enum {
+    public const RECENTLY_ARCHIVED = "recentlyArchived";
+    public const FULLY_ARCHIVED = "fullyArchived";
+    public const REACTIVATING = "reactivating";
+    public const UNKNOWN_FUTURE_VALUE = "unknownFutureValue";
+}

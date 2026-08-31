@@ -24,6 +24,12 @@ use MSPress\Includes\Plugins\Onedrive\Includes\OneDrive\OneDriveItemService;
  * Provides a WordPress media library-style interface for managing OneDrive files
  */
 class OneDriveFileManager {
+    private function encode_path_segments(string $path): string {
+        $path = trim($path, '/');
+
+        return implode('/', array_map('rawurlencode', explode('/', $path)));
+    }
+
     private OneDriveItemService $items;
     private OneDriveClientService $clients;
 
@@ -291,7 +297,7 @@ class OneDriveFileManager {
             $drive_id = $options['onedrive_drive_id'];
             $api_path = "/drives/{$drive_id}/root";
             if (!empty($folder) && $folder !== '/') {
-                $folder_path = trim($folder, '/');
+                $folder_path = $this->encode_path_segments($folder);
                 $api_path .= ":/{$folder_path}:";
             }
 
@@ -302,7 +308,7 @@ class OneDriveFileManager {
             if (empty($folder) || $folder === '/') {
                 $url = "https://graph.microsoft.com/v1.0/drives/{$drive_id}/root/children" . $expandQuery;
             } else {
-                $folder_path = trim($folder, '/');
+                $folder_path = $this->encode_path_segments($folder);
                 $url = "https://graph.microsoft.com/v1.0/drives/{$drive_id}/root:/{$folder_path}:/children" . $expandQuery;
             }
             $response = $httpClient->request('GET', $url);
@@ -451,24 +457,18 @@ class OneDriveFileManager {
 
             // Build upload path
             $drive_id = $options['onedrive_drive_id'];
-            $upload_path = "/drives/{$drive_id}/root";
-            if (!empty($folder) && $folder !== '/') {
-                $folder_path = trim($folder, '/');
-                $upload_path .= ":/{$folder_path}:";
-            }
-            $upload_path .= "/{$file_name}:/content";
+            $logical_upload_path = trim($folder, '/');
+            $logical_upload_path = $logical_upload_path
+                ? $logical_upload_path . '/' . $file_name
+                : $file_name;
+            $encoded_upload_path = $this->encode_path_segments($logical_upload_path);
+            $upload_path = "/drives/{$drive_id}/root:/{$encoded_upload_path}:/content";
 
             LoggerHelper::write_log('OneDrive File Manager: Upload path: ' . $upload_path);
 
             // Upload file using HTTP client
             $file_content = file_get_contents($file_path);
-            if (empty($folder) || $folder === '/') {
-                $url = "https://graph.microsoft.com/v1.0/drives/{$drive_id}/root:/{$file_name}:/content";
-            } else {
-                $folder_path = trim($folder, '/');
-                $full_path = $folder_path . '/' . $file_name;
-                $url = "https://graph.microsoft.com/v1.0/drives/{$drive_id}/root:/{$full_path}:/content";
-            }
+            $url = "https://graph.microsoft.com/v1.0{$upload_path}";
             $response = $httpClient->request('PUT', $url, [
                 'headers' => [
                     'Content-Type' => 'application/octet-stream',
@@ -639,7 +639,7 @@ class OneDriveFileManager {
             // Build parent path
             $parent_path = "/drives/{$drive_id}/root";
             if (!empty($parent_folder) && $parent_folder !== '/') {
-                $folder_path = trim($parent_folder, '/');
+                $folder_path = $this->encode_path_segments($parent_folder);
                 $parent_path .= ":/{$folder_path}:";
             }
             $parent_path .= '/children';
@@ -655,7 +655,7 @@ class OneDriveFileManager {
             if (empty($parent_folder) || $parent_folder === '/') {
                 $url = "https://graph.microsoft.com/v1.0/drives/{$drive_id}/root/children";
             } else {
-                $parent_path_clean = trim($parent_folder, '/');
+                $parent_path_clean = $this->encode_path_segments($parent_folder);
                 $url = "https://graph.microsoft.com/v1.0/drives/{$drive_id}/root:/{$parent_path_clean}:/children";
             }
             $response = $httpClient->request('POST', $url, [
@@ -765,9 +765,10 @@ class OneDriveFileManager {
                 $metadata['file_version'] = $file_version;
             }
 
-            $folder_path = trim($parent_path, '/');
-            $item_path = $folder_path === '' ? $file_name : $folder_path . '/' . $file_name;
-            $upload_url = 'https://graph.microsoft.com/v1.0/drives/' . rawurlencode($options['onedrive_drive_id']) . '/root:/' . str_replace('%2F', '/', rawurlencode($item_path)) . ':/content';
+            $folder_path = $this->encode_path_segments($parent_path);
+            $encoded_file_name = rawurlencode($file_name);
+            $item_path = $folder_path === '' ? $encoded_file_name : $folder_path . '/' . $encoded_file_name;
+            $upload_url = 'https://graph.microsoft.com/v1.0/drives/' . $options['onedrive_drive_id'] . '/root:/' . $item_path . ':/content';
             $response = $http_client->request('PUT', $upload_url, [
                 'headers' => ['Content-Type' => 'application/octet-stream'],
                 'body' => file_get_contents($temp_file_path),

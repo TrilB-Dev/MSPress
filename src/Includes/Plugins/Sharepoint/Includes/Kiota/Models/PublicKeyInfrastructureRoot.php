@@ -1,0 +1,68 @@
+<?php
+
+namespace MSPress\Includes\Plugins\SharePoint\Includes\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class PublicKeyInfrastructureRoot extends Entity implements Parsable 
+{
+    /**
+     * @var array<CertificateBasedAuthPki>|null $certificateBasedAuthConfigurations The collection of public key infrastructure instances for the certificate-based authentication feature for users.
+    */
+    private ?array $certificateBasedAuthConfigurations = null;
+    
+    /**
+     * Instantiates a new PublicKeyInfrastructureRoot and sets the default values.
+    */
+    public function __construct() {
+        parent::__construct();
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return PublicKeyInfrastructureRoot
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): PublicKeyInfrastructureRoot {
+        return new PublicKeyInfrastructureRoot();
+    }
+
+    /**
+     * Gets the certificateBasedAuthConfigurations property value. The collection of public key infrastructure instances for the certificate-based authentication feature for users.
+     * @return array<CertificateBasedAuthPki>|null
+    */
+    public function getCertificateBasedAuthConfigurations(): ?array {
+        return $this->certificateBasedAuthConfigurations;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return array_merge(parent::getFieldDeserializers(), [
+            'certificateBasedAuthConfigurations' => fn(ParseNode $n) => $o->setCertificateBasedAuthConfigurations($n->getCollectionOfObjectValues([CertificateBasedAuthPki::class, 'createFromDiscriminatorValue'])),
+        ]);
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        parent::serialize($writer);
+        $writer->writeCollectionOfObjectValues('certificateBasedAuthConfigurations', $this->getCertificateBasedAuthConfigurations());
+    }
+
+    /**
+     * Sets the certificateBasedAuthConfigurations property value. The collection of public key infrastructure instances for the certificate-based authentication feature for users.
+     * @param array<CertificateBasedAuthPki>|null $value Value to set for the certificateBasedAuthConfigurations property.
+    */
+    public function setCertificateBasedAuthConfigurations(?array $value): void {
+        $this->certificateBasedAuthConfigurations = $value;
+    }
+
+}

@@ -1,0 +1,274 @@
+<?php
+
+namespace MSPress\Includes\Plugins\SharePoint\Includes\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class AccessPackageAssignmentRequestorSettings implements AdditionalDataHolder, Parsable 
+{
+    /**
+     * @var array<string, mixed>|null $additionalData Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+    */
+    private ?array $additionalData = null;
+    
+    /**
+     * @var bool|null $allowCustomAssignmentSchedule False indicates that the requestor isn't permitted to include a schedule in their request.
+    */
+    private ?bool $allowCustomAssignmentSchedule = null;
+    
+    /**
+     * @var bool|null $enableOnBehalfRequestorsToAddAccess True allows on-behalf-of requestors to create a request to add access for another principal.
+    */
+    private ?bool $enableOnBehalfRequestorsToAddAccess = null;
+    
+    /**
+     * @var bool|null $enableOnBehalfRequestorsToRemoveAccess True allows on-behalf-of requestors to create a request to remove access for another principal.
+    */
+    private ?bool $enableOnBehalfRequestorsToRemoveAccess = null;
+    
+    /**
+     * @var bool|null $enableOnBehalfRequestorsToUpdateAccess True allows on-behalf-of requestors to create a request to update access for another principal.
+    */
+    private ?bool $enableOnBehalfRequestorsToUpdateAccess = null;
+    
+    /**
+     * @var bool|null $enableTargetsToSelfAddAccess True allows requestors to create a request to add access for themselves.
+    */
+    private ?bool $enableTargetsToSelfAddAccess = null;
+    
+    /**
+     * @var bool|null $enableTargetsToSelfRemoveAccess True allows requestors to create a request to remove their access.
+    */
+    private ?bool $enableTargetsToSelfRemoveAccess = null;
+    
+    /**
+     * @var bool|null $enableTargetsToSelfUpdateAccess True allows requestors to create a request to update their access.
+    */
+    private ?bool $enableTargetsToSelfUpdateAccess = null;
+    
+    /**
+     * @var string|null $odataType The OdataType property
+    */
+    private ?string $odataType = null;
+    
+    /**
+     * @var array<SubjectSet>|null $onBehalfRequestors The principals who can request on-behalf-of others.
+    */
+    private ?array $onBehalfRequestors = null;
+    
+    /**
+     * Instantiates a new AccessPackageAssignmentRequestorSettings and sets the default values.
+    */
+    public function __construct() {
+        $this->setAdditionalData([]);
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return AccessPackageAssignmentRequestorSettings
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): AccessPackageAssignmentRequestorSettings {
+        return new AccessPackageAssignmentRequestorSettings();
+    }
+
+    /**
+     * Gets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @return array<string, mixed>|null
+    */
+    public function getAdditionalData(): ?array {
+        return $this->additionalData;
+    }
+
+    /**
+     * Gets the allowCustomAssignmentSchedule property value. False indicates that the requestor isn't permitted to include a schedule in their request.
+     * @return bool|null
+    */
+    public function getAllowCustomAssignmentSchedule(): ?bool {
+        return $this->allowCustomAssignmentSchedule;
+    }
+
+    /**
+     * Gets the enableOnBehalfRequestorsToAddAccess property value. True allows on-behalf-of requestors to create a request to add access for another principal.
+     * @return bool|null
+    */
+    public function getEnableOnBehalfRequestorsToAddAccess(): ?bool {
+        return $this->enableOnBehalfRequestorsToAddAccess;
+    }
+
+    /**
+     * Gets the enableOnBehalfRequestorsToRemoveAccess property value. True allows on-behalf-of requestors to create a request to remove access for another principal.
+     * @return bool|null
+    */
+    public function getEnableOnBehalfRequestorsToRemoveAccess(): ?bool {
+        return $this->enableOnBehalfRequestorsToRemoveAccess;
+    }
+
+    /**
+     * Gets the enableOnBehalfRequestorsToUpdateAccess property value. True allows on-behalf-of requestors to create a request to update access for another principal.
+     * @return bool|null
+    */
+    public function getEnableOnBehalfRequestorsToUpdateAccess(): ?bool {
+        return $this->enableOnBehalfRequestorsToUpdateAccess;
+    }
+
+    /**
+     * Gets the enableTargetsToSelfAddAccess property value. True allows requestors to create a request to add access for themselves.
+     * @return bool|null
+    */
+    public function getEnableTargetsToSelfAddAccess(): ?bool {
+        return $this->enableTargetsToSelfAddAccess;
+    }
+
+    /**
+     * Gets the enableTargetsToSelfRemoveAccess property value. True allows requestors to create a request to remove their access.
+     * @return bool|null
+    */
+    public function getEnableTargetsToSelfRemoveAccess(): ?bool {
+        return $this->enableTargetsToSelfRemoveAccess;
+    }
+
+    /**
+     * Gets the enableTargetsToSelfUpdateAccess property value. True allows requestors to create a request to update their access.
+     * @return bool|null
+    */
+    public function getEnableTargetsToSelfUpdateAccess(): ?bool {
+        return $this->enableTargetsToSelfUpdateAccess;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return  [
+            'allowCustomAssignmentSchedule' => fn(ParseNode $n) => $o->setAllowCustomAssignmentSchedule($n->getBooleanValue()),
+            'enableOnBehalfRequestorsToAddAccess' => fn(ParseNode $n) => $o->setEnableOnBehalfRequestorsToAddAccess($n->getBooleanValue()),
+            'enableOnBehalfRequestorsToRemoveAccess' => fn(ParseNode $n) => $o->setEnableOnBehalfRequestorsToRemoveAccess($n->getBooleanValue()),
+            'enableOnBehalfRequestorsToUpdateAccess' => fn(ParseNode $n) => $o->setEnableOnBehalfRequestorsToUpdateAccess($n->getBooleanValue()),
+            'enableTargetsToSelfAddAccess' => fn(ParseNode $n) => $o->setEnableTargetsToSelfAddAccess($n->getBooleanValue()),
+            'enableTargetsToSelfRemoveAccess' => fn(ParseNode $n) => $o->setEnableTargetsToSelfRemoveAccess($n->getBooleanValue()),
+            'enableTargetsToSelfUpdateAccess' => fn(ParseNode $n) => $o->setEnableTargetsToSelfUpdateAccess($n->getBooleanValue()),
+            '@odata.type' => fn(ParseNode $n) => $o->setOdataType($n->getStringValue()),
+            'onBehalfRequestors' => fn(ParseNode $n) => $o->setOnBehalfRequestors($n->getCollectionOfObjectValues([SubjectSet::class, 'createFromDiscriminatorValue'])),
+        ];
+    }
+
+    /**
+     * Gets the @odata.type property value. The OdataType property
+     * @return string|null
+    */
+    public function getOdataType(): ?string {
+        return $this->odataType;
+    }
+
+    /**
+     * Gets the onBehalfRequestors property value. The principals who can request on-behalf-of others.
+     * @return array<SubjectSet>|null
+    */
+    public function getOnBehalfRequestors(): ?array {
+        return $this->onBehalfRequestors;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        $writer->writeBooleanValue('allowCustomAssignmentSchedule', $this->getAllowCustomAssignmentSchedule());
+        $writer->writeBooleanValue('enableOnBehalfRequestorsToAddAccess', $this->getEnableOnBehalfRequestorsToAddAccess());
+        $writer->writeBooleanValue('enableOnBehalfRequestorsToRemoveAccess', $this->getEnableOnBehalfRequestorsToRemoveAccess());
+        $writer->writeBooleanValue('enableOnBehalfRequestorsToUpdateAccess', $this->getEnableOnBehalfRequestorsToUpdateAccess());
+        $writer->writeBooleanValue('enableTargetsToSelfAddAccess', $this->getEnableTargetsToSelfAddAccess());
+        $writer->writeBooleanValue('enableTargetsToSelfRemoveAccess', $this->getEnableTargetsToSelfRemoveAccess());
+        $writer->writeBooleanValue('enableTargetsToSelfUpdateAccess', $this->getEnableTargetsToSelfUpdateAccess());
+        $writer->writeStringValue('@odata.type', $this->getOdataType());
+        $writer->writeCollectionOfObjectValues('onBehalfRequestors', $this->getOnBehalfRequestors());
+        $writer->writeAdditionalData($this->getAdditionalData());
+    }
+
+    /**
+     * Sets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @param array<string,mixed> $value Value to set for the AdditionalData property.
+    */
+    public function setAdditionalData(?array $value): void {
+        $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the allowCustomAssignmentSchedule property value. False indicates that the requestor isn't permitted to include a schedule in their request.
+     * @param bool|null $value Value to set for the allowCustomAssignmentSchedule property.
+    */
+    public function setAllowCustomAssignmentSchedule(?bool $value): void {
+        $this->allowCustomAssignmentSchedule = $value;
+    }
+
+    /**
+     * Sets the enableOnBehalfRequestorsToAddAccess property value. True allows on-behalf-of requestors to create a request to add access for another principal.
+     * @param bool|null $value Value to set for the enableOnBehalfRequestorsToAddAccess property.
+    */
+    public function setEnableOnBehalfRequestorsToAddAccess(?bool $value): void {
+        $this->enableOnBehalfRequestorsToAddAccess = $value;
+    }
+
+    /**
+     * Sets the enableOnBehalfRequestorsToRemoveAccess property value. True allows on-behalf-of requestors to create a request to remove access for another principal.
+     * @param bool|null $value Value to set for the enableOnBehalfRequestorsToRemoveAccess property.
+    */
+    public function setEnableOnBehalfRequestorsToRemoveAccess(?bool $value): void {
+        $this->enableOnBehalfRequestorsToRemoveAccess = $value;
+    }
+
+    /**
+     * Sets the enableOnBehalfRequestorsToUpdateAccess property value. True allows on-behalf-of requestors to create a request to update access for another principal.
+     * @param bool|null $value Value to set for the enableOnBehalfRequestorsToUpdateAccess property.
+    */
+    public function setEnableOnBehalfRequestorsToUpdateAccess(?bool $value): void {
+        $this->enableOnBehalfRequestorsToUpdateAccess = $value;
+    }
+
+    /**
+     * Sets the enableTargetsToSelfAddAccess property value. True allows requestors to create a request to add access for themselves.
+     * @param bool|null $value Value to set for the enableTargetsToSelfAddAccess property.
+    */
+    public function setEnableTargetsToSelfAddAccess(?bool $value): void {
+        $this->enableTargetsToSelfAddAccess = $value;
+    }
+
+    /**
+     * Sets the enableTargetsToSelfRemoveAccess property value. True allows requestors to create a request to remove their access.
+     * @param bool|null $value Value to set for the enableTargetsToSelfRemoveAccess property.
+    */
+    public function setEnableTargetsToSelfRemoveAccess(?bool $value): void {
+        $this->enableTargetsToSelfRemoveAccess = $value;
+    }
+
+    /**
+     * Sets the enableTargetsToSelfUpdateAccess property value. True allows requestors to create a request to update their access.
+     * @param bool|null $value Value to set for the enableTargetsToSelfUpdateAccess property.
+    */
+    public function setEnableTargetsToSelfUpdateAccess(?bool $value): void {
+        $this->enableTargetsToSelfUpdateAccess = $value;
+    }
+
+    /**
+     * Sets the @odata.type property value. The OdataType property
+     * @param string|null $value Value to set for the @odata.type property.
+    */
+    public function setOdataType(?string $value): void {
+        $this->odataType = $value;
+    }
+
+    /**
+     * Sets the onBehalfRequestors property value. The principals who can request on-behalf-of others.
+     * @param array<SubjectSet>|null $value Value to set for the onBehalfRequestors property.
+    */
+    public function setOnBehalfRequestors(?array $value): void {
+        $this->onBehalfRequestors = $value;
+    }
+
+}

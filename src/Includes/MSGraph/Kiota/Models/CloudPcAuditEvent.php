@@ -1,0 +1,299 @@
+<?php
+
+namespace MSPress\Includes\MSGraph\Kiota\Models;
+
+use DateTime;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class CloudPcAuditEvent extends Entity implements Parsable 
+{
+    /**
+     * @var string|null $activity The friendly name of the audit activity.
+    */
+    private ?string $activity = null;
+    
+    /**
+     * @var DateTime|null $activityDateTime The date time in UTC when the activity was performed. Read-only.
+    */
+    private ?DateTime $activityDateTime = null;
+    
+    /**
+     * @var CloudPcAuditActivityOperationType|null $activityOperationType The activityOperationType property
+    */
+    private ?CloudPcAuditActivityOperationType $activityOperationType = null;
+    
+    /**
+     * @var CloudPcAuditActivityResult|null $activityResult The activityResult property
+    */
+    private ?CloudPcAuditActivityResult $activityResult = null;
+    
+    /**
+     * @var string|null $activityType The type of activity that was performed. Read-only.
+    */
+    private ?string $activityType = null;
+    
+    /**
+     * @var CloudPcAuditActor|null $actor The actor property
+    */
+    private ?CloudPcAuditActor $actor = null;
+    
+    /**
+     * @var CloudPcAuditCategory|null $category The category property
+    */
+    private ?CloudPcAuditCategory $category = null;
+    
+    /**
+     * @var string|null $componentName The component name for the audit event. Read-only.
+    */
+    private ?string $componentName = null;
+    
+    /**
+     * @var string|null $correlationId The client request ID that is used to correlate activity within the system. Read-only.
+    */
+    private ?string $correlationId = null;
+    
+    /**
+     * @var string|null $displayName The display name for the audit event. Read-only.
+    */
+    private ?string $displayName = null;
+    
+    /**
+     * @var array<CloudPcAuditResource>|null $resources The list of cloudPcAuditResource objects. Read-only.
+    */
+    private ?array $resources = null;
+    
+    /**
+     * Instantiates a new CloudPcAuditEvent and sets the default values.
+    */
+    public function __construct() {
+        parent::__construct();
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return CloudPcAuditEvent
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): CloudPcAuditEvent {
+        return new CloudPcAuditEvent();
+    }
+
+    /**
+     * Gets the activity property value. The friendly name of the audit activity.
+     * @return string|null
+    */
+    public function getActivity(): ?string {
+        return $this->activity;
+    }
+
+    /**
+     * Gets the activityDateTime property value. The date time in UTC when the activity was performed. Read-only.
+     * @return DateTime|null
+    */
+    public function getActivityDateTime(): ?DateTime {
+        return $this->activityDateTime;
+    }
+
+    /**
+     * Gets the activityOperationType property value. The activityOperationType property
+     * @return CloudPcAuditActivityOperationType|null
+    */
+    public function getActivityOperationType(): ?CloudPcAuditActivityOperationType {
+        return $this->activityOperationType;
+    }
+
+    /**
+     * Gets the activityResult property value. The activityResult property
+     * @return CloudPcAuditActivityResult|null
+    */
+    public function getActivityResult(): ?CloudPcAuditActivityResult {
+        return $this->activityResult;
+    }
+
+    /**
+     * Gets the activityType property value. The type of activity that was performed. Read-only.
+     * @return string|null
+    */
+    public function getActivityType(): ?string {
+        return $this->activityType;
+    }
+
+    /**
+     * Gets the actor property value. The actor property
+     * @return CloudPcAuditActor|null
+    */
+    public function getActor(): ?CloudPcAuditActor {
+        return $this->actor;
+    }
+
+    /**
+     * Gets the category property value. The category property
+     * @return CloudPcAuditCategory|null
+    */
+    public function getCategory(): ?CloudPcAuditCategory {
+        return $this->category;
+    }
+
+    /**
+     * Gets the componentName property value. The component name for the audit event. Read-only.
+     * @return string|null
+    */
+    public function getComponentName(): ?string {
+        return $this->componentName;
+    }
+
+    /**
+     * Gets the correlationId property value. The client request ID that is used to correlate activity within the system. Read-only.
+     * @return string|null
+    */
+    public function getCorrelationId(): ?string {
+        return $this->correlationId;
+    }
+
+    /**
+     * Gets the displayName property value. The display name for the audit event. Read-only.
+     * @return string|null
+    */
+    public function getDisplayName(): ?string {
+        return $this->displayName;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return array_merge(parent::getFieldDeserializers(), [
+            'activity' => fn(ParseNode $n) => $o->setActivity($n->getStringValue()),
+            'activityDateTime' => fn(ParseNode $n) => $o->setActivityDateTime($n->getDateTimeValue()),
+            'activityOperationType' => fn(ParseNode $n) => $o->setActivityOperationType($n->getEnumValue(CloudPcAuditActivityOperationType::class)),
+            'activityResult' => fn(ParseNode $n) => $o->setActivityResult($n->getEnumValue(CloudPcAuditActivityResult::class)),
+            'activityType' => fn(ParseNode $n) => $o->setActivityType($n->getStringValue()),
+            'actor' => fn(ParseNode $n) => $o->setActor($n->getObjectValue([CloudPcAuditActor::class, 'createFromDiscriminatorValue'])),
+            'category' => fn(ParseNode $n) => $o->setCategory($n->getEnumValue(CloudPcAuditCategory::class)),
+            'componentName' => fn(ParseNode $n) => $o->setComponentName($n->getStringValue()),
+            'correlationId' => fn(ParseNode $n) => $o->setCorrelationId($n->getStringValue()),
+            'displayName' => fn(ParseNode $n) => $o->setDisplayName($n->getStringValue()),
+            'resources' => fn(ParseNode $n) => $o->setResources($n->getCollectionOfObjectValues([CloudPcAuditResource::class, 'createFromDiscriminatorValue'])),
+        ]);
+    }
+
+    /**
+     * Gets the resources property value. The list of cloudPcAuditResource objects. Read-only.
+     * @return array<CloudPcAuditResource>|null
+    */
+    public function getResources(): ?array {
+        return $this->resources;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        parent::serialize($writer);
+        $writer->writeStringValue('activity', $this->getActivity());
+        $writer->writeDateTimeValue('activityDateTime', $this->getActivityDateTime());
+        $writer->writeEnumValue('activityOperationType', $this->getActivityOperationType());
+        $writer->writeEnumValue('activityResult', $this->getActivityResult());
+        $writer->writeStringValue('activityType', $this->getActivityType());
+        $writer->writeObjectValue('actor', $this->getActor());
+        $writer->writeEnumValue('category', $this->getCategory());
+        $writer->writeStringValue('componentName', $this->getComponentName());
+        $writer->writeStringValue('correlationId', $this->getCorrelationId());
+        $writer->writeStringValue('displayName', $this->getDisplayName());
+        $writer->writeCollectionOfObjectValues('resources', $this->getResources());
+    }
+
+    /**
+     * Sets the activity property value. The friendly name of the audit activity.
+     * @param string|null $value Value to set for the activity property.
+    */
+    public function setActivity(?string $value): void {
+        $this->activity = $value;
+    }
+
+    /**
+     * Sets the activityDateTime property value. The date time in UTC when the activity was performed. Read-only.
+     * @param DateTime|null $value Value to set for the activityDateTime property.
+    */
+    public function setActivityDateTime(?DateTime $value): void {
+        $this->activityDateTime = $value;
+    }
+
+    /**
+     * Sets the activityOperationType property value. The activityOperationType property
+     * @param CloudPcAuditActivityOperationType|null $value Value to set for the activityOperationType property.
+    */
+    public function setActivityOperationType(?CloudPcAuditActivityOperationType $value): void {
+        $this->activityOperationType = $value;
+    }
+
+    /**
+     * Sets the activityResult property value. The activityResult property
+     * @param CloudPcAuditActivityResult|null $value Value to set for the activityResult property.
+    */
+    public function setActivityResult(?CloudPcAuditActivityResult $value): void {
+        $this->activityResult = $value;
+    }
+
+    /**
+     * Sets the activityType property value. The type of activity that was performed. Read-only.
+     * @param string|null $value Value to set for the activityType property.
+    */
+    public function setActivityType(?string $value): void {
+        $this->activityType = $value;
+    }
+
+    /**
+     * Sets the actor property value. The actor property
+     * @param CloudPcAuditActor|null $value Value to set for the actor property.
+    */
+    public function setActor(?CloudPcAuditActor $value): void {
+        $this->actor = $value;
+    }
+
+    /**
+     * Sets the category property value. The category property
+     * @param CloudPcAuditCategory|null $value Value to set for the category property.
+    */
+    public function setCategory(?CloudPcAuditCategory $value): void {
+        $this->category = $value;
+    }
+
+    /**
+     * Sets the componentName property value. The component name for the audit event. Read-only.
+     * @param string|null $value Value to set for the componentName property.
+    */
+    public function setComponentName(?string $value): void {
+        $this->componentName = $value;
+    }
+
+    /**
+     * Sets the correlationId property value. The client request ID that is used to correlate activity within the system. Read-only.
+     * @param string|null $value Value to set for the correlationId property.
+    */
+    public function setCorrelationId(?string $value): void {
+        $this->correlationId = $value;
+    }
+
+    /**
+     * Sets the displayName property value. The display name for the audit event. Read-only.
+     * @param string|null $value Value to set for the displayName property.
+    */
+    public function setDisplayName(?string $value): void {
+        $this->displayName = $value;
+    }
+
+    /**
+     * Sets the resources property value. The list of cloudPcAuditResource objects. Read-only.
+     * @param array<CloudPcAuditResource>|null $value Value to set for the resources property.
+    */
+    public function setResources(?array $value): void {
+        $this->resources = $value;
+    }
+
+}

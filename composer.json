@@ -9,21 +9,20 @@
 		},
 		"exclude-from-classmap": [
 			"src/Includes/Plugins/PluginsInterface.php"
-		],
-		"files": [
-			"src/Includes/Plugins/PluginsInterface.php"
 		]
 	},
 	"minimum-stability": "stable",
     "require": {
-		"microsoft/microsoft-graph": "^3.5.0",
-        "paragonie/sodium_compat": "^2.4",
-        "laminas/laminas-httphandlerrunner": "^2.13",
-        "paragonie/random-lib": "^2.0",
-        "ramsey/uuid-doctrine": "^2.1",
-        "symfony/yaml": "^7.3",
 		"defuse/php-encryption": "^2.4",
-		"fortawesome/wordpress-fontawesome": "^5.2"
+		"fortawesome/wordpress-fontawesome": "^5.2",
+		"microsoft/kiota-abstractions": "^2.1",
+		"microsoft/kiota-http-guzzle": "^2.1",
+		"microsoft/kiota-serialization-json": "^2.1",
+		"microsoft/kiota-serialization-text": "^2.1",
+		"guzzlehttp/guzzle": "^7.15",
+		"php-http/promise": "^1.2",
+		"psr/http-message": "^2.0",
+		"league/oauth2-client": "^2.9"
     },
 	"config": {
 		"allow-plugins": {
@@ -43,6 +42,8 @@
 		"yoast/wp-test-utils": "^1.2"
 	},
 	"scripts": {
+		"kiota:normalize": "@php scripts/normalize-kiota-models.php",
+		"kiota:check": "@php scripts/normalize-kiota-models.php --dry-run",
 		"test": "php ./vendor/bin/phpunit --configuration phpunit.xml.dist",
 		"test:unit": "php ./vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite unit",
 		"lint": "php ./vendor/bin/phpcs --standard=phpcs.xml.dist",

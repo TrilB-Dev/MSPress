@@ -1,0 +1,400 @@
+<?php
+
+namespace MSPress\Includes\MSGraph\Kiota\Models\IdentityGovernance;
+
+use DateTime;
+use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use MSPress\Includes\MSGraph\Kiota\Models\DirectoryObject;
+use MSPress\Includes\MSGraph\Kiota\Models\User;
+
+class WorkflowBase implements AdditionalDataHolder, Parsable 
+{
+    /**
+     * @var array<string, mixed>|null $additionalData Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+    */
+    private ?array $additionalData = null;
+    
+    /**
+     * @var array<DirectoryObject>|null $administrationScopeTargets The administrative units in the scope of the workflow. Optional. Supports $expand.
+    */
+    private ?array $administrationScopeTargets = null;
+    
+    /**
+     * @var LifecycleWorkflowCategory|null $category The category property
+    */
+    private ?LifecycleWorkflowCategory $category = null;
+    
+    /**
+     * @var User|null $createdBy The user who created the workflow.
+    */
+    private ?User $createdBy = null;
+    
+    /**
+     * @var DateTime|null $createdDateTime When a workflow was created.
+    */
+    private ?DateTime $createdDateTime = null;
+    
+    /**
+     * @var string|null $description A string that describes the purpose of the workflow.
+    */
+    private ?string $description = null;
+    
+    /**
+     * @var string|null $displayName A string to identify the workflow.
+    */
+    private ?string $displayName = null;
+    
+    /**
+     * @var WorkflowExecutionConditions|null $executionConditions Defines when and for who the workflow will run.
+    */
+    private ?WorkflowExecutionConditions $executionConditions = null;
+    
+    /**
+     * @var bool|null $isEnabled Whether the workflow is enabled or disabled. If this setting is true, the workflow can be run on demand or on schedule when isSchedulingEnabled is true.
+    */
+    private ?bool $isEnabled = null;
+    
+    /**
+     * @var bool|null $isSchedulingEnabled If true, the Lifecycle Workflow engine executes the workflow based on the schedule defined by tenant settings. Can't be true for a disabled workflow (where isEnabled is false).
+    */
+    private ?bool $isSchedulingEnabled = null;
+    
+    /**
+     * @var User|null $lastModifiedBy The unique identifier of the Microsoft Entra identity that last modified the workflow.
+    */
+    private ?User $lastModifiedBy = null;
+    
+    /**
+     * @var DateTime|null $lastModifiedDateTime When the workflow was last modified.
+    */
+    private ?DateTime $lastModifiedDateTime = null;
+    
+    /**
+     * @var string|null $odataType The OdataType property
+    */
+    private ?string $odataType = null;
+    
+    /**
+     * @var SubjectType|null $targetSubjectType The targetSubjectType property
+    */
+    private ?SubjectType $targetSubjectType = null;
+    
+    /**
+     * @var array<Task>|null $tasks The tasks in the workflow.
+    */
+    private ?array $tasks = null;
+    
+    /**
+     * Instantiates a new WorkflowBase and sets the default values.
+    */
+    public function __construct() {
+        $this->setAdditionalData([]);
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return WorkflowBase
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): WorkflowBase {
+        $mappingValueNode = $parseNode->getChildNode("@odata.type");
+        if ($mappingValueNode !== null) {
+            $mappingValue = $mappingValueNode->getStringValue();
+            switch ($mappingValue) {
+                case '#microsoft.graph.identityGovernance.workflow': return new Workflow();
+                case '#microsoft.graph.identityGovernance.workflowVersion': return new WorkflowVersion();
+            }
+        }
+        return new WorkflowBase();
+    }
+
+    /**
+     * Gets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @return array<string, mixed>|null
+    */
+    public function getAdditionalData(): ?array {
+        return $this->additionalData;
+    }
+
+    /**
+     * Gets the administrationScopeTargets property value. The administrative units in the scope of the workflow. Optional. Supports $expand.
+     * @return array<DirectoryObject>|null
+    */
+    public function getAdministrationScopeTargets(): ?array {
+        return $this->administrationScopeTargets;
+    }
+
+    /**
+     * Gets the category property value. The category property
+     * @return LifecycleWorkflowCategory|null
+    */
+    public function getCategory(): ?LifecycleWorkflowCategory {
+        return $this->category;
+    }
+
+    /**
+     * Gets the createdBy property value. The user who created the workflow.
+     * @return User|null
+    */
+    public function getCreatedBy(): ?User {
+        return $this->createdBy;
+    }
+
+    /**
+     * Gets the createdDateTime property value. When a workflow was created.
+     * @return DateTime|null
+    */
+    public function getCreatedDateTime(): ?DateTime {
+        return $this->createdDateTime;
+    }
+
+    /**
+     * Gets the description property value. A string that describes the purpose of the workflow.
+     * @return string|null
+    */
+    public function getDescription(): ?string {
+        return $this->description;
+    }
+
+    /**
+     * Gets the displayName property value. A string to identify the workflow.
+     * @return string|null
+    */
+    public function getDisplayName(): ?string {
+        return $this->displayName;
+    }
+
+    /**
+     * Gets the executionConditions property value. Defines when and for who the workflow will run.
+     * @return WorkflowExecutionConditions|null
+    */
+    public function getExecutionConditions(): ?WorkflowExecutionConditions {
+        return $this->executionConditions;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return  [
+            'administrationScopeTargets' => fn(ParseNode $n) => $o->setAdministrationScopeTargets($n->getCollectionOfObjectValues([DirectoryObject::class, 'createFromDiscriminatorValue'])),
+            'category' => fn(ParseNode $n) => $o->setCategory($n->getEnumValue(LifecycleWorkflowCategory::class)),
+            'createdBy' => fn(ParseNode $n) => $o->setCreatedBy($n->getObjectValue([User::class, 'createFromDiscriminatorValue'])),
+            'createdDateTime' => fn(ParseNode $n) => $o->setCreatedDateTime($n->getDateTimeValue()),
+            'description' => fn(ParseNode $n) => $o->setDescription($n->getStringValue()),
+            'displayName' => fn(ParseNode $n) => $o->setDisplayName($n->getStringValue()),
+            'executionConditions' => fn(ParseNode $n) => $o->setExecutionConditions($n->getObjectValue([WorkflowExecutionConditions::class, 'createFromDiscriminatorValue'])),
+            'isEnabled' => fn(ParseNode $n) => $o->setIsEnabled($n->getBooleanValue()),
+            'isSchedulingEnabled' => fn(ParseNode $n) => $o->setIsSchedulingEnabled($n->getBooleanValue()),
+            'lastModifiedBy' => fn(ParseNode $n) => $o->setLastModifiedBy($n->getObjectValue([User::class, 'createFromDiscriminatorValue'])),
+            'lastModifiedDateTime' => fn(ParseNode $n) => $o->setLastModifiedDateTime($n->getDateTimeValue()),
+            '@odata.type' => fn(ParseNode $n) => $o->setOdataType($n->getStringValue()),
+            'targetSubjectType' => fn(ParseNode $n) => $o->setTargetSubjectType($n->getEnumValue(SubjectType::class)),
+            'tasks' => fn(ParseNode $n) => $o->setTasks($n->getCollectionOfObjectValues([Task::class, 'createFromDiscriminatorValue'])),
+        ];
+    }
+
+    /**
+     * Gets the isEnabled property value. Whether the workflow is enabled or disabled. If this setting is true, the workflow can be run on demand or on schedule when isSchedulingEnabled is true.
+     * @return bool|null
+    */
+    public function getIsEnabled(): ?bool {
+        return $this->isEnabled;
+    }
+
+    /**
+     * Gets the isSchedulingEnabled property value. If true, the Lifecycle Workflow engine executes the workflow based on the schedule defined by tenant settings. Can't be true for a disabled workflow (where isEnabled is false).
+     * @return bool|null
+    */
+    public function getIsSchedulingEnabled(): ?bool {
+        return $this->isSchedulingEnabled;
+    }
+
+    /**
+     * Gets the lastModifiedBy property value. The unique identifier of the Microsoft Entra identity that last modified the workflow.
+     * @return User|null
+    */
+    public function getLastModifiedBy(): ?User {
+        return $this->lastModifiedBy;
+    }
+
+    /**
+     * Gets the lastModifiedDateTime property value. When the workflow was last modified.
+     * @return DateTime|null
+    */
+    public function getLastModifiedDateTime(): ?DateTime {
+        return $this->lastModifiedDateTime;
+    }
+
+    /**
+     * Gets the @odata.type property value. The OdataType property
+     * @return string|null
+    */
+    public function getOdataType(): ?string {
+        return $this->odataType;
+    }
+
+    /**
+     * Gets the targetSubjectType property value. The targetSubjectType property
+     * @return SubjectType|null
+    */
+    public function getTargetSubjectType(): ?SubjectType {
+        return $this->targetSubjectType;
+    }
+
+    /**
+     * Gets the tasks property value. The tasks in the workflow.
+     * @return array<Task>|null
+    */
+    public function getTasks(): ?array {
+        return $this->tasks;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        $writer->writeCollectionOfObjectValues('administrationScopeTargets', $this->getAdministrationScopeTargets());
+        $writer->writeEnumValue('category', $this->getCategory());
+        $writer->writeObjectValue('createdBy', $this->getCreatedBy());
+        $writer->writeDateTimeValue('createdDateTime', $this->getCreatedDateTime());
+        $writer->writeStringValue('description', $this->getDescription());
+        $writer->writeStringValue('displayName', $this->getDisplayName());
+        $writer->writeObjectValue('executionConditions', $this->getExecutionConditions());
+        $writer->writeBooleanValue('isEnabled', $this->getIsEnabled());
+        $writer->writeBooleanValue('isSchedulingEnabled', $this->getIsSchedulingEnabled());
+        $writer->writeObjectValue('lastModifiedBy', $this->getLastModifiedBy());
+        $writer->writeDateTimeValue('lastModifiedDateTime', $this->getLastModifiedDateTime());
+        $writer->writeStringValue('@odata.type', $this->getOdataType());
+        $writer->writeEnumValue('targetSubjectType', $this->getTargetSubjectType());
+        $writer->writeCollectionOfObjectValues('tasks', $this->getTasks());
+        $writer->writeAdditionalData($this->getAdditionalData());
+    }
+
+    /**
+     * Sets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @param array<string,mixed> $value Value to set for the AdditionalData property.
+    */
+    public function setAdditionalData(?array $value): void {
+        $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the administrationScopeTargets property value. The administrative units in the scope of the workflow. Optional. Supports $expand.
+     * @param array<DirectoryObject>|null $value Value to set for the administrationScopeTargets property.
+    */
+    public function setAdministrationScopeTargets(?array $value): void {
+        $this->administrationScopeTargets = $value;
+    }
+
+    /**
+     * Sets the category property value. The category property
+     * @param LifecycleWorkflowCategory|null $value Value to set for the category property.
+    */
+    public function setCategory(?LifecycleWorkflowCategory $value): void {
+        $this->category = $value;
+    }
+
+    /**
+     * Sets the createdBy property value. The user who created the workflow.
+     * @param User|null $value Value to set for the createdBy property.
+    */
+    public function setCreatedBy(?User $value): void {
+        $this->createdBy = $value;
+    }
+
+    /**
+     * Sets the createdDateTime property value. When a workflow was created.
+     * @param DateTime|null $value Value to set for the createdDateTime property.
+    */
+    public function setCreatedDateTime(?DateTime $value): void {
+        $this->createdDateTime = $value;
+    }
+
+    /**
+     * Sets the description property value. A string that describes the purpose of the workflow.
+     * @param string|null $value Value to set for the description property.
+    */
+    public function setDescription(?string $value): void {
+        $this->description = $value;
+    }
+
+    /**
+     * Sets the displayName property value. A string to identify the workflow.
+     * @param string|null $value Value to set for the displayName property.
+    */
+    public function setDisplayName(?string $value): void {
+        $this->displayName = $value;
+    }
+
+    /**
+     * Sets the executionConditions property value. Defines when and for who the workflow will run.
+     * @param WorkflowExecutionConditions|null $value Value to set for the executionConditions property.
+    */
+    public function setExecutionConditions(?WorkflowExecutionConditions $value): void {
+        $this->executionConditions = $value;
+    }
+
+    /**
+     * Sets the isEnabled property value. Whether the workflow is enabled or disabled. If this setting is true, the workflow can be run on demand or on schedule when isSchedulingEnabled is true.
+     * @param bool|null $value Value to set for the isEnabled property.
+    */
+    public function setIsEnabled(?bool $value): void {
+        $this->isEnabled = $value;
+    }
+
+    /**
+     * Sets the isSchedulingEnabled property value. If true, the Lifecycle Workflow engine executes the workflow based on the schedule defined by tenant settings. Can't be true for a disabled workflow (where isEnabled is false).
+     * @param bool|null $value Value to set for the isSchedulingEnabled property.
+    */
+    public function setIsSchedulingEnabled(?bool $value): void {
+        $this->isSchedulingEnabled = $value;
+    }
+
+    /**
+     * Sets the lastModifiedBy property value. The unique identifier of the Microsoft Entra identity that last modified the workflow.
+     * @param User|null $value Value to set for the lastModifiedBy property.
+    */
+    public function setLastModifiedBy(?User $value): void {
+        $this->lastModifiedBy = $value;
+    }
+
+    /**
+     * Sets the lastModifiedDateTime property value. When the workflow was last modified.
+     * @param DateTime|null $value Value to set for the lastModifiedDateTime property.
+    */
+    public function setLastModifiedDateTime(?DateTime $value): void {
+        $this->lastModifiedDateTime = $value;
+    }
+
+    /**
+     * Sets the @odata.type property value. The OdataType property
+     * @param string|null $value Value to set for the @odata.type property.
+    */
+    public function setOdataType(?string $value): void {
+        $this->odataType = $value;
+    }
+
+    /**
+     * Sets the targetSubjectType property value. The targetSubjectType property
+     * @param SubjectType|null $value Value to set for the targetSubjectType property.
+    */
+    public function setTargetSubjectType(?SubjectType $value): void {
+        $this->targetSubjectType = $value;
+    }
+
+    /**
+     * Sets the tasks property value. The tasks in the workflow.
+     * @param array<Task>|null $value Value to set for the tasks property.
+    */
+    public function setTasks(?array $value): void {
+        $this->tasks = $value;
+    }
+
+}

@@ -4,6 +4,8 @@
 
     <rule ref="WordPress-Extra">
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+		<!-- Sharepoint.php is retained for dynamic plugin discovery. -->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
         <exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
         <exclude name="WordPress.NamingConventions.ValidVariableName.InterpolatedVariableNotSnakeCase" />
     </rule>

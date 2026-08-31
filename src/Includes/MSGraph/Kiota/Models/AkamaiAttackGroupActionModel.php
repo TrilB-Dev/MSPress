@@ -1,0 +1,136 @@
+<?php
+
+namespace MSPress\Includes\MSGraph\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class AkamaiAttackGroupActionModel implements AdditionalDataHolder, Parsable 
+{
+    /**
+     * @var string|null $action The action Akamai applies to the attack group when a matching threat is detected. Common values include deny, none or alert.
+    */
+    private ?string $action = null;
+    
+    /**
+     * @var array<string, mixed>|null $additionalData Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+    */
+    private ?array $additionalData = null;
+    
+    /**
+     * @var string|null $group The name or identifier of the attack group. This value categorizes the type of attack the action applies to.
+    */
+    private ?string $group = null;
+    
+    /**
+     * @var string|null $odataType The OdataType property
+    */
+    private ?string $odataType = null;
+    
+    /**
+     * Instantiates a new AkamaiAttackGroupActionModel and sets the default values.
+    */
+    public function __construct() {
+        $this->setAdditionalData([]);
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return AkamaiAttackGroupActionModel
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): AkamaiAttackGroupActionModel {
+        return new AkamaiAttackGroupActionModel();
+    }
+
+    /**
+     * Gets the action property value. The action Akamai applies to the attack group when a matching threat is detected. Common values include deny, none or alert.
+     * @return string|null
+    */
+    public function getAction(): ?string {
+        return $this->action;
+    }
+
+    /**
+     * Gets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @return array<string, mixed>|null
+    */
+    public function getAdditionalData(): ?array {
+        return $this->additionalData;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return  [
+            'action' => fn(ParseNode $n) => $o->setAction($n->getStringValue()),
+            'group' => fn(ParseNode $n) => $o->setGroup($n->getStringValue()),
+            '@odata.type' => fn(ParseNode $n) => $o->setOdataType($n->getStringValue()),
+        ];
+    }
+
+    /**
+     * Gets the group property value. The name or identifier of the attack group. This value categorizes the type of attack the action applies to.
+     * @return string|null
+    */
+    public function getGroup(): ?string {
+        return $this->group;
+    }
+
+    /**
+     * Gets the @odata.type property value. The OdataType property
+     * @return string|null
+    */
+    public function getOdataType(): ?string {
+        return $this->odataType;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        $writer->writeStringValue('action', $this->getAction());
+        $writer->writeStringValue('group', $this->getGroup());
+        $writer->writeStringValue('@odata.type', $this->getOdataType());
+        $writer->writeAdditionalData($this->getAdditionalData());
+    }
+
+    /**
+     * Sets the action property value. The action Akamai applies to the attack group when a matching threat is detected. Common values include deny, none or alert.
+     * @param string|null $value Value to set for the action property.
+    */
+    public function setAction(?string $value): void {
+        $this->action = $value;
+    }
+
+    /**
+     * Sets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @param array<string,mixed> $value Value to set for the AdditionalData property.
+    */
+    public function setAdditionalData(?array $value): void {
+        $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the group property value. The name or identifier of the attack group. This value categorizes the type of attack the action applies to.
+     * @param string|null $value Value to set for the group property.
+    */
+    public function setGroup(?string $value): void {
+        $this->group = $value;
+    }
+
+    /**
+     * Sets the @odata.type property value. The OdataType property
+     * @param string|null $value Value to set for the @odata.type property.
+    */
+    public function setOdataType(?string $value): void {
+        $this->odataType = $value;
+    }
+
+}

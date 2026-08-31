@@ -2,7 +2,10 @@
 /** MS Graph API Integration */
 namespace MSPress\Includes\MSGraph;
 
-use Microsoft\Graph\GraphServiceClient;
+use MSPress\Includes\MSGraph\Kiota\Models\DriveItem;
+use MSPress\Includes\MSGraph\Kiota\MSPressClient;
+use MSPress\Includes\Plugins\Onedrive\Includes\Kiota\OneDrive;
+use MSPress\Includes\Plugins\Sharepoint\Includes\Kiota\SharePoint;
 use League\OAuth2\Client\Provider\GenericProvider;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\LoggerHelper as utilities;
@@ -37,9 +40,14 @@ use MSPress\Includes\Settings\Settings;
  * Storage-specific operations are implemented by the corresponding plugin services.
  */
 class GraphService {
+    private function encode_path_segments(string $path): string {
+        $path = trim($path, '/');
+        return implode('/', array_map('rawurlencode', explode('/', $path)));
+    }
+
     private static ?GraphService $instance = null;
     /**
-        * @var \Microsoft\Graph\GraphServiceClient|null $graph For app-level API calls
+        * @var MSPressClient|null $graph For app-level API calls
      * @method mixed sites()
      * @method mixed me()
      * @method mixed organization()
@@ -51,7 +59,9 @@ class GraphService {
      * @method mixed bySiteId(string $siteId)
      * @method mixed children()
      */
-    private ?GraphServiceClient $graph = null; // For app-level API calls
+    private ?MSPressClient $graph = null; // For app-level API calls
+    private ?SharePoint $sharePoint = null;
+    private ?OneDrive $oneDrive = null;
     private ?GenericProvider $oauthClient = null; // For user-level authorization URLs
     private ?OAuthService $oauthService = null;
     private TokenService $tokenService;
@@ -110,12 +120,20 @@ class GraphService {
         return $this->credentials->get_client_secret();
     }
 
-    public function getGraphClient(): ?GraphServiceClient {
+    public function getGraphClient(): ?MSPressClient {
         return $this->graph;
     }
 
-    public function get_graph(): ?GraphServiceClient {
+    public function get_graph(): ?MSPressClient {
         return $this->graph;
+    }
+
+    public function get_sharepoint_client(): ?SharePoint {
+        return $this->sharePoint;
+    }
+
+    public function get_onedrive_client(): ?OneDrive {
+        return $this->oneDrive;
     }
 
     public function getAccessToken(): ?string {
@@ -200,12 +218,17 @@ class GraphService {
                 'httpClient' => new \GuzzleHttp\Client(TlsTransport::guzzle_options()),
             ]);
             $this->oauthService = new OAuthService($this->oauthClient, fn() => $this->get_tenant_id());
-            $this->graph = $this->clientService->create_graph_client();
+            $requestAdapter = $this->clientService->create_request_adapter();
+            $this->graph = $requestAdapter === null ? null : new MSPressClient($requestAdapter);
+            $this->sharePoint = $requestAdapter === null ? null : new SharePoint($requestAdapter);
+            $this->oneDrive = $requestAdapter === null ? null : new OneDrive($requestAdapter);
             $this->httpClient = $this->clientService->create_http_client();
         } catch (\Throwable $e) {
             $this->connectionError = 'Error initializing MS Graph: ' . $e->getMessage();
             utilities::write_log($this->connectionError);
             $this->graph = null;
+            $this->sharePoint = null;
+            $this->oneDrive = null;
             $this->httpClient = null;
         }
     }
@@ -235,7 +258,7 @@ class GraphService {
 
             // Try to list drives
             utilities::write_log('MSGraph test_drive_access: Attempting to list drives for site: ' . $site_id);
-            $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+            $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
             $drives_array = $drives_list->getValue();
 
             utilities::write_log('MSGraph test_drive_access: Found ' . count($drives_array) . ' drives');
@@ -305,7 +328,7 @@ class GraphService {
         foreach ($site_formats as $format) {
             try {
                 utilities::write_log('MSGraph get_sharepoint_site: Trying format: ' . $format);
-                $site = $this->graph->sites()->bySiteId($format)->get()->wait();
+                $site = $this->sharePoint->sites()->bySiteId($format)->get()->wait();
                 utilities::write_log('MSGraph get_sharepoint_site: Found site by ID: ' . $site->getDisplayName());
                 return $site;
             } catch (Exception $e) {
@@ -334,7 +357,7 @@ class GraphService {
                     utilities::write_log('MSGraph get_drive_items: Looking for drive by name: ' . $drive_name);
                     // Find drive by name
                     try {
-                        $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                        $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                         $drives_array = $drives_list->getValue();
                         utilities::write_log('MSGraph get_drive_items: Found ' . count($drives_array) . ' drives');
                         foreach ($drives_array as $drive) {
@@ -367,14 +390,14 @@ class GraphService {
                     utilities::write_log('MSGraph get_drive_items: No drive_name specified, trying default drive');
                     try {
                         // Try to get the default drive first
-                        $drives = $this->graph->sites()->bySiteId($site_id)->drive()->get()->wait();
+                        $drives = $this->sharePoint->sites()->bySiteId($site_id)->drive()->get()->wait();
                         $drive_id = $drives->getId();
                         utilities::write_log('MSGraph get_drive_items: Using default drive: ' . $drive_id);
                     } catch (Exception $e) {
                         utilities::write_log('MSGraph get_drive_items: Default drive not available: ' . $e->getMessage());
                         // If no default drive, list all drives and pick the first one
                         try {
-                            $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                            $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                             $drives_array = $drives_list->getValue();
                             if (empty($drives_array)) {
                                 utilities::write_log('MSGraph get_drive_items: No drives found in site');
@@ -413,7 +436,8 @@ class GraphService {
                 $children_array = $children['value'] ?? [];
             } else {
                 $clean_path = ltrim($folder_path, '/');
-                $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$clean_path}:/children" . $expandQuery;
+                $encoded_path = $this->encode_path_segments($clean_path);
+                $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$encoded_path}:/children" . $expandQuery;
                 $response = $httpClient->get($url);
                 $children = json_decode($response->getBody()->getContents(), true);
                 $children_array = $children['value'] ?? [];
@@ -475,7 +499,7 @@ class GraphService {
                 if ($drive_name) {
                     // Find drive by name
                     try {
-                        $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                        $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                         $drives_array = $drives_list->getValue();
                         foreach ($drives_array as $drive) {
                             if (strcasecmp($drive->getName(), $drive_name) === 0) {
@@ -492,12 +516,12 @@ class GraphService {
                 } else {
                     try {
                         // Try to get the default drive first
-                        $drives = $this->graph->sites()->bySiteId($site_id)->drive()->get()->wait();
+                        $drives = $this->sharePoint->sites()->bySiteId($site_id)->drive()->get()->wait();
                         $drive_id = $drives->getId();
                     } catch (Exception $e) {
                         // If no default drive, list all drives and pick the first one
                         try {
-                            $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                            $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                             $drives_array = $drives_list->getValue();
                             if (empty($drives_array)) {
                                 throw new Exception('No drives found in this SharePoint site');
@@ -518,6 +542,7 @@ class GraphService {
 
             // Build the upload path
             $upload_path = empty($folder_path) || $folder_path === '/' ? $file_name : $folder_path . '/' . $file_name;
+            $upload_path = $this->encode_path_segments($upload_path);
 
             // Upload the file using HTTP client
             $httpClient = $this->getHttpClient();
@@ -607,7 +632,9 @@ class GraphService {
                 }
 
                 if (!empty($updateBody)) {
-                    $this->graph->me()->drive()->items()->byDriveItemId($item_id)->patch($updateBody)->wait();
+                    $driveItem = new DriveItem();
+                    $driveItem->setDescription($updateBody['description']);
+                    $this->oneDrive->me()->drive()->items()->byDriveItemId($item_id)->patch($driveItem)->wait();
                 }
             }
 
@@ -631,7 +658,7 @@ class GraphService {
                 if ($drive_name) {
                     // Find drive by name
                     try {
-                        $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                        $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                         $drives_array = $drives_list->getValue();
                         foreach ($drives_array as $drive) {
                             if (strcasecmp($drive->getName(), $drive_name) === 0) {
@@ -648,12 +675,12 @@ class GraphService {
                 } else {
                     try {
                         // Try to get the default drive first
-                        $drives = $this->graph->sites()->bySiteId($site_id)->drive()->get()->wait();
+                        $drives = $this->sharePoint->sites()->bySiteId($site_id)->drive()->get()->wait();
                         $drive_id = $drives->getId();
                     } catch (Exception $e) {
                         // If no default drive, list all drives and pick the first one
                         try {
-                            $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                            $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                             $drives_array = $drives_list->getValue();
                             if (empty($drives_array)) {
                                 throw new Exception('No drives found in this SharePoint site');
@@ -694,7 +721,7 @@ class GraphService {
                 if ($drive_name) {
                     // Find drive by name
                     try {
-                        $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                        $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                         $drives_array = $drives_list->getValue();
                         foreach ($drives_array as $drive) {
                             if (strcasecmp($drive->getName(), $drive_name) === 0) {
@@ -711,12 +738,12 @@ class GraphService {
                 } else {
                     try {
                         // Try to get the default drive first
-                        $drives = $this->graph->sites()->bySiteId($site_id)->drive()->get()->wait();
+                        $drives = $this->sharePoint->sites()->bySiteId($site_id)->drive()->get()->wait();
                         $drive_id = $drives->getId();
                     } catch (Exception $e) {
                         // If no default drive, list all drives and pick the first one
                         try {
-                            $drives_list = $this->graph->sites()->bySiteId($site_id)->drives()->get()->wait();
+                            $drives_list = $this->sharePoint->sites()->bySiteId($site_id)->drives()->get()->wait();
                             $drives_array = $drives_list->getValue();
                             if (empty($drives_array)) {
                                 throw new Exception('No drives found in this SharePoint site');
@@ -741,7 +768,8 @@ class GraphService {
                 $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root/children";
             } else {
                 $clean_path = trim($parent_path, '/');
-                $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$clean_path}:/children";
+                $encoded_path = $this->encode_path_segments($clean_path);
+                $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$encoded_path}:/children";
             }
             $response = $httpClient->request('POST', $url, [
                 'headers' => [
@@ -774,7 +802,7 @@ class GraphService {
                 throw new Exception('MS Graph not initialized');
             }
 
-            $site = $this->graph->sites()->bySiteId($site_identifier)->get()->wait();
+            $site = $this->sharePoint->sites()->bySiteId($site_identifier)->get()->wait();
             return $site;
         } catch (Exception $e) {
             utilities::write_log('MS Graph getSharePointSite error: ' . $e->getMessage());
@@ -798,9 +826,9 @@ class GraphService {
 
             // Get the drive
             if ($drive_id) {
-                $drive = $this->graph->sites()->bySiteId($site_id)->drives()->byDriveId($drive_id);
+                $drive = $this->sharePoint->sites()->bySiteId($site_id)->drives()->byDriveId($drive_id);
             } else {
-                $drive = $this->graph->sites()->bySiteId($site_id)->drive();
+                $drive = $this->sharePoint->sites()->bySiteId($site_id)->drive();
             }
 
             // Get root items or items in specific folder using HTTP client
@@ -808,8 +836,8 @@ class GraphService {
             if (empty($folder_path) || $folder_path === '/') {
                 $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root/children";
             } else {
-                $folder_path = ltrim($folder_path, '/');
-                $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$folder_path}:/children";
+                $encoded_path = $this->encode_path_segments($folder_path);
+                $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$encoded_path}:/children";
             }
             $response = $httpClient->get($url);
             $data = json_decode($response->getBody()->getContents(), true);
@@ -863,14 +891,14 @@ class GraphService {
 
             // Get the drive
             if ($drive_id) {
-                $drive = $this->graph->sites()->bySiteId($site_id)->drives()->byDriveId($drive_id);
+                $drive = $this->sharePoint->sites()->bySiteId($site_id)->drives()->byDriveId($drive_id);
             } else {
-                $drive = $this->graph->sites()->bySiteId($site_id)->drive();
+                $drive = $this->sharePoint->sites()->bySiteId($site_id)->drive();
             }
 
             // Prepare upload path
             $upload_path = empty($folder_path) || $folder_path === '/' ? $file_name : $folder_path . '/' . $file_name;
-            $upload_path = ltrim($upload_path, '/');
+            $upload_path = $this->encode_path_segments($upload_path);
 
             // Read file content
             $file_content = file_get_contents($file_path);
@@ -941,27 +969,28 @@ class GraphService {
 
             // Get the drive
             if ($drive_id) {
-                $drive = $this->graph->sites()->bySiteId($site_id)->drives()->byDriveId($drive_id);
+                $drive = $this->sharePoint->sites()->bySiteId($site_id)->drives()->byDriveId($drive_id);
             } else {
-                $drive = $this->graph->sites()->bySiteId($site_id)->drive();
+                $drive = $this->sharePoint->sites()->bySiteId($site_id)->drive();
             }
 
             // Prepare parent path
-            $parent_path = empty($parent_path) || $parent_path === '/' ? '' : ltrim($parent_path, '/');
+            $logical_parent_path = empty($parent_path) || $parent_path === '/' ? '' : ltrim($parent_path, '/');
 
             // Create folder
             $folder_data = [
                 'name' => $folder_name,
-                'folder' => new \Microsoft\Graph\Generated\Models\Folder(),
+                'folder' => (object) [],
                 '@microsoft.graph.conflictBehavior' => 'rename'
             ];
 
             // Create folder using HTTP client
             $httpClient = $this->getHttpClient();
-            if (empty($parent_path)) {
+            if (empty($logical_parent_path)) {
                 $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root/children";
             } else {
-                $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$parent_path}:/children";
+                $encoded_parent_path = $this->encode_path_segments($logical_parent_path);
+                $url = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$encoded_parent_path}:/children";
             }
             $response = $httpClient->request('POST', $url, [
                 'headers' => [
@@ -979,7 +1008,7 @@ class GraphService {
                 'id' => $new_folder['id'],
                 'name' => $new_folder['name'],
                 'web_url' => $new_folder['webUrl'],
-                'path' => ($parent_path ? $parent_path . '/' : '') . $folder_name,
+                'path' => ($logical_parent_path ? $logical_parent_path . '/' : '') . $folder_name,
                 'created_date_time' => isset($new_folder['createdDateTime']) ? date('Y-m-d H:i:s', strtotime($new_folder['createdDateTime'])) : null,
             ];
 
@@ -1006,6 +1035,7 @@ class GraphService {
 
             // Get the item by path first
             $itemPath = ltrim($item_path, '/');
+            $itemPath = $this->encode_path_segments($itemPath);
             $itemUrl = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$itemPath}";
             $itemResponse = $httpClient->request('GET', $itemUrl);
             $item = json_decode($itemResponse->getBody()->getContents(), true);
@@ -1057,6 +1087,7 @@ class GraphService {
 
             // Get the item by path first to get its ID
             $itemPath = ltrim($item_path, '/');
+            $itemPath = $this->encode_path_segments($itemPath);
             $itemUrl = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$itemPath}";
             $itemResponse = $httpClient->request('GET', $itemUrl);
             $item = json_decode($itemResponse->getBody()->getContents(), true);
@@ -1111,7 +1142,8 @@ class GraphService {
 
             // Get the source item by path
             $sourcePath = ltrim($source_path, '/');
-            $sourceUrl = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/" . rawurlencode($sourcePath);
+            $sourcePath = $this->encode_path_segments($sourcePath);
+            $sourceUrl = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$sourcePath}";
 
             utilities::write_log("MS Graph move_drive_item: Source URL: {$sourceUrl}");
 
@@ -1145,7 +1177,8 @@ class GraphService {
             } else {
                 // Moving to a subfolder
                 $targetParentPath = ltrim($targetParentPath, '/');
-                $targetParentUrl = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/" . rawurlencode($targetParentPath);
+                $targetParentPath = $this->encode_path_segments($targetParentPath);
+                $targetParentUrl = "https://graph.microsoft.com/v1.0/sites/{$site_id}/drives/{$drive_id}/root:/{$targetParentPath}";
 
                 utilities::write_log("MS Graph move_drive_item: Target parent URL: {$targetParentUrl}");
 

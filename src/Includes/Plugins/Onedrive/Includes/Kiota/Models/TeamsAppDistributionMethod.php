@@ -1,0 +1,12 @@
+<?php
+
+namespace MSPress\Includes\Plugins\OneDrive\Includes\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Enum;
+
+class TeamsAppDistributionMethod extends Enum {
+    public const STORE = "store";
+    public const ORGANIZATION = "organization";
+    public const SIDELOADED = "sideloaded";
+    public const UNKNOWN_FUTURE_VALUE = "unknownFutureValue";
+}

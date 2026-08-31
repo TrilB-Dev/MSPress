@@ -1,0 +1,139 @@
+<?php
+
+namespace MSPress\Includes\Plugins\SharePoint\Includes\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+/**
+ * Represents policy deployment summary per app.
+*/
+class ManagedAppPolicyDeploymentSummaryPerApp implements AdditionalDataHolder, Parsable 
+{
+    /**
+     * @var array<string, mixed>|null $additionalData Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+    */
+    private ?array $additionalData = null;
+    
+    /**
+     * @var int|null $configurationAppliedUserCount Number of users the policy is applied.
+    */
+    private ?int $configurationAppliedUserCount = null;
+    
+    /**
+     * @var MobileAppIdentifier|null $mobileAppIdentifier Deployment of an app.
+    */
+    private ?MobileAppIdentifier $mobileAppIdentifier = null;
+    
+    /**
+     * @var string|null $odataType The OdataType property
+    */
+    private ?string $odataType = null;
+    
+    /**
+     * Instantiates a new ManagedAppPolicyDeploymentSummaryPerApp and sets the default values.
+    */
+    public function __construct() {
+        $this->setAdditionalData([]);
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return ManagedAppPolicyDeploymentSummaryPerApp
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): ManagedAppPolicyDeploymentSummaryPerApp {
+        return new ManagedAppPolicyDeploymentSummaryPerApp();
+    }
+
+    /**
+     * Gets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @return array<string, mixed>|null
+    */
+    public function getAdditionalData(): ?array {
+        return $this->additionalData;
+    }
+
+    /**
+     * Gets the configurationAppliedUserCount property value. Number of users the policy is applied.
+     * @return int|null
+    */
+    public function getConfigurationAppliedUserCount(): ?int {
+        return $this->configurationAppliedUserCount;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return  [
+            'configurationAppliedUserCount' => fn(ParseNode $n) => $o->setConfigurationAppliedUserCount($n->getIntegerValue()),
+            'mobileAppIdentifier' => fn(ParseNode $n) => $o->setMobileAppIdentifier($n->getObjectValue([MobileAppIdentifier::class, 'createFromDiscriminatorValue'])),
+            '@odata.type' => fn(ParseNode $n) => $o->setOdataType($n->getStringValue()),
+        ];
+    }
+
+    /**
+     * Gets the mobileAppIdentifier property value. Deployment of an app.
+     * @return MobileAppIdentifier|null
+    */
+    public function getMobileAppIdentifier(): ?MobileAppIdentifier {
+        return $this->mobileAppIdentifier;
+    }
+
+    /**
+     * Gets the @odata.type property value. The OdataType property
+     * @return string|null
+    */
+    public function getOdataType(): ?string {
+        return $this->odataType;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        $writer->writeIntegerValue('configurationAppliedUserCount', $this->getConfigurationAppliedUserCount());
+        $writer->writeObjectValue('mobileAppIdentifier', $this->getMobileAppIdentifier());
+        $writer->writeStringValue('@odata.type', $this->getOdataType());
+        $writer->writeAdditionalData($this->getAdditionalData());
+    }
+
+    /**
+     * Sets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @param array<string,mixed> $value Value to set for the AdditionalData property.
+    */
+    public function setAdditionalData(?array $value): void {
+        $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the configurationAppliedUserCount property value. Number of users the policy is applied.
+     * @param int|null $value Value to set for the configurationAppliedUserCount property.
+    */
+    public function setConfigurationAppliedUserCount(?int $value): void {
+        $this->configurationAppliedUserCount = $value;
+    }
+
+    /**
+     * Sets the mobileAppIdentifier property value. Deployment of an app.
+     * @param MobileAppIdentifier|null $value Value to set for the mobileAppIdentifier property.
+    */
+    public function setMobileAppIdentifier(?MobileAppIdentifier $value): void {
+        $this->mobileAppIdentifier = $value;
+    }
+
+    /**
+     * Sets the @odata.type property value. The OdataType property
+     * @param string|null $value Value to set for the @odata.type property.
+    */
+    public function setOdataType(?string $value): void {
+        $this->odataType = $value;
+    }
+
+}

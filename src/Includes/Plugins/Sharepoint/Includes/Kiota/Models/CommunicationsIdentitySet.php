@@ -1,0 +1,230 @@
+<?php
+
+namespace MSPress\Includes\Plugins\SharePoint\Includes\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class CommunicationsIdentitySet extends IdentitySet implements Parsable 
+{
+    /**
+     * @var Identity|null $applicationInstance The application instance associated with this action.
+    */
+    private ?Identity $applicationInstance = null;
+    
+    /**
+     * @var Identity|null $assertedIdentity An identity the participant would like to present itself as to the other participants in the call.
+    */
+    private ?Identity $assertedIdentity = null;
+    
+    /**
+     * @var Identity|null $azureCommunicationServicesUser The Azure Communication Services user associated with this action.
+    */
+    private ?Identity $azureCommunicationServicesUser = null;
+    
+    /**
+     * @var Identity|null $encrypted The encrypted user associated with this action.
+    */
+    private ?Identity $encrypted = null;
+    
+    /**
+     * @var EndpointType|null $endpointType Type of endpoint that the participant uses. The possible values are: default, voicemail, skypeForBusiness, skypeForBusinessVoipPhone, unknownFutureValue.
+    */
+    private ?EndpointType $endpointType = null;
+    
+    /**
+     * @var Identity|null $guest The guest user associated with this action.
+    */
+    private ?Identity $guest = null;
+    
+    /**
+     * @var Identity|null $onPremises The Skype for Business on-premises user associated with this action.
+    */
+    private ?Identity $onPremises = null;
+    
+    /**
+     * @var Identity|null $phone The phone user associated with this action.
+    */
+    private ?Identity $phone = null;
+    
+    /**
+     * Instantiates a new CommunicationsIdentitySet and sets the default values.
+    */
+    public function __construct() {
+        parent::__construct();
+        $this->setOdataType('#microsoft.graph.communicationsIdentitySet');
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return CommunicationsIdentitySet
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): CommunicationsIdentitySet {
+        return new CommunicationsIdentitySet();
+    }
+
+    /**
+     * Gets the applicationInstance property value. The application instance associated with this action.
+     * @return Identity|null
+    */
+    public function getApplicationInstance(): ?Identity {
+        return $this->applicationInstance;
+    }
+
+    /**
+     * Gets the assertedIdentity property value. An identity the participant would like to present itself as to the other participants in the call.
+     * @return Identity|null
+    */
+    public function getAssertedIdentity(): ?Identity {
+        return $this->assertedIdentity;
+    }
+
+    /**
+     * Gets the azureCommunicationServicesUser property value. The Azure Communication Services user associated with this action.
+     * @return Identity|null
+    */
+    public function getAzureCommunicationServicesUser(): ?Identity {
+        return $this->azureCommunicationServicesUser;
+    }
+
+    /**
+     * Gets the encrypted property value. The encrypted user associated with this action.
+     * @return Identity|null
+    */
+    public function getEncrypted(): ?Identity {
+        return $this->encrypted;
+    }
+
+    /**
+     * Gets the endpointType property value. Type of endpoint that the participant uses. The possible values are: default, voicemail, skypeForBusiness, skypeForBusinessVoipPhone, unknownFutureValue.
+     * @return EndpointType|null
+    */
+    public function getEndpointType(): ?EndpointType {
+        return $this->endpointType;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return array_merge(parent::getFieldDeserializers(), [
+            'applicationInstance' => fn(ParseNode $n) => $o->setApplicationInstance($n->getObjectValue([Identity::class, 'createFromDiscriminatorValue'])),
+            'assertedIdentity' => fn(ParseNode $n) => $o->setAssertedIdentity($n->getObjectValue([Identity::class, 'createFromDiscriminatorValue'])),
+            'azureCommunicationServicesUser' => fn(ParseNode $n) => $o->setAzureCommunicationServicesUser($n->getObjectValue([Identity::class, 'createFromDiscriminatorValue'])),
+            'encrypted' => fn(ParseNode $n) => $o->setEncrypted($n->getObjectValue([Identity::class, 'createFromDiscriminatorValue'])),
+            'endpointType' => fn(ParseNode $n) => $o->setEndpointType($n->getEnumValue(EndpointType::class)),
+            'guest' => fn(ParseNode $n) => $o->setGuest($n->getObjectValue([Identity::class, 'createFromDiscriminatorValue'])),
+            'onPremises' => fn(ParseNode $n) => $o->setOnPremises($n->getObjectValue([Identity::class, 'createFromDiscriminatorValue'])),
+            'phone' => fn(ParseNode $n) => $o->setPhone($n->getObjectValue([Identity::class, 'createFromDiscriminatorValue'])),
+        ]);
+    }
+
+    /**
+     * Gets the guest property value. The guest user associated with this action.
+     * @return Identity|null
+    */
+    public function getGuest(): ?Identity {
+        return $this->guest;
+    }
+
+    /**
+     * Gets the onPremises property value. The Skype for Business on-premises user associated with this action.
+     * @return Identity|null
+    */
+    public function getOnPremises(): ?Identity {
+        return $this->onPremises;
+    }
+
+    /**
+     * Gets the phone property value. The phone user associated with this action.
+     * @return Identity|null
+    */
+    public function getPhone(): ?Identity {
+        return $this->phone;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        parent::serialize($writer);
+        $writer->writeObjectValue('applicationInstance', $this->getApplicationInstance());
+        $writer->writeObjectValue('assertedIdentity', $this->getAssertedIdentity());
+        $writer->writeObjectValue('azureCommunicationServicesUser', $this->getAzureCommunicationServicesUser());
+        $writer->writeObjectValue('encrypted', $this->getEncrypted());
+        $writer->writeEnumValue('endpointType', $this->getEndpointType());
+        $writer->writeObjectValue('guest', $this->getGuest());
+        $writer->writeObjectValue('onPremises', $this->getOnPremises());
+        $writer->writeObjectValue('phone', $this->getPhone());
+    }
+
+    /**
+     * Sets the applicationInstance property value. The application instance associated with this action.
+     * @param Identity|null $value Value to set for the applicationInstance property.
+    */
+    public function setApplicationInstance(?Identity $value): void {
+        $this->applicationInstance = $value;
+    }
+
+    /**
+     * Sets the assertedIdentity property value. An identity the participant would like to present itself as to the other participants in the call.
+     * @param Identity|null $value Value to set for the assertedIdentity property.
+    */
+    public function setAssertedIdentity(?Identity $value): void {
+        $this->assertedIdentity = $value;
+    }
+
+    /**
+     * Sets the azureCommunicationServicesUser property value. The Azure Communication Services user associated with this action.
+     * @param Identity|null $value Value to set for the azureCommunicationServicesUser property.
+    */
+    public function setAzureCommunicationServicesUser(?Identity $value): void {
+        $this->azureCommunicationServicesUser = $value;
+    }
+
+    /**
+     * Sets the encrypted property value. The encrypted user associated with this action.
+     * @param Identity|null $value Value to set for the encrypted property.
+    */
+    public function setEncrypted(?Identity $value): void {
+        $this->encrypted = $value;
+    }
+
+    /**
+     * Sets the endpointType property value. Type of endpoint that the participant uses. The possible values are: default, voicemail, skypeForBusiness, skypeForBusinessVoipPhone, unknownFutureValue.
+     * @param EndpointType|null $value Value to set for the endpointType property.
+    */
+    public function setEndpointType(?EndpointType $value): void {
+        $this->endpointType = $value;
+    }
+
+    /**
+     * Sets the guest property value. The guest user associated with this action.
+     * @param Identity|null $value Value to set for the guest property.
+    */
+    public function setGuest(?Identity $value): void {
+        $this->guest = $value;
+    }
+
+    /**
+     * Sets the onPremises property value. The Skype for Business on-premises user associated with this action.
+     * @param Identity|null $value Value to set for the onPremises property.
+    */
+    public function setOnPremises(?Identity $value): void {
+        $this->onPremises = $value;
+    }
+
+    /**
+     * Sets the phone property value. The phone user associated with this action.
+     * @param Identity|null $value Value to set for the phone property.
+    */
+    public function setPhone(?Identity $value): void {
+        $this->phone = $value;
+    }
+
+}

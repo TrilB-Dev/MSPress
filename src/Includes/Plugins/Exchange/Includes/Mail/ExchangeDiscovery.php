@@ -8,7 +8,7 @@
  */
 namespace MSPress\Includes\Plugins\Exchange\Includes\Mail;
 
-use Microsoft\Graph\GraphServiceClient;
+use MSPress\Includes\Plugins\Exchange\Includes\Kiota\Exchange;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -21,7 +21,7 @@ class ExchangeDiscovery {
      * @param string $email The email address to discover.
      * @return string|null The discovered Exchange server URL or null if not found.
      */
-    public static function validate( GraphServiceClient $graph, string $email ): array {
+    public static function validate( Exchange $graph, string $email ): array {
         $email = sanitize_email( $email );
         if ( ! is_email( $email ) ) {
             return [ 'valid' => false, 'reason' => 'invalid_email' ];

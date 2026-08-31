@@ -1,0 +1,207 @@
+<?php
+
+namespace MSPress\Includes\Plugins\SharePoint\Includes\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class VirtualEventTownhall extends VirtualEvent implements Parsable 
+{
+    /**
+     * @var MeetingAudience|null $audience The audience to whom the town hall is visible. The possible values are: everyone, organization, and unknownFutureValue.
+    */
+    private ?MeetingAudience $audience = null;
+    
+    /**
+     * @var int|null $capacity Represents the expected number of attendees for the town hall.
+    */
+    private ?int $capacity = null;
+    
+    /**
+     * @var array<CommunicationsUserIdentity>|null $coOrganizers Identity information of the coorganizers of the town hall.
+    */
+    private ?array $coOrganizers = null;
+    
+    /**
+     * @var array<Identity>|null $invitedAttendees The attendees invited to the town hall. The supported identities are: communicationsUserIdentity and communicationsGuestIdentity.
+    */
+    private ?array $invitedAttendees = null;
+    
+    /**
+     * @var bool|null $isInviteOnly Indicates whether the town hall is only open to invited people and groups within your organization. The isInviteOnly property can only be true if the value of the audience property is set to organization.
+    */
+    private ?bool $isInviteOnly = null;
+    
+    /**
+     * @var VirtualEventTownhallRegistrationConfiguration|null $registrationConfiguration Registration configuration of the town hall.
+    */
+    private ?VirtualEventTownhallRegistrationConfiguration $registrationConfiguration = null;
+    
+    /**
+     * @var array<VirtualEventRegistration>|null $registrations Registration records of the town hall.
+    */
+    private ?array $registrations = null;
+    
+    /**
+     * Instantiates a new VirtualEventTownhall and sets the default values.
+    */
+    public function __construct() {
+        parent::__construct();
+        $this->setOdataType('#microsoft.graph.virtualEventTownhall');
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return VirtualEventTownhall
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): VirtualEventTownhall {
+        return new VirtualEventTownhall();
+    }
+
+    /**
+     * Gets the audience property value. The audience to whom the town hall is visible. The possible values are: everyone, organization, and unknownFutureValue.
+     * @return MeetingAudience|null
+    */
+    public function getAudience(): ?MeetingAudience {
+        return $this->audience;
+    }
+
+    /**
+     * Gets the capacity property value. Represents the expected number of attendees for the town hall.
+     * @return int|null
+    */
+    public function getCapacity(): ?int {
+        return $this->capacity;
+    }
+
+    /**
+     * Gets the coOrganizers property value. Identity information of the coorganizers of the town hall.
+     * @return array<CommunicationsUserIdentity>|null
+    */
+    public function getCoOrganizers(): ?array {
+        return $this->coOrganizers;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return array_merge(parent::getFieldDeserializers(), [
+            'audience' => fn(ParseNode $n) => $o->setAudience($n->getEnumValue(MeetingAudience::class)),
+            'capacity' => fn(ParseNode $n) => $o->setCapacity($n->getIntegerValue()),
+            'coOrganizers' => fn(ParseNode $n) => $o->setCoOrganizers($n->getCollectionOfObjectValues([CommunicationsUserIdentity::class, 'createFromDiscriminatorValue'])),
+            'invitedAttendees' => fn(ParseNode $n) => $o->setInvitedAttendees($n->getCollectionOfObjectValues([Identity::class, 'createFromDiscriminatorValue'])),
+            'isInviteOnly' => fn(ParseNode $n) => $o->setIsInviteOnly($n->getBooleanValue()),
+            'registrationConfiguration' => fn(ParseNode $n) => $o->setRegistrationConfiguration($n->getObjectValue([VirtualEventTownhallRegistrationConfiguration::class, 'createFromDiscriminatorValue'])),
+            'registrations' => fn(ParseNode $n) => $o->setRegistrations($n->getCollectionOfObjectValues([VirtualEventRegistration::class, 'createFromDiscriminatorValue'])),
+        ]);
+    }
+
+    /**
+     * Gets the invitedAttendees property value. The attendees invited to the town hall. The supported identities are: communicationsUserIdentity and communicationsGuestIdentity.
+     * @return array<Identity>|null
+    */
+    public function getInvitedAttendees(): ?array {
+        return $this->invitedAttendees;
+    }
+
+    /**
+     * Gets the isInviteOnly property value. Indicates whether the town hall is only open to invited people and groups within your organization. The isInviteOnly property can only be true if the value of the audience property is set to organization.
+     * @return bool|null
+    */
+    public function getIsInviteOnly(): ?bool {
+        return $this->isInviteOnly;
+    }
+
+    /**
+     * Gets the registrationConfiguration property value. Registration configuration of the town hall.
+     * @return VirtualEventTownhallRegistrationConfiguration|null
+    */
+    public function getRegistrationConfiguration(): ?VirtualEventTownhallRegistrationConfiguration {
+        return $this->registrationConfiguration;
+    }
+
+    /**
+     * Gets the registrations property value. Registration records of the town hall.
+     * @return array<VirtualEventRegistration>|null
+    */
+    public function getRegistrations(): ?array {
+        return $this->registrations;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        parent::serialize($writer);
+        $writer->writeEnumValue('audience', $this->getAudience());
+        $writer->writeIntegerValue('capacity', $this->getCapacity());
+        $writer->writeCollectionOfObjectValues('coOrganizers', $this->getCoOrganizers());
+        $writer->writeCollectionOfObjectValues('invitedAttendees', $this->getInvitedAttendees());
+        $writer->writeBooleanValue('isInviteOnly', $this->getIsInviteOnly());
+        $writer->writeObjectValue('registrationConfiguration', $this->getRegistrationConfiguration());
+        $writer->writeCollectionOfObjectValues('registrations', $this->getRegistrations());
+    }
+
+    /**
+     * Sets the audience property value. The audience to whom the town hall is visible. The possible values are: everyone, organization, and unknownFutureValue.
+     * @param MeetingAudience|null $value Value to set for the audience property.
+    */
+    public function setAudience(?MeetingAudience $value): void {
+        $this->audience = $value;
+    }
+
+    /**
+     * Sets the capacity property value. Represents the expected number of attendees for the town hall.
+     * @param int|null $value Value to set for the capacity property.
+    */
+    public function setCapacity(?int $value): void {
+        $this->capacity = $value;
+    }
+
+    /**
+     * Sets the coOrganizers property value. Identity information of the coorganizers of the town hall.
+     * @param array<CommunicationsUserIdentity>|null $value Value to set for the coOrganizers property.
+    */
+    public function setCoOrganizers(?array $value): void {
+        $this->coOrganizers = $value;
+    }
+
+    /**
+     * Sets the invitedAttendees property value. The attendees invited to the town hall. The supported identities are: communicationsUserIdentity and communicationsGuestIdentity.
+     * @param array<Identity>|null $value Value to set for the invitedAttendees property.
+    */
+    public function setInvitedAttendees(?array $value): void {
+        $this->invitedAttendees = $value;
+    }
+
+    /**
+     * Sets the isInviteOnly property value. Indicates whether the town hall is only open to invited people and groups within your organization. The isInviteOnly property can only be true if the value of the audience property is set to organization.
+     * @param bool|null $value Value to set for the isInviteOnly property.
+    */
+    public function setIsInviteOnly(?bool $value): void {
+        $this->isInviteOnly = $value;
+    }
+
+    /**
+     * Sets the registrationConfiguration property value. Registration configuration of the town hall.
+     * @param VirtualEventTownhallRegistrationConfiguration|null $value Value to set for the registrationConfiguration property.
+    */
+    public function setRegistrationConfiguration(?VirtualEventTownhallRegistrationConfiguration $value): void {
+        $this->registrationConfiguration = $value;
+    }
+
+    /**
+     * Sets the registrations property value. Registration records of the town hall.
+     * @param array<VirtualEventRegistration>|null $value Value to set for the registrations property.
+    */
+    public function setRegistrations(?array $value): void {
+        $this->registrations = $value;
+    }
+
+}

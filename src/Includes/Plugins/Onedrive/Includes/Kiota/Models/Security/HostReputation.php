@@ -1,0 +1,115 @@
+<?php
+
+namespace MSPress\Includes\Plugins\OneDrive\Includes\Kiota\Models\Security;
+
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use MSPress\Includes\Plugins\OneDrive\Includes\Kiota\Models\Entity;
+
+class HostReputation extends Entity implements Parsable 
+{
+    /**
+     * @var HostReputationClassification|null $classification The classification property
+    */
+    private ?HostReputationClassification $classification = null;
+    
+    /**
+     * @var array<HostReputationRule>|null $rules A collection of rules that have been used to calculate the classification and score.
+    */
+    private ?array $rules = null;
+    
+    /**
+     * @var int|null $score The calculated score (0-100) of the requested host. A higher value indicates that this host is more likely to be suspicious or malicious.
+    */
+    private ?int $score = null;
+    
+    /**
+     * Instantiates a new HostReputation and sets the default values.
+    */
+    public function __construct() {
+        parent::__construct();
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return HostReputation
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): HostReputation {
+        return new HostReputation();
+    }
+
+    /**
+     * Gets the classification property value. The classification property
+     * @return HostReputationClassification|null
+    */
+    public function getClassification(): ?HostReputationClassification {
+        return $this->classification;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return array_merge(parent::getFieldDeserializers(), [
+            'classification' => fn(ParseNode $n) => $o->setClassification($n->getEnumValue(HostReputationClassification::class)),
+            'rules' => fn(ParseNode $n) => $o->setRules($n->getCollectionOfObjectValues([HostReputationRule::class, 'createFromDiscriminatorValue'])),
+            'score' => fn(ParseNode $n) => $o->setScore($n->getIntegerValue()),
+        ]);
+    }
+
+    /**
+     * Gets the rules property value. A collection of rules that have been used to calculate the classification and score.
+     * @return array<HostReputationRule>|null
+    */
+    public function getRules(): ?array {
+        return $this->rules;
+    }
+
+    /**
+     * Gets the score property value. The calculated score (0-100) of the requested host. A higher value indicates that this host is more likely to be suspicious or malicious.
+     * @return int|null
+    */
+    public function getScore(): ?int {
+        return $this->score;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        parent::serialize($writer);
+        $writer->writeEnumValue('classification', $this->getClassification());
+        $writer->writeCollectionOfObjectValues('rules', $this->getRules());
+        $writer->writeIntegerValue('score', $this->getScore());
+    }
+
+    /**
+     * Sets the classification property value. The classification property
+     * @param HostReputationClassification|null $value Value to set for the classification property.
+    */
+    public function setClassification(?HostReputationClassification $value): void {
+        $this->classification = $value;
+    }
+
+    /**
+     * Sets the rules property value. A collection of rules that have been used to calculate the classification and score.
+     * @param array<HostReputationRule>|null $value Value to set for the rules property.
+    */
+    public function setRules(?array $value): void {
+        $this->rules = $value;
+    }
+
+    /**
+     * Sets the score property value. The calculated score (0-100) of the requested host. A higher value indicates that this host is more likely to be suspicious or malicious.
+     * @param int|null $value Value to set for the score property.
+    */
+    public function setScore(?int $value): void {
+        $this->score = $value;
+    }
+
+}

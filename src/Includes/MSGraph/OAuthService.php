@@ -8,12 +8,12 @@ namespace MSPress\Includes\MSGraph;
 
 use Exception;
 use Http\Promise\FulfilledPromise;
-use Microsoft\Graph\GraphServiceClient;
-use Microsoft\Graph\GraphRequestAdapter;
 use Microsoft\Kiota\Abstractions\Authentication\AccessTokenProvider;
 use Microsoft\Kiota\Abstractions\Authentication\AllowedHostsValidator;
 use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
+use Microsoft\Kiota\Http\GuzzleRequestAdapter;
 use League\OAuth2\Client\Provider\GenericProvider;
+use MSPress\Includes\MSGraph\Kiota\MSPressClient;
 use MSPress\Includes\Functions\Helpers\LoggerHelper as utilities;
 
 final class OAuthService {
@@ -101,13 +101,13 @@ final class OAuthService {
                     }
                 }
             );
-            $requestAdapter = new GraphRequestAdapter(
+            $requestAdapter = new GuzzleRequestAdapter(
                 $authenticationProvider,
                 null,
                 null,
                 new \GuzzleHttp\Client(TlsTransport::guzzle_options())
             );
-            $graph = GraphServiceClient::createWithRequestAdapter($requestAdapter);
+            $graph = new MSPressClient($requestAdapter);
 
             $me = $graph->me()->get()->wait();
             utilities::write_log('MSGraph OAuth callback: Microsoft account retrieved.');

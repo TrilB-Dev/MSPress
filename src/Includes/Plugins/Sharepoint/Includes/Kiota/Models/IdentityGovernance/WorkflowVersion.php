@@ -1,0 +1,92 @@
+<?php
+
+namespace MSPress\Includes\Plugins\SharePoint\Includes\Kiota\Models\IdentityGovernance;
+
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class WorkflowVersion extends WorkflowBase implements Parsable 
+{
+    /**
+     * @var WorkflowSetting|null $settings The settings property
+    */
+    private ?WorkflowSetting $settings = null;
+    
+    /**
+     * @var int|null $versionNumber The version of the workflow.Supports $filter(lt, le, gt, ge, eq, ne) and $orderby.
+    */
+    private ?int $versionNumber = null;
+    
+    /**
+     * Instantiates a new WorkflowVersion and sets the default values.
+    */
+    public function __construct() {
+        parent::__construct();
+        $this->setOdataType('#microsoft.graph.identityGovernance.workflowVersion');
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return WorkflowVersion
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): WorkflowVersion {
+        return new WorkflowVersion();
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return array_merge(parent::getFieldDeserializers(), [
+            'settings' => fn(ParseNode $n) => $o->setSettings($n->getObjectValue([WorkflowSetting::class, 'createFromDiscriminatorValue'])),
+            'versionNumber' => fn(ParseNode $n) => $o->setVersionNumber($n->getIntegerValue()),
+        ]);
+    }
+
+    /**
+     * Gets the settings property value. The settings property
+     * @return WorkflowSetting|null
+    */
+    public function getSettings(): ?WorkflowSetting {
+        return $this->settings;
+    }
+
+    /**
+     * Gets the versionNumber property value. The version of the workflow.Supports $filter(lt, le, gt, ge, eq, ne) and $orderby.
+     * @return int|null
+    */
+    public function getVersionNumber(): ?int {
+        return $this->versionNumber;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        parent::serialize($writer);
+        $writer->writeObjectValue('settings', $this->getSettings());
+        $writer->writeIntegerValue('versionNumber', $this->getVersionNumber());
+    }
+
+    /**
+     * Sets the settings property value. The settings property
+     * @param WorkflowSetting|null $value Value to set for the settings property.
+    */
+    public function setSettings(?WorkflowSetting $value): void {
+        $this->settings = $value;
+    }
+
+    /**
+     * Sets the versionNumber property value. The version of the workflow.Supports $filter(lt, le, gt, ge, eq, ne) and $orderby.
+     * @param int|null $value Value to set for the versionNumber property.
+    */
+    public function setVersionNumber(?int $value): void {
+        $this->versionNumber = $value;
+    }
+
+}

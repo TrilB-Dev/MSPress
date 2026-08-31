@@ -1,0 +1,251 @@
+<?php
+
+namespace MSPress\Includes\Plugins\SharePoint\Includes\Kiota\Models;
+
+use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
+use Microsoft\Kiota\Abstractions\Serialization\Parsable;
+use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
+use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+
+class DeviceDetail implements AdditionalDataHolder, Parsable 
+{
+    /**
+     * @var array<string, mixed>|null $additionalData Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+    */
+    private ?array $additionalData = null;
+    
+    /**
+     * @var string|null $browser Indicates the browser information of the used in the sign-in. Populated for devices registered in Microsoft Entra.
+    */
+    private ?string $browser = null;
+    
+    /**
+     * @var string|null $deviceId Refers to the unique ID of the device used in the sign-in. Populated for devices registered in Microsoft Entra.
+    */
+    private ?string $deviceId = null;
+    
+    /**
+     * @var string|null $displayName Refers to the name of the device used in the sign-in. Populated for devices registered in Microsoft Entra.
+    */
+    private ?string $displayName = null;
+    
+    /**
+     * @var bool|null $isCompliant Indicates whether the device is compliant or not.
+    */
+    private ?bool $isCompliant = null;
+    
+    /**
+     * @var bool|null $isManaged Indicates if the device is managed or not.
+    */
+    private ?bool $isManaged = null;
+    
+    /**
+     * @var string|null $odataType The OdataType property
+    */
+    private ?string $odataType = null;
+    
+    /**
+     * @var string|null $operatingSystem Indicates the OS name and version used in the sign-in.
+    */
+    private ?string $operatingSystem = null;
+    
+    /**
+     * @var string|null $trustType Indicates information on whether the device used in the sign-in is workplace-joined, Microsoft Entra-joined, domain-joined.
+    */
+    private ?string $trustType = null;
+    
+    /**
+     * Instantiates a new DeviceDetail and sets the default values.
+    */
+    public function __construct() {
+        $this->setAdditionalData([]);
+    }
+
+    /**
+     * Creates a new instance of the appropriate class based on discriminator value
+     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
+     * @return DeviceDetail
+    */
+    public static function createFromDiscriminatorValue(ParseNode $parseNode): DeviceDetail {
+        return new DeviceDetail();
+    }
+
+    /**
+     * Gets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @return array<string, mixed>|null
+    */
+    public function getAdditionalData(): ?array {
+        return $this->additionalData;
+    }
+
+    /**
+     * Gets the browser property value. Indicates the browser information of the used in the sign-in. Populated for devices registered in Microsoft Entra.
+     * @return string|null
+    */
+    public function getBrowser(): ?string {
+        return $this->browser;
+    }
+
+    /**
+     * Gets the deviceId property value. Refers to the unique ID of the device used in the sign-in. Populated for devices registered in Microsoft Entra.
+     * @return string|null
+    */
+    public function getDeviceId(): ?string {
+        return $this->deviceId;
+    }
+
+    /**
+     * Gets the displayName property value. Refers to the name of the device used in the sign-in. Populated for devices registered in Microsoft Entra.
+     * @return string|null
+    */
+    public function getDisplayName(): ?string {
+        return $this->displayName;
+    }
+
+    /**
+     * The deserialization information for the current model
+     * @return array<string, callable(ParseNode): void>
+    */
+    public function getFieldDeserializers(): array {
+        $o = $this;
+        return  [
+            'browser' => fn(ParseNode $n) => $o->setBrowser($n->getStringValue()),
+            'deviceId' => fn(ParseNode $n) => $o->setDeviceId($n->getStringValue()),
+            'displayName' => fn(ParseNode $n) => $o->setDisplayName($n->getStringValue()),
+            'isCompliant' => fn(ParseNode $n) => $o->setIsCompliant($n->getBooleanValue()),
+            'isManaged' => fn(ParseNode $n) => $o->setIsManaged($n->getBooleanValue()),
+            '@odata.type' => fn(ParseNode $n) => $o->setOdataType($n->getStringValue()),
+            'operatingSystem' => fn(ParseNode $n) => $o->setOperatingSystem($n->getStringValue()),
+            'trustType' => fn(ParseNode $n) => $o->setTrustType($n->getStringValue()),
+        ];
+    }
+
+    /**
+     * Gets the isCompliant property value. Indicates whether the device is compliant or not.
+     * @return bool|null
+    */
+    public function getIsCompliant(): ?bool {
+        return $this->isCompliant;
+    }
+
+    /**
+     * Gets the isManaged property value. Indicates if the device is managed or not.
+     * @return bool|null
+    */
+    public function getIsManaged(): ?bool {
+        return $this->isManaged;
+    }
+
+    /**
+     * Gets the @odata.type property value. The OdataType property
+     * @return string|null
+    */
+    public function getOdataType(): ?string {
+        return $this->odataType;
+    }
+
+    /**
+     * Gets the operatingSystem property value. Indicates the OS name and version used in the sign-in.
+     * @return string|null
+    */
+    public function getOperatingSystem(): ?string {
+        return $this->operatingSystem;
+    }
+
+    /**
+     * Gets the trustType property value. Indicates information on whether the device used in the sign-in is workplace-joined, Microsoft Entra-joined, domain-joined.
+     * @return string|null
+    */
+    public function getTrustType(): ?string {
+        return $this->trustType;
+    }
+
+    /**
+     * Serializes information the current object
+     * @param SerializationWriter $writer Serialization writer to use to serialize this model
+    */
+    public function serialize(SerializationWriter $writer): void {
+        $writer->writeStringValue('browser', $this->getBrowser());
+        $writer->writeStringValue('deviceId', $this->getDeviceId());
+        $writer->writeStringValue('displayName', $this->getDisplayName());
+        $writer->writeBooleanValue('isCompliant', $this->getIsCompliant());
+        $writer->writeBooleanValue('isManaged', $this->getIsManaged());
+        $writer->writeStringValue('@odata.type', $this->getOdataType());
+        $writer->writeStringValue('operatingSystem', $this->getOperatingSystem());
+        $writer->writeStringValue('trustType', $this->getTrustType());
+        $writer->writeAdditionalData($this->getAdditionalData());
+    }
+
+    /**
+     * Sets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @param array<string,mixed> $value Value to set for the AdditionalData property.
+    */
+    public function setAdditionalData(?array $value): void {
+        $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the browser property value. Indicates the browser information of the used in the sign-in. Populated for devices registered in Microsoft Entra.
+     * @param string|null $value Value to set for the browser property.
+    */
+    public function setBrowser(?string $value): void {
+        $this->browser = $value;
+    }
+
+    /**
+     * Sets the deviceId property value. Refers to the unique ID of the device used in the sign-in. Populated for devices registered in Microsoft Entra.
+     * @param string|null $value Value to set for the deviceId property.
+    */
+    public function setDeviceId(?string $value): void {
+        $this->deviceId = $value;
+    }
+
+    /**
+     * Sets the displayName property value. Refers to the name of the device used in the sign-in. Populated for devices registered in Microsoft Entra.
+     * @param string|null $value Value to set for the displayName property.
+    */
+    public function setDisplayName(?string $value): void {
+        $this->displayName = $value;
+    }
+
+    /**
+     * Sets the isCompliant property value. Indicates whether the device is compliant or not.
+     * @param bool|null $value Value to set for the isCompliant property.
+    */
+    public function setIsCompliant(?bool $value): void {
+        $this->isCompliant = $value;
+    }
+
+    /**
+     * Sets the isManaged property value. Indicates if the device is managed or not.
+     * @param bool|null $value Value to set for the isManaged property.
+    */
+    public function setIsManaged(?bool $value): void {
+        $this->isManaged = $value;
+    }
+
+    /**
+     * Sets the @odata.type property value. The OdataType property
+     * @param string|null $value Value to set for the @odata.type property.
+    */
+    public function setOdataType(?string $value): void {
+        $this->odataType = $value;
+    }
+
+    /**
+     * Sets the operatingSystem property value. Indicates the OS name and version used in the sign-in.
+     * @param string|null $value Value to set for the operatingSystem property.
+    */
+    public function setOperatingSystem(?string $value): void {
+        $this->operatingSystem = $value;
+    }
+
+    /**
+     * Sets the trustType property value. Indicates information on whether the device used in the sign-in is workplace-joined, Microsoft Entra-joined, domain-joined.
+     * @param string|null $value Value to set for the trustType property.
+    */
+    public function setTrustType(?string $value): void {
+        $this->trustType = $value;
+    }
+
+}
