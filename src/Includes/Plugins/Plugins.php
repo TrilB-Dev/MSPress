@@ -496,7 +496,12 @@ class Plugins {
 
         return '';
     }
-
+    /**
+     * Resolves the first existing file from a list of candidate paths.
+     *
+     * @param string $path The path to check.
+     * @return string The resolved existing file path, or an empty string if none found.
+     */
     private function resolve_existing_file( string $path ): string {
         $path = trim( (string) $path );
         if ( $path === '' ) {
@@ -541,6 +546,12 @@ class Plugins {
 
         return '';
     }
+    /**
+     * Checks if the given path is an absolute path.
+     *
+     * @param string $path The path to check.
+     * @return bool True if the path is absolute, false otherwise.
+     */
     private function is_absolute_path( string $path ): bool {
         return preg_match( '/^(?:[A-Za-z]:[\\\\\/]|[\\\\\\/])/', $path ) === 1;
     }

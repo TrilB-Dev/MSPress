@@ -115,10 +115,6 @@ class OneDrive implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @since 1.0.0
      * @return void
      */
-    public function register_assets(): void {
-        ( new Assets() )->register();
-    }
-
     public function register_settings(): void {
         Includes::get_instance()->settings()->register();
     }
@@ -157,7 +153,7 @@ class OneDrive implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @return void
      */
     public function register_assets(): void {
-        ( new Assets( $assets ) )->register();
+        ( new Assets() )->register();
     }
     /**
      * Load the text domain for the plugin.
