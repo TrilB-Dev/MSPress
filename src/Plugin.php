@@ -208,7 +208,6 @@ class Plugin {
 		$this->assets = new Assets();
 		$this->assets->register();
 		$this->admin = new Admin( $this->assets );
-		$this->frontend = new Frontend();
 		$this->plugins = Plugins::get_instance();
 		$this->export_functions = new FunctionsExport();
 		$this->import_functions = new FunctionsImport();
@@ -221,10 +220,7 @@ class Plugin {
 		$this->loader->add_action( 'admin_post_mspress_export', $this->export_functions, 'export_data' );
 		$this->loader->add_action( 'admin_post_mspress_import', $this->import_functions, 'import_data' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $this->assets, 'enqueue_admin' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $this->assets, 'enqueue_frontend' );
 		$this->loader->add_action( 'wp_head', Analytics::class, 'track_view' );
-		$this->loader->add_filter( 'the_content', $this->frontend, 'filter_content' );
-		$this->loader->add_filter( 'body_class', $this->frontend, 'body_classes' );
 		$this->loader->add_action( 'rest_api_init', Routes::class, 'register_routes' );
 	}
 
