@@ -78,6 +78,7 @@ class Plugins {
      */
     public function init( Assets $assets ): void {
         if ( $this->initialized ) {
+            LoggerHelper::write_log( 'MSPress Plugins::init() skipped because plugin loader is already initialized.' );
             return;
         }
 
@@ -85,10 +86,16 @@ class Plugins {
         $this->assets = $assets;
         $this->auto_activate = $this->should_auto_activate();
 
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() auto_activate=%s', $this->auto_activate ? 'yes' : 'no' ) );
+
         $directory = $this->resolve_plugin_directory();
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() directory=%s', $directory ) );
+
         $files = $this->discover_plugin_files( $directory );
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() discovered_files=%d', count( $files ) ) );
 
         foreach ( $files as $file ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_file() file=%s', $file ) );
             $this->load_plugin_file( $file );
         }
 
@@ -99,6 +106,7 @@ class Plugins {
          * into this action and call MSPress\Plugins::register_plugin().
          */
         do_action( 'mspress_register_plugin', $this );
+        LoggerHelper::write_log( 'MSPress Plugins::init() finished registering external plugin hooks.' );
     }
     /**
      * Retrieves the list of loaded plugin class names.
@@ -169,14 +177,17 @@ class Plugins {
     public function register_plugin_instance( PluginInterface $plugin ): void {
         $slug = trim( $plugin->get_slug() );
         if ( $slug === '' ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::register_plugin_instance() rejected_plugin_without_slug=%s', get_class( $plugin ) ) );
             return;
         }
 
         if ( isset( $this->registered_plugins[ $slug ] ) ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::register_plugin_instance() already_registered=%s', $slug ) );
             return;
         }
 
         $this->registered_plugins[ $slug ] = $plugin;
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::register_plugin_instance() registered=%s auto_activate=%s enabled=%s', $slug, $this->auto_activate ? 'yes' : 'no', $this->is_plugin_enabled( $slug ) ? 'yes' : 'no' ) );
 
         if ( $this->initialized && $this->auto_activate && $this->is_plugin_enabled( $slug ) ) {
             $this->initialize_plugin( $plugin, $this->assets );
@@ -196,13 +207,17 @@ class Plugins {
             str_replace( '/includes/', '/Includes/', MSPRESS_PLUGINS ),
         ];
 
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() configured=%s candidates=%s', $configured, wp_json_encode( $candidates ) ) );
+
         foreach ( $candidates as $candidate ) {
             $resolved = $this->resolve_existing_directory( $candidate );
             if ( $resolved !== '' ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() resolved=%s from=%s', $resolved, $candidate ) );
                 return $resolved;
             }
         }
 
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() directory_missing=%s', MSPRESS_PLUGINS ) );
         return MSPRESS_PLUGINS;
     }
     /**
@@ -213,8 +228,11 @@ class Plugins {
      */
     private function discover_plugin_files( string $directory ): array {
         if ( ! is_dir( $directory ) ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() directory_missing=%s', $directory ) );
             return [];
         }
+
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() scanning_directory=%s', $directory ) );
 
         $files = glob( $directory . '/*.php' ) ?: [];
         $subdirs = glob( $directory . '/*', GLOB_ONLYDIR ) ?: [];
@@ -228,8 +246,7 @@ class Plugins {
         }
 
         $files = array_filter( array_unique( $files ), 'is_file' );
-
-        return array_values( array_filter( $files, static function ( string $file ): bool {
+        $filtered = array_values( array_filter( $files, static function ( string $file ): bool {
             if ( in_array( basename( $file ), [
                 'Plugins.php',
                 'PluginsInterface.php',
@@ -240,6 +257,13 @@ class Plugins {
             $contents = file_get_contents( $file );
             return is_string( $contents ) && preg_match( '/^namespace\s+MSPress\\\\/mi', $contents ) === 1;
         } ) );
+
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() raw_files=%d filtered_files=%d', count( $files ), count( $filtered ) ) );
+        foreach ( $filtered as $file ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() candidate_file=%s', $file ) );
+        }
+
+        return $filtered;
     }
     /**
      * Loads a plugin file, extracts its namespace and class name, and initializes the plugin if applicable.
@@ -249,6 +273,7 @@ class Plugins {
     private function load_plugin_file( string $file ): void {
         $contents = file_get_contents( $file );
         if ( ! is_string( $contents ) ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() unreadable_file=%s', $file ) );
             return;
         }
 
@@ -257,6 +282,9 @@ class Plugins {
         $expected_class = $namespace !== '' && $class_name !== ''
             ? sprintf( '%s\\%s', trim( $namespace, '\\' ), $class_name )
             : $class_name;
+
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() file=%s namespace=%s class=%s expected=%s', $file, $namespace, $class_name, $expected_class ) );
+
         $declared_before = get_declared_classes();
 
         try {
@@ -271,6 +299,8 @@ class Plugins {
             $fqcn = ! empty( $plugin_classes )
                 ? (string) reset( $plugin_classes )
                 : $expected_class;
+
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() fqcn=%s new_classes=%d', $fqcn, count( $plugin_classes ) ) );
 
             if ( ! class_exists( $fqcn ) || ! is_a( $fqcn, PluginInterface::class, true ) ) {
                 LoggerHelper::write_log( sprintf( 'MSPress plugin file %s does not declare a PluginInterface implementation.', $file ) );
@@ -288,6 +318,7 @@ class Plugins {
 
             $this->register_plugin_instance( $instance );
             $this->loaded_plugins[] = $fqcn;
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() registered_plugin=%s', $fqcn ) );
         } catch ( \Throwable $e ) {
             LoggerHelper::write_log( sprintf( 'MSPress plugin loader failed to require file %s: %s', $file, $e->getMessage() ) );
         }
@@ -366,7 +397,11 @@ class Plugins {
      * @param PluginInterface $plugin The plugin instance to initialize.
      */
     private function initialize_plugin( PluginInterface $plugin, Assets $assets ): void {
+        $slug = $plugin->get_slug();
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() slug=%s active=%s enabled=%s', $slug, $plugin->is_active() ? 'yes' : 'no', $this->is_plugin_enabled( $slug ) ? 'yes' : 'no' ) );
+
         if ( ! $plugin->is_active() || ! $this->is_plugin_enabled( $plugin->get_slug() ) ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() skipped_slug=%s reason=inactive_or_disabled', $slug ) );
             return;
         }
 
