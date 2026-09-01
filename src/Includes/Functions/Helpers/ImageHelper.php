@@ -26,12 +26,7 @@ final class ImageHelper {
         }
 
         if ( 'core' === strtolower( trim( $type ) ) ) {
-            $base_url = self::resolve_core_base_url();
-            if ( '' === $base_url ) {
-                return '';
-            }
-
-            return $base_url . '/images/' . $file;
+            return MSPRESS_ASSETS_URL . '/images/' . $file;
         }
 
         $plugin_directory = self::get_plugin_directory( $type );
@@ -39,56 +34,7 @@ final class ImageHelper {
             return '';
         }
 
-        $plugin_base_url = self::resolve_plugin_base_url();
-        if ( '' === $plugin_base_url ) {
-            return '';
-        }
-
-        return $plugin_base_url . '/' . $plugin_directory . '/Assets/images/' . $file;
-    }
-
-    /**
-     * Resolve the core asset base URL.
-     *
-     * @return string
-     */
-    private static function resolve_core_base_url(): string {
-        if ( defined( 'MSPRESS_ASSETS_URL' ) && MSPRESS_ASSETS_URL ) {
-            return rtrim( MSPRESS_ASSETS_URL, '/' );
-        }
-
-        if ( defined( 'MSPRESS_URL' ) && MSPRESS_URL ) {
-            return rtrim( MSPRESS_URL, '/' ) . '/src/Assets';
-        }
-
-        if ( function_exists( 'plugins_url' ) ) {
-            $plugin_file = defined( 'MSPRESS_FILE' ) ? MSPRESS_FILE : dirname( __DIR__, 4 ) . '/mspress.php';
-            return rtrim( plugins_url( 'src/Assets', $plugin_file ), '/' );
-        }
-
-        return '';
-    }
-
-    /**
-     * Resolve the plugin asset root URL.
-     *
-     * @return string
-     */
-    private static function resolve_plugin_base_url(): string {
-        if ( defined( 'MSPRESS_PLUGINS_URL' ) && MSPRESS_PLUGINS_URL ) {
-            return rtrim( MSPRESS_PLUGINS_URL, '/' );
-        }
-
-        if ( defined( 'MSPRESS_URL' ) && MSPRESS_URL ) {
-            return rtrim( MSPRESS_URL, '/' ) . '/src/Includes/Plugins';
-        }
-
-        if ( function_exists( 'plugins_url' ) ) {
-            $plugin_file = defined( 'MSPRESS_FILE' ) ? MSPRESS_FILE : dirname( __DIR__, 4 ) . '/mspress.php';
-            return rtrim( plugins_url( 'src/Includes/Plugins', $plugin_file ), '/' );
-        }
-
-        return '';
+        return MSPRESS_PLUGINS_URL . '/' . $plugin_directory . '/Assets/images/' . $file;
     }
 
     /**
