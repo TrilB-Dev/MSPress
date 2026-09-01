@@ -26,7 +26,16 @@ final class ImageHelper {
         }
 
         if ( 'core' === strtolower( trim( $type ) ) ) {
-            return MSPRESS_ASSETS_URL . '/images/' . $file;
+            $base_url = defined( 'MSPRESS_ASSETS_URL' ) && MSPRESS_ASSETS_URL ? rtrim( MSPRESS_ASSETS_URL, '/' ) : '';
+            if ( '' === $base_url && function_exists( 'plugins_url' ) && defined( 'MSPRESS_FILE' ) ) {
+                $base_url = rtrim( plugins_url( 'src/Assets', MSPRESS_FILE ), '/' );
+            }
+
+            if ( '' !== $base_url ) {
+                return $base_url . '/images/' . $file;
+            }
+
+            return '';
         }
 
         $plugin_directory = self::get_plugin_directory( $type );
@@ -34,7 +43,16 @@ final class ImageHelper {
             return '';
         }
 
-        return MSPRESS_PLUGINS_URL . '/' . $plugin_directory . '/Assets/images/' . $file;
+        $plugin_base_url = defined( 'MSPRESS_PLUGINS_URL' ) && MSPRESS_PLUGINS_URL ? rtrim( MSPRESS_PLUGINS_URL, '/' ) : '';
+        if ( '' === $plugin_base_url && function_exists( 'plugins_url' ) && defined( 'MSPRESS_FILE' ) ) {
+            $plugin_base_url = rtrim( plugins_url( 'src/Includes/Plugins', MSPRESS_FILE ), '/' );
+        }
+
+        if ( '' === $plugin_base_url ) {
+            return '';
+        }
+
+        return $plugin_base_url . '/' . $plugin_directory . '/Assets/images/' . $file;
     }
 
     /**

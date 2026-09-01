@@ -221,7 +221,7 @@ final class Assets {
      * @param string $file The image path relative to Assets/images.
      * @return string The image URL, or an empty string when the path is invalid.
      */
-    public function get_image( string $file ): string {
+    public static function get_image( string $file ): string {
         return ImageHelper::get_image_url( 'core', $file );
     }
 }
