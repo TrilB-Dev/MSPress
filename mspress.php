@@ -27,17 +27,49 @@ define( 'MSPRESS_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSPRESS_BASENAME', plugin_basename( __FILE__ ) );
 define( 'MSPRESS_ROOT', MSPRESS_DIR );
 define( 'MSPRESS_ROOT_URL', MSPRESS_URL );
+
+$resolved_includes = function () {
+    $base = MSPRESS_DIR . 'src/Includes';
+    $lower = MSPRESS_DIR . 'src/includes';
+
+    if ( is_dir( $base ) ) {
+        return $base;
+    }
+
+    if ( is_dir( $lower ) ) {
+        return $lower;
+    }
+
+    return $base;
+};
+
+$resolved_plugins = function () use ( $resolved_includes ) {
+    $base = $resolved_includes() . '/Plugins';
+    $lower = $resolved_includes() . '/plugins';
+
+    if ( is_dir( $base ) ) {
+        return $base;
+    }
+
+    if ( is_dir( $lower ) ) {
+        return $lower;
+    }
+
+    return $base;
+};
+
 define( 'MSPRESS_API', MSPRESS_DIR . 'src/API' );
 define( 'MSPRESS_ASSETS', MSPRESS_DIR . 'src/Assets' );
 define( 'MSPRESS_ASSETS_URL', MSPRESS_URL . 'src/Assets' );
 define( 'MSPRESS_ADMIN', MSPRESS_DIR . 'src/Admin' );
 define( 'MSPRESS_ADMIN_URL', MSPRESS_URL . 'src/Admin' );
 define( 'MSPRESS_LANGUAGES', MSPRESS_DIR . 'src/languages' );
-define( 'MSPRESS_INCLUDES', MSPRESS_DIR . 'src/Includes' );
+define( 'MSPRESS_INCLUDES', $resolved_includes() );
 define( 'MSPRESS_CORE', MSPRESS_INCLUDES . '/Core' );
 define( 'MSPRESS_SETTINGS', MSPRESS_INCLUDES . '/Settings' );
-define( 'MSPRESS_PLUGINS', MSPRESS_INCLUDES . '/Plugins' );
+define( 'MSPRESS_PLUGINS', $resolved_plugins() );
 define( 'MSPRESS_PLUGINS_URL', MSPRESS_URL . 'src/Includes/Plugins' );
+	error_log( sprintf( 'MSPress bootstrap: plugin_dir=%s includes=%s plugins=%s', MSPRESS_DIR, MSPRESS_INCLUDES, MSPRESS_PLUGINS ) );
 
 /**
  * Composer autoloader.
