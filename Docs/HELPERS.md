@@ -99,22 +99,6 @@ Build common administrative URLs consistently:
 
 Always escape returned URLs at output time with `esc_url()`.
 
-## PermalinkHelper
-
-`PermalinkHelper` is optional. Use it only when the plugin owns tokenized permalink patterns. Replace any content-specific tokens, post types, taxonomies, settings keys, metadata keys, rewrite variables, and filters with the current plugin's equivalents.
-
-- `token_definitions()` returns available translated token descriptions.
-- `default_pattern()` returns the default pattern.
-- `sanitize_pattern($pattern)` keeps supported tokens and sanitized literal segments.
-- `pattern_for_object($object_id = 0)` resolves an object-specific override or configured default. Rename this method and its parameter to match the plugin-owned content model.
-- `page_url($page)` returns a full URL for a supported post object.
-- `expand($pattern, $page, $parent = null)` expands a pattern into a relative path.
-- `rewrite_rule()` registers the feature's rewrite handling.
-- `resolve_request($vars)` resolves a requested path.
-- `filter_page_permalink($link, $post)` replaces the normal permalink for supported posts.
-
-Sanitize patterns before persisting custom values. Keep override metadata and rewrite variables namespaced to the owning plugin.
-
 ## AjaxHelper
 
 Use `AjaxHelper` for common AJAX checks and JSON responses:

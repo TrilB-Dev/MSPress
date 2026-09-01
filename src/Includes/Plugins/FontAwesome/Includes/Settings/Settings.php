@@ -2,8 +2,8 @@
 /**
  * Settings for the Font Awesome MSPress plugin.
  * 
- * @package    Wikipress
- * @subpackage Wikipress/includes
+ * @package    MSPress
+ * @subpackage MSPress/includes
  */
 namespace MSPress\Includes\Plugins\FontAwesome\Includes\Settings;
 use MSPress\Includes\Settings\Settings as BaseSettings;

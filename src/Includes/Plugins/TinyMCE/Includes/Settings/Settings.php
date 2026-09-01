@@ -2,7 +2,7 @@
 /**
  * Settings for the TinyMCE plugin.
  * @package MSPress
- * @subpackage Admin\Wiki\Plugins\TinyMCE\Includes
+ * @subpackage Includes\Plugins\TinyMCE\Includes\Settings
  * @since 1.0.0
  */
 namespace MSPress\Includes\Plugins\TinyMCE\Includes\Settings;

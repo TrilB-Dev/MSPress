@@ -35,7 +35,7 @@ final class ShortcodeHelper {
 
 	/** @param array<string, mixed> $definition */
 	public static function register( array $definition, bool $replace = false ): bool {
-		return Includes::get_instance()->shortcodes()->register( $definition, $replace );
+		return Includes::get_instance()->core()->shortcodes()->register( $definition, $replace );
 	}
 
 	/**
@@ -43,6 +43,6 @@ final class ShortcodeHelper {
 	 * @return array<int, string>
 	 */
 	public static function register_many( array $definitions, bool $replace = false ): array {
-		return Includes::get_instance()->shortcodes()->register_many( $definitions, $replace );
+		return Includes::get_instance()->core()->shortcodes()->register_many( $definitions, $replace );
 	}
 }

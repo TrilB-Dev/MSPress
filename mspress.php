@@ -19,7 +19,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Plugin path and URL constants.
  */
 
-define( 'MSPRESS_VERSION', '0.4.2-Dev' );
+define( 'MSPRESS_VERSION', '1.0.0' );
 define( 'MSPRESS_NAME', 'mspress' );
 define( 'MSPRESS_FILE', __FILE__ );
 define( 'MSPRESS_DIR', plugin_dir_path( __FILE__ ) );

@@ -227,7 +227,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
                     [
                         'label' => __( 'Route Trace', 'mspress' ),
                         'page' => 'mspress-settings',
-                        'query' => [ 'tab' => 'exchange-trace-rout' ],
+                        'query' => [ 'tab' => 'exchange-trace-route' ],
                         'icon' => 'fa-solid fa-route',
                         'capability' => 'mspress_tools_debug',
                     ],

@@ -3,11 +3,13 @@
  * MSPress Exchange Plugin Includes
  *
  * @package MSPress
- * @subpackage Plugins\Demo\Includes
+ * @subpackage Plugins\Exchange\Includes
  * @since 1.0.0
  */
 
 namespace MSPress\Includes\Plugins\Exchange\Includes;
+
+use MSPress\Includes\Includes as CoreIncludes;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\Shortcodes;
 use MSPress\Includes\Plugins\Exchange\Includes\Settings\Settings;
 use MSPress\Includes\Plugins\Exchange\Includes\Mail\ExchangeMailer;
@@ -35,23 +37,41 @@ final class Includes {
         $this->settings->register();
         add_action( 'mspress_graph_oauth_connected', [ $this->settings, 'handle_oauth_connected' ] );
         $this->mailer->register();
-        register_post_type( 'mspress_email_template', [
-            'labels' => [ 'name' => __( 'Email Templates', 'mspress' ), 'singular_name' => __( 'Email Template', 'mspress' ) ],
-            'public' => false,
-            'show_ui' => true,
-            'show_in_menu' => 'mspress-ms365',
-            'supports' => [ 'title', 'editor', 'revisions' ],
-            'show_in_rest' => true,
-            'capability_type' => 'post',
-            'map_meta_cap' => true,
-        ] );
-        register_taxonomy( 'mspress_email_template_type', [ 'mspress_email_template' ], [
-            'labels' => [ 'name' => __( 'Template Types', 'mspress' ), 'singular_name' => __( 'Template Type', 'mspress' ) ],
-            'public' => false,
-            'show_ui' => true,
-            'show_in_rest' => true,
-            'hierarchical' => true,
-        ] );
+        $core = CoreIncludes::get_instance()->core();
+        $core->post_types()->register_post_type(
+            [
+                'post_type' => 'mspress_email_template',
+                'args' => [
+                    'labels' => [
+                        'name' => __( 'Email Templates', 'mspress' ),
+                        'singular_name' => __( 'Email Template', 'mspress' ),
+                    ],
+                    'public' => false,
+                    'show_ui' => true,
+                    'show_in_menu' => 'mspress-ms365',
+                    'supports' => [ 'title', 'editor', 'revisions' ],
+                    'show_in_rest' => true,
+                    'capability_type' => 'post',
+                    'map_meta_cap' => true,
+                ],
+            ]
+        );
+        $core->taxonomies()->register_taxonomy(
+            [
+                'taxonomy' => 'mspress_email_template_type',
+                'object_type' => [ 'mspress_email_template' ],
+                'args' => [
+                    'labels' => [
+                        'name' => __( 'Template Types', 'mspress' ),
+                        'singular_name' => __( 'Template Type', 'mspress' ),
+                    ],
+                    'public' => false,
+                    'show_ui' => true,
+                    'show_in_rest' => true,
+                    'hierarchical' => true,
+                ],
+            ]
+        );
         $this->templates->register();
     }
 

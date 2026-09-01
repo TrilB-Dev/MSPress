@@ -93,7 +93,7 @@ final class Settings {
                     'render_page' => [ \MSPress\Includes\Plugins\Exchange\Admin\EmailTemplates::class, 'render' ],
                 ],
                 [
-                    'slug' => 'exchange-trace-rout',
+                    'slug' => 'exchange-trace-route',
                     'label' => __( 'Route Trace', 'mspress' ),
                     'title' => __( 'Exchange route trace', 'mspress' ),
                     'capability' => 'mspress_tools_debug',

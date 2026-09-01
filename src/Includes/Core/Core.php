@@ -1,118 +1,112 @@
 <?php
 /**
- * Core service coordinator for MSPress.
+ * Core component for MSPress.
  *
- * @package MSPress
+ * @package MSPress\Includes\Core
  */
-
 namespace MSPress\Includes\Core;
 
-use MSPress\Assets\Assets;
-use MSPress\Includes\MSGraph\OAuthController;
-use MSPress\Includes\Plugins\Plugins;
-use MSPress\Includes\Settings\Settings;
+use MSPress\Includes\Core\WP\WPLoader;
+use MSPress\Includes\Pages\Shortcodes as PageShortcodes;
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+    exit;
 }
 
+/**
+ * Coordinate MSPress core registration and reusable WordPress services.
+ *
+ * Post types and taxonomies remain separate components; this class provides a
+ * single lifecycle boundary for MSPress and extension plugins.
+ */
 final class Core {
     /**
-     * The singleton instance of the Core class.
+     * @var PostType Post type registrar.
+     */
+    private PostType $post_types;
+    /**
+     * @var Taxonomy Taxonomy registrar.
+     */
+    private Taxonomy $taxonomies;
+    /**
+     * @var Shortcodes Shortcode registrar.
+     */
+    private Shortcodes $shortcodes;
+    /**
+     * @var bool Whether core registration has run.
+     */
+    private bool $registered = false;
+
+    /**
+     * Create the core coordinator with optional component instances.
      *
-     * @var ?Core
+     * @param PostType|null $post_types Post type registrar.
+     * @param Taxonomy|null $taxonomies Taxonomy registrar.
      */
-	private static ?self $instance = null;
+    public function __construct( ?PostType $post_types = null, ?Taxonomy $taxonomies = null, ?Shortcodes $shortcodes = null ) {
+        $this->post_types = $post_types ?? new PostType();
+        $this->taxonomies = $taxonomies ?? new Taxonomy();
+        $this->shortcodes = $shortcodes ?? new Shortcodes();
+    }
+
     /**
-     * The Settings instance.
-     *
-     * @var Settings
-     */
-	private Settings $settings;
-    /**
-     * The Shortcodes instance.
-     *
-     * @var Shortcodes
-     */
-	private Shortcodes $shortcodes;
-    /**
-     * The Assets instance.
-     *
-     * @var Assets
-     */
-	private Assets $assets;
-    /**
-     * The Plugins instance.
-     *
-     * @var Plugins
-     */
-	private Plugins $plugins;
-    /**
-     * The OAuthController instance.
-     *
-     * @var OAuthController
-     */
-	private OAuthController $oauth;
-    /**
-     * Flag to indicate if the Core has been initialized.
-     *
-     * @var bool
-     */
-	private bool $initialized = false;
-    /**
-     * Private constructor to prevent direct instantiation.
-     */
-	private function __construct() {
-		$this->settings = new Settings();
-		$this->shortcodes = new Shortcodes();
-		$this->assets = new Assets();
-		$this->plugins = Plugins::get_instance();
-		$this->oauth = new OAuthController();
-	}
-    /**
-     * Get the singleton instance of the Core class.
-     *
-     * @return Core The singleton instance.
-     */
-	public static function get_instance(): self {
-		return self::$instance ??= new self();
-	}
-    /**
-     * Initialize the Core class and its components.
+     * Register the core components once.
      *
      * @return void
      */
-	public function init(): void {
-		if ( $this->initialized ) {
-			return;
-		}
+    public function register(): void {
+        if ( $this->registered ) {
+            return;
+        }
 
-		$this->initialized = true;
-		$this->settings->register();
-		$this->shortcodes->register();
-		$this->assets->register();
+        Capabilities::register();
+        $this->post_types->register();
+        $this->taxonomies->register();
+        PageShortcodes::register( $this->shortcodes );
+        $this->registered = true;
+    }
 
-		if ( is_admin() ) {
-			new \MSPress\Admin\Admin( $this->assets );
-		}
-
-        $this->plugins->init( $this->assets );
-		$this->oauth->register();
-	}
     /**
-     * Get the Settings instance.
+     * Attach core registration to a WordPress loader.
      *
-     * @return Settings The Settings instance.
+    * @param WPLoader $loader Hook loader.
+     * @param string $hook WordPress action name.
+     * @param int $priority Registration priority.
+     * @return self
      */
-	public function settings(): Settings {
-		return $this->settings;
-	}
+    public function register_hooks( WPLoader $loader, string $hook = 'init', int $priority = 10 ): self {
+        $loader->add_action( $hook, $this, 'register', $priority, 0 );
+        return $this;
+    }
+
     /**
-     * Get the Shortcodes instance.
+     * Get the post type registrar.
      *
-     * @return Shortcodes The Shortcodes instance.
+     * @return PostType Post type registrar.
      */
-	public function shortcodes(): Shortcodes {
-		return $this->shortcodes;
-	}
+    public function post_types(): PostType {
+        return $this->post_types;
+    }
+
+    /**
+     * Get the taxonomy registrar.
+     *
+     * @return Taxonomy Taxonomy registrar.
+     */
+    public function taxonomies(): Taxonomy {
+        return $this->taxonomies;
+    }
+
+    public function shortcodes(): Shortcodes {
+        return $this->shortcodes;
+    }
+
+    /**
+     * Return whether core registration has run.
+     *
+     * @return bool Registration state.
+     */
+    public function is_registered(): bool {
+        return $this->registered;
+    }
 }

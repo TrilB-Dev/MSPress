@@ -71,7 +71,7 @@ final class Assets {
         $page = RequestHelper::get_key( 'page' );
         $tab = RequestHelper::get_key( 'tab' );
         $is_settings = in_array( $page, [ 'mspress-exchange', 'mspress-exchange-settings' ], true ) || ( 'mspress-settings' === $page && 'exchange-settings' === $tab );
-        $is_exchange_page = in_array( $page, [ 'mspress-exchange-email-templates', 'mspress-exchange-route-trace', 'mspress-exchange-sent-log' ], true ) || ( 'mspress-settings' === $page && in_array( $tab, [ 'exchange-email-templates', 'exchange-trace-rout', 'exchange-sent-logs' ], true ) );
+        $is_exchange_page = in_array( $page, [ 'mspress-exchange-email-templates', 'mspress-exchange-route-trace', 'mspress-exchange-sent-log' ], true ) || ( 'mspress-settings' === $page && in_array( $tab, [ 'exchange-email-templates', 'exchange-trace-route', 'exchange-sent-logs' ], true ) );
         $is_template_page = 'mspress-exchange-email-templates' === $page || ( 'mspress-settings' === $page && 'exchange-email-templates' === $tab );
         if ( ! $is_settings && ! $is_exchange_page ) {
             return $assets;
@@ -80,7 +80,7 @@ final class Assets {
         $script = 'exchange.settings';
         if ( $is_exchange_page ) {
             $script = 'exchange.templates';
-            if ( in_array( $page, [ 'mspress-exchange-route-trace' ], true ) || 'exchange-trace-rout' === $tab ) {
+            if ( in_array( $page, [ 'mspress-exchange-route-trace' ], true ) || 'exchange-trace-route' === $tab ) {
                 $script = 'exchange.trace';
             } elseif ( in_array( $page, [ 'mspress-exchange-sent-log' ], true ) || 'exchange-sent-logs' === $tab ) {
                 $script = 'exchange.logs';

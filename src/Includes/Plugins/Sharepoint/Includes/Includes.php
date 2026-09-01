@@ -3,7 +3,7 @@
  * MSPress SharePoint Plugin Includes
  *
  * @package MSPress
- * @subpackage Plugins\Demo\Includes
+ * @subpackage Plugins\Sharepoint\Includes
  * @since 1.0.0
  */
 

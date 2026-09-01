@@ -42,8 +42,8 @@ final class Assets {
         }
 
         wp_add_inline_script(
-            'wikipress-admin-ui',
-            'window.wikipressFontAwesomeSettings = ' . wp_json_encode( [
+            'mspress-admin-ui',
+            'window.mspressFontAwesomeSettings = ' . wp_json_encode( [
                 'source' => $source,
                 'kit_id' => $kit_id,
             ] ) . ';',
@@ -83,9 +83,9 @@ final class Assets {
             true
         );
 
-        wp_localize_script( 'mspress-fontawesome-icon-picker', 'wikipress_fa_picker', [
+        wp_localize_script( 'mspress-fontawesome-icon-picker', 'mspress_fa_picker', [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce' => wp_create_nonce( 'wikipress_fontawesome_picker' ),
+            'nonce' => wp_create_nonce( 'mspress_fontawesome_picker' ),
             'strings' => [
                 'search_placeholder' => __( 'Search icons...', 'mspress' ),
                 'no_icons_found' => __( 'No icons found', 'mspress' ),

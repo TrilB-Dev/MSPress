@@ -4,13 +4,23 @@
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"autoload": {
-		"psr-4": {
-			"MSPress\\": "src/"
-		},
-		"exclude-from-classmap": [
-			"src/Includes/Plugins/PluginsInterface.php"
-		]
-	},
+        "files": [
+            "src/Includes/Plugins/PluginsInterface.php"
+        ],
+        "psr-4": {
+            "MSPress\\Admin\\": "src/Admin/",
+            "MSPress\\API\\": "src/API/",
+            "MSPress\\Assets\\": "src/Assets/",
+            "MSPress\\Includes\\": "src/Includes/",
+            "MSPress\\Public\\": "src/Public/"
+        },
+        "classmap": [
+            "src/Plugin.php"
+        ],
+        "exclude-from-classmap": [
+            "src/Includes/Plugins/"
+        ]
+    },
 	"minimum-stability": "stable",
     "require": {
 		"defuse/php-encryption": "^2.4",

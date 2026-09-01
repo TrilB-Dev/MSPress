@@ -3,7 +3,7 @@ const path = require('path');
 const gettextParser = require('gettext-parser');
 
 const root = path.resolve(__dirname, '..');
-const languageDirectory = path.join(root, 'src', 'Languages');
+const sourceDirectory = path.join(root, 'src');
 
 function potFilesIn(directory) {
   if (!fs.existsSync(directory)) return [];
@@ -15,7 +15,7 @@ function potFilesIn(directory) {
   });
 }
 
-const catalogs = potFilesIn(languageDirectory).sort();
+const catalogs = potFilesIn(sourceDirectory).sort();
 
 if (catalogs.length === 0) {
   throw new Error('No POT files were found. Run npm run i18n:pot first.');
