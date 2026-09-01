@@ -26,6 +26,8 @@ final class Capabilities {
 			'mspress_settings_connection_edit' => __( 'Edit Microsoft Graph Connection Settings', 'mspress' ),
 			'mspress_tools_debug' => __( 'Use MSPress Debug Tools', 'mspress' ),
 			'mspress_tools_reset' => __( 'Reset MSPress Data', 'mspress' ),
+			'mspress_tools_import' => __( 'Import Microsoft Graph Core Settings', 'mspress' ),
+			'mspress_tools_export' => __( 'Export Microsoft Graph Core Settings', 'mspress' )
 		];
 
 		return array_merge( $core, self::$extensions );
