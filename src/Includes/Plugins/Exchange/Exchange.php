@@ -18,7 +18,6 @@ use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 use MSPress\Includes\Plugins\ShortcodeProviderInterface;
 use MSPress\Includes\Plugins\AdminMenuProviderInterface;
 use MSPress\Includes\Plugins\Exchange\Assets\Assets;
-use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Exchange\Includes\Includes;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Exchange\Includes\Core\Capabilities;
@@ -264,8 +263,8 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
      *
      * @return void
      */
-    public function register_assets( CoreAssets $assets ): void {
-        ( new Assets( $assets ) )->register();
+    public function register_assets(): void {
+        ( new Assets() )->register();
     }
     /**
      * Load the text domain for the plugin.

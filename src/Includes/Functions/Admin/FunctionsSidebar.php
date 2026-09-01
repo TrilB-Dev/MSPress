@@ -141,6 +141,8 @@ final class FunctionsSidebar {
 				'items' => [
 					'mspress-tools&tool=debug'     => [ 'label' => __( 'Debug', 'mspress' ), 'icon' => 'fa-solid fa-bug-slash', 'capability' => 'mspress_tools_debug' ],
 					'mspress-tools&tool=reset'     => [ 'label' => __( 'Plugin Reset', 'mspress' ), 'icon' => 'fa-solid fa-rotate-left', 'capability' => 'mspress_tools_reset' ],
+					'mspress-tools&tool=import'    => [ 'label' => __( 'Import', 'mspress' ), 'icon' => 'fa-solid fa-file-import', 'capability' => 'mspress_tools_import' ],
+					'mspress-tools&tool=export'    => [ 'label' => __( 'Export', 'mspress' ), 'icon' => 'fa-solid fa-file-export', 'capability' => 'mspress_tools_export' ],
 				],
 			],
 		];

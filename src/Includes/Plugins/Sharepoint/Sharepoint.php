@@ -16,7 +16,6 @@ use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 use MSPress\Includes\Plugins\ShortcodeProviderInterface;
 use MSPress\Includes\Plugins\Sharepoint\Assets\Assets;
-use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Sharepoint\Includes\Includes;
 use MSPress\Includes\Plugins\Sharepoint\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Sharepoint\Includes\Core\Capabilities;
@@ -153,8 +152,8 @@ class Sharepoint implements PluginInterface, SettingsProviderInterface, Settings
 	 *
 	 * @return void
 	 */
-	public function register_assets( CoreAssets $assets ): void {
-		( new Assets( $assets ) )->register();
+	public function register_assets(): void {
+		( new Assets() )->register();
 	}
 	/**
 	 * Load the text domain for the plugin.

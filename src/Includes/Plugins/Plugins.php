@@ -372,7 +372,7 @@ class Plugins {
             }
 
             if ( $plugin instanceof AssetsProviderInterface ) {
-                $plugin->register_assets( $assets );
+                $plugin->register_assets();
             }
 
             if ( $plugin instanceof AdminPageProviderInterface ) {

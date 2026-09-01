@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-namespace MSPress\Includes\Plugins\FontAwesome\Includes;
+namespace MSPress\Includes\Plugins\FontAwesome\Includes\Core;
 
 final class I18n {
     public static function load_textdomain(): void {

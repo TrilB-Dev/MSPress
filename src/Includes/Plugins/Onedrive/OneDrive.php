@@ -16,7 +16,6 @@ use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
 use MSPress\Includes\Plugins\ShortcodeProviderInterface;
 use MSPress\Includes\Plugins\Onedrive\Assets\Assets;
-use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\Onedrive\Includes\Includes;
 use MSPress\Includes\Plugins\Onedrive\Includes\Core\I18n;
 use MSPress\Includes\Plugins\Onedrive\Includes\Core\Capabilities;
@@ -116,6 +115,10 @@ class OneDrive implements PluginInterface, SettingsProviderInterface, SettingsPa
      * @since 1.0.0
      * @return void
      */
+    public function register_assets(): void {
+        ( new Assets() )->register();
+    }
+
     public function register_settings(): void {
         Includes::get_instance()->settings()->register();
     }
@@ -153,7 +156,7 @@ class OneDrive implements PluginInterface, SettingsProviderInterface, SettingsPa
      *
      * @return void
      */
-    public function register_assets( CoreAssets $assets ): void {
+    public function register_assets(): void {
         ( new Assets( $assets ) )->register();
     }
     /**

@@ -7,8 +7,6 @@
  */
 namespace MSPress\Includes\Plugins;
 
-use MSPress\Assets\Assets;
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -158,7 +156,7 @@ interface AssetsProviderInterface {
      *
      * @return void
      */
-    public function register_assets( Assets $assets ): void;
+    public function register_assets(): void;
 }
 /**
  * Admin provider interface for plugins.
@@ -235,7 +233,7 @@ interface FrontendProviderInterface {
  * @since 1.0.0
  */
 interface I18nProviderInterface {
-    public function load_textdomain(): void;
+    public function load_textdomain( ): void;
 }
 
 /**
