@@ -188,16 +188,22 @@ class Plugins {
      * @return string The resolved plugin directory path.
      */
     private function resolve_plugin_directory(): string {
-        $path = trim( Settings::get( 'mspress_plugin_directory', MSPRESS_PLUGINS ) );
-        $resolved = $this->is_absolute_path( $path )
-            ? untrailingslashit( $path )
-            : untrailingslashit( MSPRESS_ROOT ) . '/' . ltrim( str_replace( '\\', '/', $path ), '/' );
+        $configured = trim( (string) Settings::get( 'mspress_plugin_directory', MSPRESS_PLUGINS ) );
+        $candidates = [
+            $configured,
+            MSPRESS_PLUGINS,
+            str_replace( '/Includes/', '/includes/', MSPRESS_PLUGINS ),
+            str_replace( '/includes/', '/Includes/', MSPRESS_PLUGINS ),
+        ];
 
-        if ( ! is_dir( $resolved ) ) {
-            return MSPRESS_PLUGINS;
+        foreach ( $candidates as $candidate ) {
+            $resolved = $this->resolve_existing_directory( $candidate );
+            if ( $resolved !== '' ) {
+                return $resolved;
+            }
         }
 
-        return $resolved;
+        return MSPRESS_PLUGINS;
     }
     /**
      * Discovers plugin files in the specified directory and its subdirectories.
@@ -292,10 +298,20 @@ class Plugins {
      * @param string $plugin_directory The directory of the plugin.
      */
     private function load_plugin_includes( string $plugin_directory ): void {
-        foreach ( [ 'Includes/Includes.php', 'Includes/I18n.php', 'Includes/Shortcodes.php' ] as $includes_file ) {
-            $includes_path = trailingslashit( $plugin_directory ) . $includes_file;
-            if ( is_readable( $includes_path ) ) {
-                require_once $includes_path;
+        $directory_candidates = [
+            untrailingslashit( $plugin_directory ),
+            $this->resolve_existing_directory( $plugin_directory ),
+            str_replace( '/Includes/', '/includes/', $plugin_directory ),
+            str_replace( '/includes/', '/Includes/', $plugin_directory ),
+        ];
+
+        foreach ( array_unique( array_filter( $directory_candidates ) ) as $directory ) {
+            foreach ( [ 'Includes/Includes.php', 'includes/Includes.php', 'Includes/I18n.php', 'includes/I18n.php', 'Includes/Shortcodes.php', 'includes/Shortcodes.php' ] as $includes_file ) {
+                $includes_path = trailingslashit( $directory ) . $includes_file;
+                $resolved_include = $this->resolve_existing_file( $includes_path );
+                if ( $resolved_include !== '' ) {
+                    require_once $resolved_include;
+                }
             }
         }
     }
@@ -401,7 +417,95 @@ class Plugins {
      *
      * @param string $path The path to check.
      * @return bool True if the path is absolute, false otherwise.
-     */
+     */    private function resolve_existing_directory( string $path ): string {
+        $path = trim( (string) $path );
+        if ( $path === '' ) {
+            return '';
+        }
+
+        $normalized = str_replace( '\\', '/', $path );
+        $candidates = [ untrailingslashit( $normalized ) ];
+
+        if ( ! $this->is_absolute_path( $normalized ) ) {
+            $candidates[] = untrailingslashit( MSPRESS_ROOT ) . '/' . ltrim( $normalized, '/' );
+        }
+
+        $candidates[] = str_replace( '/Includes/', '/includes/', $normalized );
+        $candidates[] = str_replace( '/includes/', '/Includes/', $normalized );
+
+        foreach ( array_unique( array_filter( $candidates ) ) as $candidate ) {
+            if ( is_dir( $candidate ) ) {
+                return untrailingslashit( $candidate );
+            }
+
+            $realpath = realpath( $candidate );
+            if ( is_string( $realpath ) && $realpath !== '' && is_dir( $realpath ) ) {
+                return untrailingslashit( $realpath );
+            }
+
+            $parent = dirname( $candidate );
+            $name = basename( $candidate );
+            if ( $parent !== '.' && $parent !== $candidate && is_dir( $parent ) ) {
+                $entries = scandir( $parent ) ?: [];
+                foreach ( $entries as $entry ) {
+                    if ( '.' === $entry || '..' === $entry ) {
+                        continue;
+                    }
+
+                    if ( strcasecmp( $entry, $name ) === 0 ) {
+                        return untrailingslashit( $parent . '/' . $entry );
+                    }
+                }
+            }
+        }
+
+        return '';
+    }
+
+    private function resolve_existing_file( string $path ): string {
+        $path = trim( (string) $path );
+        if ( $path === '' ) {
+            return '';
+        }
+
+        $normalized = str_replace( '\\', '/', $path );
+        $candidates = [ $normalized ];
+
+        if ( ! $this->is_absolute_path( $normalized ) ) {
+            $candidates[] = MSPRESS_ROOT . '/' . ltrim( $normalized, '/' );
+        }
+
+        $candidates[] = str_replace( '/Includes/', '/includes/', $normalized );
+        $candidates[] = str_replace( '/includes/', '/Includes/', $normalized );
+
+        foreach ( array_unique( array_filter( $candidates ) ) as $candidate ) {
+            if ( is_readable( $candidate ) ) {
+                return $candidate;
+            }
+
+            $realpath = realpath( $candidate );
+            if ( is_string( $realpath ) && $realpath !== '' && is_readable( $realpath ) ) {
+                return $realpath;
+            }
+
+            $directory = dirname( $candidate );
+            $name = basename( $candidate );
+            if ( is_dir( $directory ) ) {
+                $entries = scandir( $directory ) ?: [];
+                foreach ( $entries as $entry ) {
+                    if ( '.' === $entry || '..' === $entry ) {
+                        continue;
+                    }
+
+                    if ( strcasecmp( $entry, $name ) === 0 ) {
+                        return $directory . '/' . $entry;
+                    }
+                }
+            }
+        }
+
+        return '';
+    }
     private function is_absolute_path( string $path ): bool {
         return preg_match( '/^(?:[A-Za-z]:[\\\\\/]|[\\\\\\/])/', $path ) === 1;
     }

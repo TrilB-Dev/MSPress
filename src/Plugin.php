@@ -3,14 +3,14 @@
 /**
  * The file that defines the core plugin class
  *
- * A class definition that includes attributes and functions used across both the
+ * A class definition that Includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
  * @link       https://https://trilb.dev/MrTrilB
  * @since      1.0.0
  *
  * @package    MSPress
- * @subpackage MSPress/includes
+ * @subpackage MSPress/Includes
  */
 namespace MSPress;
 use MSPress\Admin\Admin;
@@ -61,7 +61,7 @@ class Plugin {
 	 */
 	protected string $plugin_file;
 	/**
-	 * The instance of the Includes class that handles the plugin's includes.
+	 * The instance of the Includes class that handles the plugin's Includes.
 	 *
 	 * @var Includes
 	 * @since 1.0.0
