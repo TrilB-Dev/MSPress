@@ -7,7 +7,6 @@
 namespace MSPress\Includes\Core;
 
 use MSPress\Includes\Core\WP\WPLoader;
-use MSPress\Includes\Pages\Shortcodes as PageShortcodes;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -62,7 +61,7 @@ final class Core {
         Capabilities::register();
         $this->post_types->register();
         $this->taxonomies->register();
-        PageShortcodes::register( $this->shortcodes );
+        $this->shortcodes->register();
         $this->registered = true;
     }
 
