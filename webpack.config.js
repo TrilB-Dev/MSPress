@@ -1,7 +1,8 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const adminStyles = './src/Assets/scss/admin.ui.scss';
+const adminStyles = './src/Assets/scss/ui.admin.scss';
+const frontendStyles = './src/Assets/scss/ui.frontend.scss';
 
 const entries = {
   bootstrap: [
@@ -13,31 +14,59 @@ const entries = {
     './src/Assets/scss/bootstrap-select.scss',
   ],
   'wpoverride': './src/Assets/scss/wpoverride.scss',
-  'admin.ui': [ './src/Assets/js/admin.ui.js', adminStyles ],
-  'admin.dashboard': [ './src/Assets/js/admin.dashboard.js', adminStyles ],
+  'ui.admin': [ './src/Assets/js/ui.admin.js', adminStyles ],
+  'dashboard.admin': [ './src/Assets/js/dashboard.admin.js', adminStyles ],
   'admin.settings': [ './src/Assets/js/admin.settings.js', adminStyles ],
-  'admin.plugins': [ './src/Assets/js/admin.settings.js', adminStyles ],
-  'admin.debug': [ './src/Assets/js/admin.page.js', adminStyles ],
+  'plugins.admin': [ './src/Assets/js/settings.admin.js', adminStyles ],
+  'ui.frontend': [ './src/Assets/js/ui.frontend.js', frontendStyles ],
+  'debug.admin': [ './src/Assets/js/page.admin.js', adminStyles ],
 };
 
 const extensionEntries = (pluginName, directoryName) => {
   const name = pluginName.toLowerCase();
 
-  //if ( 'exchange' === name ) {
-    //return {
-      //'exchange.settings': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.js`,
-      //'exchange.templates': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.templates.js`,
-      //'exchange.logs': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.logs.js`,
-      //'exchange.trace': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.trace.js`,
-      //'exchange.styles': `./src/Includes/Plugins/${directoryName}/Assets/scss/${name}.scss`,
-    //};
-  //}
-  //if ( 'fontawesome' === name ) {
-    //return {
-    //  'fontawesome.icon-picker-script': `./src/Includes/Plugins/${directoryName}/Assets/js/fontawesome.icon-picker.js`,
-    //  'fontawesome.icon-picker-style': `./src/Includes/Plugins/${directoryName}/Assets/scss/fontawesome.icon-picker.scss`,
-    //};
-  //}
+  if ( 'exchange' === name ) {
+    const exchangeAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.admin.scss`;
+    const exchangeFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.frontend.scss`;
+    return {
+      'exchange.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.admin.js`, exchangeAdminStyles ],
+      'exchange.logs.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.logs.admin.js`, exchangeAdminStyles ],
+      'exchange.trace.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.trace.admin.js`, exchangeAdminStyles ],
+      'exchange.templates.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.templates.admin.js`, exchangeAdminStyles ],
+      'exchange.settings.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.admin.js`, exchangeAdminStyles ],
+      'exchange.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.frontend.js`, exchangeFrontendStyles ],
+    };
+  }
+  if ( 'entra' === name ) {
+    const entraAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.admin.scss`;
+    const entraFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.frontend.scss`;
+    return {
+      'entra.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/entra.settings.admin.js`, entraAdminStyles ],
+      'entra.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/entra.settings.frontend.js`, entraFrontendStyles ],
+    };
+  }
+  if ( 'onedrive' === name ) {
+    const onedriveAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.admin.scss`;
+    const onedriveFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.frontend.scss`;
+    return {
+      'onedrive.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.settings.admin.js`, onedriveAdminStyles ],
+      'onedrive.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.settings.frontend.js`, onedriveFrontendStyles ],
+    };
+  }
+  if ( 'sharepoint' === name ) {
+    const sharepointAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.admin.scss`;
+    const sharepointFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.frontend.scss`;
+    return {
+      'sharepoint.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.settings.admin.js`, sharepointAdminStyles ],
+      'sharepoint.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.settings.frontend.js`, sharepointFrontendStyles ],
+    };
+  }
+  if ( 'fontawesome' === name ) {
+    const fontawesomeIconPickerStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/fontawesome.icons-picker.scss`;
+    return {
+      'fontawesome.icon-picker': [ `./src/Includes/Plugins/${directoryName}/Assets/js/fontawesome.icon-picker.js`, fontawesomeIconPickerStyles ],
+    };
+  }
 
   return {
     [name]: [
@@ -48,12 +77,12 @@ const extensionEntries = (pluginName, directoryName) => {
 };
 
 const extensionBuilds = [
-  //[ 'entra', 'Entra' ],
-  //[ 'exchange', 'Exchange' ],
-  //[ 'onedrive', 'Onedrive' ],
-  //[ 'sharepoint', 'Sharepoint' ],
+  [ 'entra', 'Entra' ],
+  [ 'exchange', 'Exchange' ],
+  [ 'onedrive', 'Onedrive' ],
+  [ 'sharepoint', 'Sharepoint' ],
   [ 'tinymce', 'TinyMCE' ],
-  //[ 'fontawesome', 'FontAwesome' ],
+  [ 'fontawesome', 'FontAwesome' ],
 ];
 
 const shared = {

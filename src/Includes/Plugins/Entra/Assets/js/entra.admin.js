@@ -1,0 +1,1 @@
+// Admin JavaScript for the Entra plugin
