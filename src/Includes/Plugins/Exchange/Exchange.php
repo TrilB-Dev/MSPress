@@ -206,7 +206,7 @@ class Exchange implements PluginInterface, SettingsProviderInterface, SettingsPa
                 'type' => 'group',
                 'label' => __( 'Exchange', 'mspress' ),
                 'slug' => 'exchange',
-                'icon' => 'fa-solid fa-envelope',
+                'icon' => 'svg exchange',
                 'capability' => 'mspress_settings_plugins_view',
                 'items' => [
                     [

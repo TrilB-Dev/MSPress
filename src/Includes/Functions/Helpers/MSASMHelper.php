@@ -29,7 +29,7 @@ final class MSASMHelper {
             'parent' => sanitize_key( $parent ),
             'name'   => $name,
             'slug'   => self::sanitize_slug( $slug ),
-            'icon'   => sanitize_text_field( $icon ),
+            'icon'   => self::normalize_icon( $icon ),
             'capability' => sanitize_key( $capability ),
         ];
     }
@@ -53,5 +53,21 @@ final class MSASMHelper {
         $parts = explode( '&', $slug, 2 );
         $page = sanitize_key( $parts[0] );
         return $page . ( isset( $parts[1] ) && '' !== $parts[1] ? '&' . sanitize_text_field( $parts[1] ) : '' );
+    }
+
+    private static function normalize_icon( string $icon ): string {
+        $icon = trim( $icon );
+        if ( '' === $icon ) {
+            return '';
+        }
+
+        if ( preg_match( '/^(svg|png)\s+(.+)$/i', $icon, $matches ) ) {
+            $resolved = MSIconHelper::get_icon( trim( $matches[2] ), strtolower( $matches[1] ) );
+            if ( '' !== $resolved ) {
+                return $resolved;
+            }
+        }
+
+        return sanitize_text_field( $icon );
     }
 }
