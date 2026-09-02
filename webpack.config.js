@@ -49,20 +49,20 @@ const extensionEntries = (pluginName, directoryName) => {
     const onedriveAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/onedrive.admin.scss`;
     const onedriveFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/onedrive.frontend.scss`;
     return {
-      'onedrive.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.settings.admin.js`, onedriveAdminStyles ],
-      'onedrive.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.settings.frontend.js`, onedriveFrontendStyles ],
+      'onedrive.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.admin.js`, onedriveAdminStyles ],
+      'onedrive.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.frontend.js`, onedriveFrontendStyles ],
     };
   }
   if ( 'sharepoint' === name ) {
     const sharepointAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/sharepoint.admin.scss`;
     const sharepointFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/sharepoint.frontend.scss`;
     return {
-      'sharepoint.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.settings.admin.js`, sharepointAdminStyles ],
-      'sharepoint.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.settings.frontend.js`, sharepointFrontendStyles ],
+      'sharepoint.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.admin.js`, sharepointAdminStyles ],
+      'sharepoint.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.frontend.js`, sharepointFrontendStyles ],
     };
   }
   if ( 'fontawesome' === name ) {
-    const fontawesomeIconPickerStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/fontawesome.icons-picker.scss`;
+    const fontawesomeIconPickerStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/fontawesome.icon-picker.scss`;
     return {
       'fontawesome.icon-picker': [ `./src/Includes/Plugins/${directoryName}/Assets/js/fontawesome.icon-picker.js`, fontawesomeIconPickerStyles ],
     };
