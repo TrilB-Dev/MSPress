@@ -174,7 +174,7 @@ class Plugins {
         $this->registered_plugins[ $slug ] = $plugin;
 
         if ( $this->initialized && $this->auto_activate && $this->is_plugin_enabled( $slug ) ) {
-            $this->initialize_plugin( $plugin, $this->assets );
+            $this->initialize_plugin( $plugin );
         }
     }
     /**

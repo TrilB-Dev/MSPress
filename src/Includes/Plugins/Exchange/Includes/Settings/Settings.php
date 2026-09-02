@@ -418,7 +418,7 @@ final class Settings {
         }
         $result = ExchangeDiscovery::validate( $graph, $email );
         if ( empty( $result['valid'] ) ) {
-            wp_send_json_error( [ 'message' => 'access_denied' === ( $result['reason'] ?? '' ) ? __( 'The mailbox exists, but the connected account cannot access it.', 'mspress' ) : __( 'The mailbox address could not be found.', 'mspress' ) ], 400 );
+            wp_send_json_error( [ 'message' => 'access_denied' === ( $result['reason'] ?? '' ) ? __( 'The mailbox was found, but the connected account does not have permission to use it. Ensure the account has Send As or Full Access to the mailbox.', 'mspress' ) : __( 'The mailbox address could not be found.', 'mspress' ) ], 400 );
         }
         wp_send_json_success( [ 'email' => $result['email'], 'name' => $result['name'] ] );
     }

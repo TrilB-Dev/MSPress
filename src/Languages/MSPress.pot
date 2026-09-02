@@ -1486,7 +1486,7 @@ msgid "The mailbox address could not be found."
 msgstr ""
 
 #: src/Includes/Plugins/Exchange/Includes/Settings/Settings.php:421
-msgid "The mailbox exists, but the connected account cannot access it."
+msgid "The mailbox was found, but the connected account does not have permission to use it. Ensure the account has Send As or Full Access to the mailbox."
 msgstr ""
 
 #: src/Includes/Plugins/Onedrive/Includes/Settings/Settings.php:46

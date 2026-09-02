@@ -47,7 +47,12 @@ class ExchangeDiscovery {
             try {
                 $graph->users()->byUserId( $email )->mailboxSettings()->get()->wait();
             } catch ( \Throwable $settings_exception ) {
-                LoggerHelper::write_log( 'Exchange mailbox validation accepted mailbox but mailboxSettings access is denied for: ' . $email . ' :: ' . $settings_exception->getMessage() );
+                $settings_message = strtolower( $settings_exception->getMessage() );
+                if ( str_contains( $settings_message, 'forbidden' ) || str_contains( $settings_message, 'unauthorized' ) || str_contains( $settings_message, 'access is denied' ) ) {
+                    LoggerHelper::write_log( 'Exchange mailbox validation accepted mailbox despite mailboxSettings access denial for: ' . $email . ' :: ' . $settings_exception->getMessage() );
+                } else {
+                    LoggerHelper::write_log( 'Exchange mailbox validation saw a non-access issue while checking mailboxSettings for: ' . $email . ' :: ' . $settings_exception->getMessage() );
+                }
             }
 
             LoggerHelper::write_log( 'Exchange mailbox validation succeeded for: ' . $email );
@@ -57,9 +62,9 @@ class ExchangeDiscovery {
                 'name' => sanitize_text_field( (string) $mailbox->getDisplayName() ),
             ];
         } catch ( \Throwable $exception ) {
-            $message = $exception->getMessage();
-            $reason = str_contains( strtolower( $message ), 'not found' ) || str_contains( strtolower( $message ), '404' ) ? 'not_found' : 'access_denied';
-            LoggerHelper::write_log( 'Exchange mailbox validation failed for: ' . $email . ' :: ' . $message . ' => ' . $reason );
+            $message = strtolower( $exception->getMessage() );
+            $reason = str_contains( $message, 'not found' ) || str_contains( $message, '404' ) ? 'not_found' : ( str_contains( $message, 'forbidden' ) || str_contains( $message, 'unauthorized' ) ? 'access_denied' : 'not_found' );
+            LoggerHelper::write_log( 'Exchange mailbox validation failed for: ' . $email . ' :: ' . $exception->getMessage() . ' => ' . $reason );
             return [ 'valid' => false, 'reason' => $reason ];
         }
     }
