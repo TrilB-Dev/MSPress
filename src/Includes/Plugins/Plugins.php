@@ -14,7 +14,6 @@ namespace MSPress\Includes\Plugins;
 use MSPress\Includes\Functions\Helpers\LoggerHelper;
 use MSPress\Includes\Settings\Settings;
 use MSPress\Includes\Plugins\PluginInterface;
-use MSPress\Assets\Assets;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -56,12 +55,6 @@ class Plugins {
      */
     private bool $initialized = false;
     /**
-     * The central MSPress asset manager.
-     *
-     * @var Assets|null
-     */
-    private ?Assets $assets = null;
-    /**
      * Get the singleton instance of the Plugins class.
      *
      * @return Plugins The singleton instance.
@@ -76,24 +69,30 @@ class Plugins {
     /**
      * Initializes the plugin system by discovering and loading plugin files.
      */
-    public function init( Assets $assets ): void {
+    public function init(): void {
+        LoggerHelper::write_log( 'MSPress Plugins::init() START' );
+
         if ( $this->initialized ) {
-            LoggerHelper::write_log( 'MSPress Plugins::init() skipped because plugin loader is already initialized.' );
+            LoggerHelper::write_log( 'MSPress Plugins::init() RESULT: skipped because plugin loader is already initialized.' );
             return;
         }
 
         $this->initialized = true;
-        $this->assets = $assets;
         $this->auto_activate = $this->should_auto_activate();
 
         LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() auto_activate=%s', $this->auto_activate ? 'yes' : 'no' ) );
-        LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() startup_root=%s assets_class=%s', MSPRESS_ROOT, get_class( $assets ) ) );
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() startup_root=%s', MSPRESS_ROOT ) );
 
         $directory = $this->resolve_plugin_directory();
         LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() directory=%s', $directory ) );
 
         $files = $this->discover_plugin_files( $directory );
         LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() discovered_files=%d', count( $files ) ) );
+
+        if ( empty( $files ) ) {
+            LoggerHelper::write_log( 'MSPress Plugins::init() RESULT: no plugin files discovered; plugin system stopped here.' );
+            return;
+        }
 
         foreach ( $files as $file ) {
             LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_file() file=%s', $file ) );
@@ -110,6 +109,7 @@ class Plugins {
          */
         do_action( 'mspress_register_plugin', $this );
         LoggerHelper::write_log( 'MSPress Plugins::init() finished registering external plugin hooks.' );
+        LoggerHelper::write_log( 'MSPress Plugins::init() END: plugin discovery workflow completed.' );
     }
     /**
      * Retrieves the list of loaded plugin class names.
@@ -210,17 +210,19 @@ class Plugins {
             str_replace( '/includes/', '/Includes/', MSPRESS_PLUGINS ),
         ];
 
-        LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() configured=%s candidates=%s', $configured, wp_json_encode( $candidates ) ) );
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() START configured=%s candidates=%s', $configured, wp_json_encode( $candidates ) ) );
 
         foreach ( $candidates as $candidate ) {
             $resolved = $this->resolve_existing_directory( $candidate );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() candidate=%s resolved=%s result=%s', $candidate, $resolved !== '' ? $resolved : 'missing', $resolved !== '' ? 'WORKING' : 'FAILED' ) );
+
             if ( $resolved !== '' ) {
-                LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() resolved=%s from=%s', $resolved, $candidate ) );
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() RESULT: success using=%s', $resolved ) );
                 return $resolved;
             }
         }
 
-        LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() directory_missing=%s', MSPRESS_PLUGINS ) );
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::resolve_plugin_directory() RESULT: failed for=%s', MSPRESS_PLUGINS ) );
         return MSPRESS_PLUGINS;
     }
     /**
@@ -230,8 +232,10 @@ class Plugins {
      * @return array List of discovered plugin file paths.
      */
     private function discover_plugin_files( string $directory ): array {
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() START directory=%s', $directory ) );
+
         if ( ! is_dir( $directory ) ) {
-            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() directory_missing=%s', $directory ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() RESULT: failed directory_missing=%s', $directory ) );
             return [];
         }
 
@@ -273,6 +277,12 @@ class Plugins {
             LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() final_candidate=%s', $file ) );
         }
 
+        if ( empty( $filtered ) ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() RESULT: failed no plugin files passed namespace filter in %s', $directory ) );
+            return [];
+        }
+
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() RESULT: success count=%d', count( $filtered ) ) );
         return $filtered;
     }
     /**
@@ -281,9 +291,11 @@ class Plugins {
      * @param string $file The path to the plugin file.
      */
     private function load_plugin_file( string $file ): void {
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() START file=%s', $file ) );
+
         $contents = file_get_contents( $file );
         if ( ! is_string( $contents ) ) {
-            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() unreadable_file=%s', $file ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() RESULT: failed unreadable_file=%s', $file ) );
             return;
         }
 
@@ -319,7 +331,7 @@ class Plugins {
             LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() fqcn=%s plugin_match_count=%d expected_exists=%s', $fqcn, count( $plugin_classes ), class_exists( $fqcn ) ? 'yes' : 'no' ) );
 
             if ( ! class_exists( $fqcn ) || ! is_a( $fqcn, PluginInterface::class, true ) ) {
-                LoggerHelper::write_log( sprintf( 'MSPress plugin file %s does not declare a PluginInterface implementation. expected=%s', $file, $expected_class ) );
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() RESULT: failed file_does_not_implement_plugin_interface file=%s expected=%s', $file, $expected_class ) );
                 return;
             }
 
@@ -330,15 +342,15 @@ class Plugins {
             LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() created_instance=%s instance_type=%s', $fqcn, get_class( $instance ) ) );
 
             if ( ! $instance instanceof PluginInterface ) {
-                LoggerHelper::write_log( sprintf( 'MSPress plugin %s does not implement PluginInterface.', $fqcn ) );
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() RESULT: failed object_does_not_implement_plugin_interface fqcn=%s', $fqcn ) );
                 return;
             }
 
             $this->register_plugin_instance( $instance );
             $this->loaded_plugins[] = $fqcn;
-            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() registered_plugin=%s', $fqcn ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() RESULT: success registered_plugin=%s', $fqcn ) );
         } catch ( \Throwable $e ) {
-            LoggerHelper::write_log( sprintf( 'MSPress plugin loader failed to require file %s: %s', $file, $e->getMessage() ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() RESULT: failed exception file=%s message=%s', $file, $e->getMessage() ) );
         }
     }
     /**
@@ -354,19 +366,29 @@ class Plugins {
             str_replace( '/includes/', '/Includes/', $plugin_directory ),
         ];
 
-        LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() plugin_directory=%s candidates=%s', $plugin_directory, wp_json_encode( array_values( array_unique( array_filter( $directory_candidates ) ) ) ) ) );
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() START plugin_directory=%s candidates=%s', $plugin_directory, wp_json_encode( array_values( array_unique( array_filter( $directory_candidates ) ) ) ) ) );
+
+        $included_any = false;
 
         foreach ( array_unique( array_filter( $directory_candidates ) ) as $directory ) {
             foreach ( [ 'Includes/Includes.php', 'includes/Includes.php', 'Includes/I18n.php', 'includes/I18n.php', 'Includes/Shortcodes.php', 'includes/Shortcodes.php' ] as $includes_file ) {
                 $includes_path = trailingslashit( $directory ) . $includes_file;
                 $resolved_include = $this->resolve_existing_file( $includes_path );
-                LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() directory=%s include_file=%s resolved=%s', $directory, $includes_file, $resolved_include !== '' ? $resolved_include : 'missing' ) );
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() directory=%s include_file=%s resolved=%s status=%s', $directory, $includes_file, $resolved_include !== '' ? $resolved_include : 'missing', $resolved_include !== '' ? 'WORKING' : 'NOT_FOUND' ) );
                 if ( $resolved_include !== '' ) {
                     require_once $resolved_include;
                     LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() required=%s', $resolved_include ) );
+                    $included_any = true;
                 }
             }
         }
+
+        if ( ! $included_any ) {
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() RESULT: no related include files found in %s', $plugin_directory ) );
+            return;
+        }
+
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() RESULT: success included_from=%s', $plugin_directory ) );
     }
     /**
      * Extracts the namespace from the given PHP file content.
@@ -377,11 +399,11 @@ class Plugins {
     private function extract_namespace( string $content ): string {
         if ( preg_match( '/namespace\s+([^;]+);/i', $content, $matches ) ) {
             $namespace = trim( $matches[1] );
-            LoggerHelper::write_log( sprintf( 'MSPress Plugins::extract_namespace() namespace=%s', $namespace ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::extract_namespace() RESULT: success namespace=%s', $namespace ) );
             return $namespace;
         }
 
-        LoggerHelper::write_log( 'MSPress Plugins::extract_namespace() namespace_not_found' );
+        LoggerHelper::write_log( 'MSPress Plugins::extract_namespace() RESULT: failed namespace_not_found' );
         return '';
     }
     /**
@@ -402,13 +424,13 @@ class Plugins {
             for ( $index++; $index < $token_count; $index++ ) {
                 if ( is_array( $tokens[ $index ] ) && T_STRING === $tokens[ $index ][0] ) {
                     $class_name = $tokens[ $index ][1];
-                    LoggerHelper::write_log( sprintf( 'MSPress Plugins::extract_class_name() class=%s', $class_name ) );
+                    LoggerHelper::write_log( sprintf( 'MSPress Plugins::extract_class_name() RESULT: success class=%s', $class_name ) );
                     return $class_name;
                 }
             }
         }
 
-        LoggerHelper::write_log( 'MSPress Plugins::extract_class_name() class_not_found' );
+        LoggerHelper::write_log( 'MSPress Plugins::extract_class_name() RESULT: failed class_not_found' );
         return '';
     }
     /**
@@ -424,55 +446,66 @@ class Plugins {
      *
      * @param PluginInterface $plugin The plugin instance to initialize.
      */
-    private function initialize_plugin( PluginInterface $plugin, Assets $assets ): void {
+    private function initialize_plugin( PluginInterface $plugin ): void {
         $slug = $plugin->get_slug();
-        LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() slug=%s active=%s enabled=%s', $slug, $plugin->is_active() ? 'yes' : 'no', $this->is_plugin_enabled( $slug ) ? 'yes' : 'no' ) );
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() START slug=%s active=%s enabled=%s', $slug, $plugin->is_active() ? 'yes' : 'no', $this->is_plugin_enabled( $slug ) ? 'yes' : 'no' ) );
 
         if ( ! $plugin->is_active() || ! $this->is_plugin_enabled( $plugin->get_slug() ) ) {
-            LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() skipped_slug=%s reason=inactive_or_disabled', $slug ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() RESULT: skipped_slug=%s reason=inactive_or_disabled', $slug ) );
             return;
         }
 
         try {
             if ( $plugin instanceof SettingsProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=settings slug=%s', $slug ) );
                 $plugin->register_settings();
             }
 
             if ( $plugin instanceof CapabilitiesProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=capabilities slug=%s', $slug ) );
                 $plugin->register_capabilities();
             }
 
             if ( $plugin instanceof DatabaseProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=database slug=%s', $slug ) );
                 $plugin->register_tables();
             }
 
             if ( $plugin instanceof ShortcodeProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=shortcodes slug=%s', $slug ) );
                 \MSPress\Includes\Functions\Helpers\ShortcodeHelper::register_many( $plugin->get_shortcodes() );
             }
 
             if ( $plugin instanceof AssetsProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=assets slug=%s', $slug ) );
                 $plugin->register_assets();
             }
 
             if ( $plugin instanceof AdminPageProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=admin_pages slug=%s', $slug ) );
                 $plugin->register_admin_pages();
             }
 
             if ( $plugin instanceof RestRouteProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=rest_routes slug=%s', $slug ) );
                 $plugin->register_rest_routes();
             }
 
             if ( $plugin instanceof FrontendProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=frontend slug=%s', $slug ) );
                 $plugin->register_frontend();
             }
 
             if ( $plugin instanceof I18nProviderInterface ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=i18n slug=%s', $slug ) );
                 $plugin->load_textdomain();
             }
 
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() step=plugin_init slug=%s', $slug ) );
             $plugin->init();
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() RESULT: success slug=%s', $slug ) );
         } catch ( \Throwable $e ) {
-            LoggerHelper::write_log( sprintf( 'MSPress plugin %s failed to initialize: %s', $plugin->get_slug(), $e->getMessage() ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::initialize_plugin() RESULT: failed slug=%s message=%s', $plugin->get_slug(), $e->getMessage() ) );
         }
     }
     /**
