@@ -23,15 +23,15 @@ const entries = {
 const extensionEntries = (pluginName, directoryName) => {
   const name = pluginName.toLowerCase();
 
-  if ( 'exchange' === name ) {
-    return {
-      'exchange.settings': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.js`,
-      'exchange.templates': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.templates.js`,
-      'exchange.logs': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.logs.js`,
-      'exchange.trace': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.trace.js`,
-      'exchange.styles': `./src/Includes/Plugins/${directoryName}/Assets/scss/${name}.scss`,
-    };
-  }
+  //if ( 'exchange' === name ) {
+    //return {
+      //'exchange.settings': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.js`,
+      //'exchange.templates': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.templates.js`,
+      //'exchange.logs': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.logs.js`,
+      //'exchange.trace': `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.trace.js`,
+      //'exchange.styles': `./src/Includes/Plugins/${directoryName}/Assets/scss/${name}.scss`,
+    //};
+  //}
   if ( 'fontawesome' === name ) {
     return {
       'fontawesome.icon-picker-script': `./src/Includes/Plugins/${directoryName}/Assets/js/fontawesome.icon-picker.js`,
@@ -48,10 +48,10 @@ const extensionEntries = (pluginName, directoryName) => {
 };
 
 const extensionBuilds = [
-  [ 'entra', 'Entra' ],
-  [ 'exchange', 'Exchange' ],
-  [ 'onedrive', 'Onedrive' ],
-  [ 'sharepoint', 'Sharepoint' ],
+  //[ 'entra', 'Entra' ],
+  //[ 'exchange', 'Exchange' ],
+  //[ 'onedrive', 'Onedrive' ],
+  //[ 'sharepoint', 'Sharepoint' ],
   [ 'tinymce', 'TinyMCE' ],
   [ 'fontawesome', 'FontAwesome' ],
 ];
