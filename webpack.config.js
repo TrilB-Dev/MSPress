@@ -16,7 +16,7 @@ const entries = {
   'wpoverride': './src/Assets/scss/wpoverride.scss',
   'ui.admin': [ './src/Assets/js/ui.admin.js', adminStyles ],
   'dashboard.admin': [ './src/Assets/js/dashboard.admin.js', adminStyles ],
-  'admin.settings': [ './src/Assets/js/admin.settings.js', adminStyles ],
+  'admin.settings': [ './src/Assets/js/settings.admin.js', adminStyles ],
   'plugins.admin': [ './src/Assets/js/settings.admin.js', adminStyles ],
   'ui.frontend': [ './src/Assets/js/ui.frontend.js', frontendStyles ],
   'debug.admin': [ './src/Assets/js/page.admin.js', adminStyles ],
