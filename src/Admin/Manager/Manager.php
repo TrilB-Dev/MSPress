@@ -40,8 +40,17 @@ abstract class Manager {
      */
     protected function assets( string $bundle ): array {
         return [
-            'styles'  => [ [ 'handle' => 'mspress-admin-' . $bundle, 'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.' . $bundle . '.css' ] ],
-            'scripts' => [ [ 'handle' => 'mspress-admin-' . $bundle, 'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.' . $bundle . '.js', 'deps' => [ 'mspress-bootstrap' ], 'in_footer' => true ] ],
+            'styles'  => [ [
+                'handle' => 'mspress-admin-' . $bundle,
+                'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.' . $bundle . '.css',
+                'deps' => [ 'mspress-bootstrap', 'mspress-admin-ui' ],
+            ] ],
+            'scripts' => [ [
+                'handle' => 'mspress-admin-' . $bundle,
+                'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.' . $bundle . '.js',
+                'deps' => [ 'mspress-bootstrap', 'mspress-admin-ui' ],
+                'in_footer' => true,
+            ] ],
         ];
     }
 
