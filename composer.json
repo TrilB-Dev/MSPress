@@ -15,7 +15,7 @@
             "MSPress\\Public\\": "src/Public/"
         },
         "classmap": [
-            "src/Plugin.php"
+            "src/MSPress.php"
         ],
         "exclude-from-classmap": [
             "src/Includes/Plugins/"
