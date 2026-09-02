@@ -87,6 +87,7 @@ class Plugins {
         $this->auto_activate = $this->should_auto_activate();
 
         LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() auto_activate=%s', $this->auto_activate ? 'yes' : 'no' ) );
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() startup_root=%s assets_class=%s', MSPRESS_ROOT, get_class( $assets ) ) );
 
         $directory = $this->resolve_plugin_directory();
         LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() directory=%s', $directory ) );
@@ -98,6 +99,8 @@ class Plugins {
             LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_file() file=%s', $file ) );
             $this->load_plugin_file( $file );
         }
+
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::init() loaded_plugins=%d registered_plugins=%d', count( $this->loaded_plugins ), count( $this->registered_plugins ) ) );
 
         /**
          * Allow WordPress plugins to register MSPress extensions.
@@ -236,31 +239,38 @@ class Plugins {
 
         $files = glob( $directory . '/*.php' ) ?: [];
         $subdirs = glob( $directory . '/*', GLOB_ONLYDIR ) ?: [];
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() top_level_php=%d subdirs=%d', count( $files ), count( $subdirs ) ) );
 
         foreach ( $subdirs as $subdir ) {
             $subfiles = glob( $subdir . '/*.php' ) ?: [];
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() checking_subdir=%s files=%d', $subdir, count( $subfiles ) ) );
             $files = array_merge( $files, array_filter( $subfiles, function ( string $file ): bool {
                 $contents = file_get_contents( $file );
-                return is_string( $contents ) && $this->extract_class_name( $contents ) !== '';
+                $has_class = is_string( $contents ) && $this->extract_class_name( $contents ) !== '';
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() subdir_candidate=%s has_php_class=%s', $file, $has_class ? 'yes' : 'no' ) );
+                return $has_class;
             } ) );
         }
 
         $files = array_filter( array_unique( $files ), 'is_file' );
-        $filtered = array_values( array_filter( $files, static function ( string $file ): bool {
+        $filtered = array_values( array_filter( $files, function ( string $file ): bool {
             if ( in_array( basename( $file ), [
                 'Plugins.php',
                 'PluginsInterface.php',
             ], true ) ) {
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() skipped_core_file=%s', $file ) );
                 return false;
             }
 
             $contents = file_get_contents( $file );
-            return is_string( $contents ) && preg_match( '/^namespace\s+MSPress\\\\/mi', $contents ) === 1;
+            $namespace_match = is_string( $contents ) && preg_match( '/^namespace\s+MSPress\\\\/mi', $contents ) === 1;
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() candidate_file=%s namespace_match=%s', $file, $namespace_match ? 'yes' : 'no' ) );
+            return $namespace_match;
         } ) );
 
         LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() raw_files=%d filtered_files=%d', count( $files ), count( $filtered ) ) );
         foreach ( $filtered as $file ) {
-            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() candidate_file=%s', $file ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::discover_plugin_files() final_candidate=%s', $file ) );
         }
 
         return $filtered;
@@ -286,13 +296,19 @@ class Plugins {
         LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() file=%s namespace=%s class=%s expected=%s', $file, $namespace, $class_name, $expected_class ) );
 
         $declared_before = get_declared_classes();
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() before_require_declared=%d file=%s', count( $declared_before ), basename( $file ) ) );
 
         try {
             $this->load_plugin_includes( dirname( $file ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() include_scan_complete=%s', $file ) );
             require_once $file;
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() require_complete=%s', $file ) );
+
+            $new_classes = array_diff( get_declared_classes(), $declared_before );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() new_classes_after_require=%d', count( $new_classes ) ) );
 
             $plugin_classes = array_filter(
-                array_diff( get_declared_classes(), $declared_before ),
+                $new_classes,
                 static fn ( string $class ): bool => is_subclass_of( $class, PluginInterface::class )
             );
 
@@ -300,16 +316,18 @@ class Plugins {
                 ? (string) reset( $plugin_classes )
                 : $expected_class;
 
-            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() fqcn=%s new_classes=%d', $fqcn, count( $plugin_classes ) ) );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() fqcn=%s plugin_match_count=%d expected_exists=%s', $fqcn, count( $plugin_classes ), class_exists( $fqcn ) ? 'yes' : 'no' ) );
 
             if ( ! class_exists( $fqcn ) || ! is_a( $fqcn, PluginInterface::class, true ) ) {
-                LoggerHelper::write_log( sprintf( 'MSPress plugin file %s does not declare a PluginInterface implementation.', $file ) );
+                LoggerHelper::write_log( sprintf( 'MSPress plugin file %s does not declare a PluginInterface implementation. expected=%s', $file, $expected_class ) );
                 return;
             }
 
             $instance = is_callable( [ $fqcn, 'get_instance' ] )
                 ? $fqcn::get_instance()
                 : new $fqcn();
+
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_file() created_instance=%s instance_type=%s', $fqcn, get_class( $instance ) ) );
 
             if ( ! $instance instanceof PluginInterface ) {
                 LoggerHelper::write_log( sprintf( 'MSPress plugin %s does not implement PluginInterface.', $fqcn ) );
@@ -336,12 +354,16 @@ class Plugins {
             str_replace( '/includes/', '/Includes/', $plugin_directory ),
         ];
 
+        LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() plugin_directory=%s candidates=%s', $plugin_directory, wp_json_encode( array_values( array_unique( array_filter( $directory_candidates ) ) ) ) ) );
+
         foreach ( array_unique( array_filter( $directory_candidates ) ) as $directory ) {
             foreach ( [ 'Includes/Includes.php', 'includes/Includes.php', 'Includes/I18n.php', 'includes/I18n.php', 'Includes/Shortcodes.php', 'includes/Shortcodes.php' ] as $includes_file ) {
                 $includes_path = trailingslashit( $directory ) . $includes_file;
                 $resolved_include = $this->resolve_existing_file( $includes_path );
+                LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() directory=%s include_file=%s resolved=%s', $directory, $includes_file, $resolved_include !== '' ? $resolved_include : 'missing' ) );
                 if ( $resolved_include !== '' ) {
                     require_once $resolved_include;
+                    LoggerHelper::write_log( sprintf( 'MSPress Plugins::load_plugin_includes() required=%s', $resolved_include ) );
                 }
             }
         }
@@ -354,9 +376,12 @@ class Plugins {
      */
     private function extract_namespace( string $content ): string {
         if ( preg_match( '/namespace\s+([^;]+);/i', $content, $matches ) ) {
-            return trim( $matches[1] );
+            $namespace = trim( $matches[1] );
+            LoggerHelper::write_log( sprintf( 'MSPress Plugins::extract_namespace() namespace=%s', $namespace ) );
+            return $namespace;
         }
 
+        LoggerHelper::write_log( 'MSPress Plugins::extract_namespace() namespace_not_found' );
         return '';
     }
     /**
@@ -376,11 +401,14 @@ class Plugins {
 
             for ( $index++; $index < $token_count; $index++ ) {
                 if ( is_array( $tokens[ $index ] ) && T_STRING === $tokens[ $index ][0] ) {
-                    return $tokens[ $index ][1];
+                    $class_name = $tokens[ $index ][1];
+                    LoggerHelper::write_log( sprintf( 'MSPress Plugins::extract_class_name() class=%s', $class_name ) );
+                    return $class_name;
                 }
             }
         }
 
+        LoggerHelper::write_log( 'MSPress Plugins::extract_class_name() class_not_found' );
         return '';
     }
     /**
