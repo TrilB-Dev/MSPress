@@ -13,7 +13,6 @@ use MSPress\Includes\Plugins\I18nProviderInterface;
 use MSPress\Includes\Plugins\PluginInterface;
 use MSPress\Includes\Plugins\SettingsProviderInterface;
 use MSPress\Includes\Plugins\SettingsPageProviderInterface;
-use MSPress\Includes\Functions\Helpers\ImageHelper;
 use MSPress\Includes\Plugins\TinyMCE\Assets\Assets;
 use MSPress\Includes\Plugins\TinyMCE\Includes\Includes;
 use MSPress\Includes\Plugins\TinyMCE\Includes\I18n;

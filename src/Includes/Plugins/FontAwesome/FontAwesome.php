@@ -210,7 +210,7 @@ final class FontAwesome implements PluginInterface, SettingsProviderInterface, S
     /**
      * Private constructor to prevent direct instantiation.
      */
-    private function __construct() {
+    /**private function __construct() {
         $this->load_vendor();
         Activator::register( static function (): void {
             if ( self::is_wordpress_fontawesome_active() ) {
@@ -221,7 +221,7 @@ final class FontAwesome implements PluginInterface, SettingsProviderInterface, S
                 \FortAwesome\FontAwesome_Loader::initialize();
             }
         } );
-    }
+    }*/
 
     /**
      * Loads the bundled FontAwesome package only when some other active

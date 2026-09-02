@@ -9,24 +9,24 @@
 
 namespace MSPress\Includes\Plugins\TinyMCE\Assets;
 
-use MSPress\Assets\Assets as CoreAssets;
 use MSPress\Includes\Plugins\TinyMCE\Includes\Settings\Settings;
 use MSPress\Includes\Functions\Helpers\ImageHelper;
+use MSPress\Includes\Functions\Helpers\LoaderHelper;
 
 final class Assets {
     /**
-     * The core assets manager.
-     *
-     * @var CoreAssets
+     * The loader helper instance.
+     * 
+     * @var LoaderHelper The loader helper instance.
      */
-    private CoreAssets $assets;
+    private LoaderHelper $loader;
     /**
      * Constructor for the TinyMCE plugin assets.
      *
-     * @param CoreAssets $assets The core assets manager.
+     * @param LoaderHelper|null $loader The loader helper instance.
      */
-    public function __construct( CoreAssets $assets ) {
-        $this->assets = $assets;
+    public function __construct( ?LoaderHelper $loader = null ) {
+        $this->loader = $loader ?? new LoaderHelper();
     }
 
     /**
@@ -35,7 +35,14 @@ final class Assets {
      * @return void
      */
     public function register(): void {
-        $this->assets->register_page( 'mspress-settings', $this->register_admin_assets( [] ) );
+        $this->loader->register_component( $this, 
+        [
+            [ 
+                'type' => 'action',
+                'hook' => 'admin_enqueue_scripts',
+                'callback' => 'register_admin_assets' 
+            ],
+        ] )->run();
     }
     /**
      * Registers the admin assets for the TinyMCE plugin.

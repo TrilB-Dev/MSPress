@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * MSPress - FontAwesome Assets
+ *
+ * @package MSPress
+ * @since 1.0.0
+ */
 namespace MSPress\Includes\Plugins\FontAwesome\Assets;
 
 use MSPress\Includes\Functions\Helpers\LoaderHelper;
@@ -7,23 +12,53 @@ use MSPress\Includes\Plugins\FontAwesome\Includes\Settings\Settings as FontAweso
 use MSPress\Includes\Functions\Helpers\ImageHelper;
 
 final class Assets {
+    /**
+     * The loader helper instance.
+     * 
+     * @var LoaderHelper The loader helper instance.
+     */
     private LoaderHelper $loader;
-
+    /**
+     * Constructor for the Assets class.
+     *
+     * @param LoaderHelper|null $loader The loader helper instance.
+     */ 
     public function __construct( ?LoaderHelper $loader = null ) {
         $this->loader = $loader ?? new LoaderHelper();
     }
-
+    /**
+     * Registers the assets for the plugin.
+     *
+     * @return void
+     */
     public function register(): void {
-        $this->loader->register_component( $this, [
-            [ 'type' => 'action', 'hook' => 'admin_enqueue_scripts', 'callback' => 'enqueue_admin_assets' ],
+        $this->loader->register_component( $this,
+        [
+            [ 
+                'type' => 'action',
+                'hook' => 'admin_enqueue_scripts',
+                'callback' => 'enqueue_admin_assets' 
+            ],
         ] )->run();
     }
-
+    /**
+     * Enqueues the admin assets for the plugin.
+     *
+     * @param string $hook_suffix The current admin page hook suffix.
+     * @return void
+     */
     public function enqueue_admin_assets( string $hook_suffix = '' ): void {
+
         $this->enqueue_fontawesome_vendor_assets( $hook_suffix );
+        
         $this->enqueue_icon_picker();
     }
-
+    /**
+     * Enqueues the FontAwesome vendor assets for the plugin.
+     *
+     * @param string $hook_suffix The current admin page hook suffix.
+     * @return void
+     */
     private function enqueue_fontawesome_vendor_assets( string $hook_suffix ): void {
         $page = sanitize_key( $_GET['page'] ?? '' );
         if ( false === strpos( $hook_suffix, 'mspress' ) && 0 !== strpos( $page, 'mspress' ) ) {
@@ -63,7 +98,11 @@ final class Assets {
             wp_enqueue_script( $handle );
         }
     }
-
+    /**
+     * Enqueues the icon picker assets for the plugin.
+     *
+     * @return void
+     */
     public function enqueue_icon_picker(): void {
         if ( ! $this->should_enqueue_icon_picker() ) {
             return;
@@ -95,7 +134,11 @@ final class Assets {
             ],
         ] );
     }
-
+    /**
+     * Determines whether the icon picker assets should be enqueued.
+     *
+     * @return bool True if the icon picker assets should be enqueued, false otherwise.
+     */
     private function should_enqueue_icon_picker(): bool {
         $screen = get_current_screen();
         if ( ! $screen ) {
@@ -112,6 +155,8 @@ final class Assets {
      * @return string The image URL, or an empty string when the path is invalid.
      */
     public static function get_image( string $file ): string {
+
         return ImageHelper::get_image_url( 'mspress-fontawesome', $file );
+
     }
 }
