@@ -35,12 +35,13 @@ final class Assets {
      * @return void
      */
     public function register(): void {
-        $this->loader->register_component( $this, 
+        $this->loader->register_component( $this,
         [
-            [ 
-                'type' => 'action',
-                'hook' => 'admin_enqueue_scripts',
-                'callback' => 'register_admin_assets' 
+            [
+                'type' => 'filter',
+                'hook' => 'mspress_admin_assets',
+                'callback' => 'register_admin_assets',
+                'accepted_args' => 2,
             ],
         ] )->run();
     }
@@ -51,7 +52,11 @@ final class Assets {
      * @param string $context The context (e.g., 'frontend', 'admin').
      * @return array The updated assets with TinyMCE assets included.
      */
-    public function register_admin_assets( array $assets, string $context = '' ): array {
+    public function register_admin_assets( $assets = [], string $context = 'admin' ): array {
+        if ( ! is_array( $assets ) ) {
+            $assets = [];
+        }
+
         $base_url = MSPRESS_URL . 'src/Includes/Plugins/TinyMCE/Assets/tinymce/';
 
         $assets['styles'][] = [
