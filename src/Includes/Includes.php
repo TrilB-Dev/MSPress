@@ -10,7 +10,6 @@ namespace MSPress\Includes;
 
 use MSPress\Includes\Core\Core;
 use MSPress\Includes\Core\WP\WPLoader;
-use MSPress\Includes\Functions\Helpers\LoggerHelper;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -46,7 +45,6 @@ final class Includes {
      */
     private function __construct() {
         $this->core = new Core();
-        LoggerHelper::write_log( 'MSPress core includes initialized.' );
     }
     /**
      * Returns the singleton instance of the Includes class.

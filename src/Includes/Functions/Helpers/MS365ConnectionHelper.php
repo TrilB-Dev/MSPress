@@ -17,7 +17,7 @@ final class MS365ConnectionHelper {
         }
 
         $tenant_id = trim( $tenant_id, " \t\n\r\0\x0B\"'{}" );
-        if ( preg_match( '#^https?://[^/]+/([^/?#]+)#i', $tenant_id, $matches ) ) {
+        if ( preg_match( '#^https?://[^/]+/([^/?\#]+)#i', $tenant_id, $matches ) ) {
             return trim( $matches[1] );
         }
 
