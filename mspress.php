@@ -109,13 +109,14 @@ register_deactivation_hook( __FILE__, 'deactivate_mspress' );
  * @since    1.0.0
  */
 
-use MSPress\Plugin;
+use MSPress\MSPress;
 
 /**
  * Begins execution of the plugin.
  */
 function run_mspress() {
-    new Plugin();
+    $plugin = new MSPress();
+    $plugin->run();
 }
 
 // Initialize the plugin immediately so activation and deactivation hooks register correctly.

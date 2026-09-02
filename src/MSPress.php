@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The file that defines the core plugin class
+ * The file that defines the core MSPress class
  *
  * A class definition that Includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
@@ -40,7 +40,7 @@ use MSPress\Includes\Plugins\Plugins;
  * @subpackage MSPress/src
  * @author     MrTrilB <mrtrilb@trilb.dev>
  */
-class Plugin {
+class MSPress {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -57,9 +57,26 @@ class Plugin {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $plugin_file    The file path to the main plugin file.
+	 * @var      string    $mspress_file    The file path to the main plugin file.
 	 */
-	protected string $plugin_file;
+	protected string $mspress_file;
+	/**
+	 * The unique identifier of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string    $mspress_name    The string used to uniquely identify this plugin.
+	 */
+	protected $mspress_name;
+
+	/**
+	 * The current version of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string    $version    The current version of the plugin.
+	 */
+	protected $version;
 	/**
 	 * The instance of the Includes class that handles the plugin's Includes.
 	 *
@@ -121,24 +138,6 @@ class Plugin {
 	protected FunctionsSettings $settings_functions;
 
 	/**
-	 * The unique identifier of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
-	 */
-	protected $plugin_name;
-
-	/**
-	 * The current version of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
-	 */
-	protected $version;
-
-	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -147,9 +146,9 @@ class Plugin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct( string $plugin_file = MSPRESS_FILE, string $plugin_name = MSPRESS_NAME, string $version = MSPRESS_VERSION ) {
-		$this->plugin_file = $plugin_file;
-		$this->plugin_name = sanitize_key( $plugin_name );
+	public function __construct( string $mspress_file = MSPRESS_FILE, string $mspress_name = MSPRESS_NAME, string $version = MSPRESS_VERSION ) {
+		$this->mspress_file = $mspress_file;
+		$this->mspress_name = sanitize_key( $mspress_name );
 		$this->version = $version;
 
 		$this->load_dependencies();
@@ -190,9 +189,9 @@ class Plugin {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new I18n( $this->plugin_name, null, $this->plugin_file );
+		$mspress_i18n = new I18n( $this->mspress_name, null, $this->mspress_file );
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		$this->loader->add_action( 'plugins_loaded', $mspress_i18n, 'load_plugin_textdomain' );
 
 	}
 
@@ -204,24 +203,78 @@ class Plugin {
 	 * @access   private
 	 */
 	private function define_core_hooks() {
+		/**
+		 * The instance of the Includes class that handles the plugin's includes.
+		 *
+		 * @var Includes
+		 * @since 1.0.0
+		 * @access protected
+		 */
 		$this->includes = Includes::get_instance();
+		/**
+		 * The instance of the Assets class that handles the plugin's assets.
+		 *
+		 * @var Assets
+		 * @since 1.0.0
+		 * @access protected
+		 */
 		$this->assets = new Assets();
+		/**
+		 * The instance of the Admin class that handles the plugin's admin functionality.
+		 *
+		 * @var Admin
+		 * @since 1.0.0
+		 * @access protected
+		 */
 		$this->assets->register();
+		/**
+		 * The instance of the Admin class that handles the plugin's Admin functionality.
+		 *
+		 * @var Admin
+		 * @since 1.0.0
+		 * @access protected
+		 */
 		$this->admin = new Admin( $this->assets );
+		/**
+		 * The ModPress plugin registry and discovery service.
+		 *
+		 * @var Plugins
+		 * @since 1.0.0
+		 * @access protected
+		 */
 		$this->plugins = Plugins::get_instance();
+		/**
+		 * The instance of the FunctionsExport class that handles the plugin's export functionality.
+		 *
+		 * @var FunctionsExport
+		 * @since 1.0.0
+		 * @access protected
+		 */
 		$this->export_functions = new FunctionsExport();
+		/**
+		 * The instance of the FunctionsImport class that handles the plugin's import functionality.
+		 *
+		 * @var FunctionsImport
+		 * @since 1.0.0
+		 * @access protected
+		 */
 		$this->import_functions = new FunctionsImport();
+		/**
+		 * The instance of the FunctionsSettings class that handles the plugin's settings functionality.
+		 *
+		 * @var FunctionsSettings
+		 * @since 1.0.0
+		 * @access protected
+		 */
 		$this->settings_functions = new FunctionsSettings( new FunctionsPlugins() );
 
 		$this->loader->add_action( 'init', $this->includes, 'init' );
 		$this->loader->add_action( 'init', $this->plugins, 'init', -10 );
 		$this->loader->add_action( 'admin_menu', $this->admin, 'register_admin_menu' );
 		$this->loader->add_action( 'admin_init', $this->settings_functions, 'register_settings' );
-		$this->loader->add_action( 'admin_post_mspress_export', $this->export_functions, 'export_data' );
-		$this->loader->add_action( 'admin_post_mspress_import', $this->import_functions, 'import_data' );
+		$this->loader->add_action( 'admin_post_modpress_export', $this->export_functions, 'export_data' );
+		$this->loader->add_action( 'admin_post_modpress_import', $this->import_functions, 'import_data' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $this->assets, 'enqueue_admin' );
-		$this->loader->add_action( 'wp_head', Analytics::class, 'track_view' );
-		$this->loader->add_action( 'rest_api_init', Routes::class, 'register_routes' );
 	}
 
 	/**
@@ -241,16 +294,16 @@ class Plugin {
 	 * @return    string    The name of the plugin.
 	 */
 	public function get_plugin_name() {
-		return $this->plugin_name;
+		return $this->mspress_name;
 	}
 	/**
-	 * Retrieve the version number of the plugin.
+	 * Retrieve the main MSPress file path.
 	 *
 	 * @since     1.0.0
-	 * @return    string    The version number of the plugin.
+	 * @return    string    The main MSPress file path.
 	 */
-	public function get_plugin_file(): string {
-		return $this->plugin_file;
+	public function get_mspress_file(): string {
+		return $this->mspress_file;
 	}
 	/**
 	 * Retrieve the version number of the plugin.
