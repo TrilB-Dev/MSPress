@@ -26,36 +26,36 @@ const extensionEntries = (pluginName, directoryName) => {
   const name = pluginName.toLowerCase();
 
   if ( 'exchange' === name ) {
-    const exchangeAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.admin.scss`;
-    const exchangeFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.frontend.scss`;
+    const exchangeAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/exchange.admin.scss`;
+    const exchangeFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/exchange.frontend.scss`;
     return {
       'exchange.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.admin.js`, exchangeAdminStyles ],
       'exchange.logs.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.logs.admin.js`, exchangeAdminStyles ],
       'exchange.trace.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.trace.admin.js`, exchangeAdminStyles ],
       'exchange.templates.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.templates.admin.js`, exchangeAdminStyles ],
       'exchange.settings.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.admin.js`, exchangeAdminStyles ],
-      'exchange.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.frontend.js`, exchangeFrontendStyles ],
+      'exchange.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.frontend.js`, exchangeFrontendStyles ],
     };
   }
   if ( 'entra' === name ) {
-    const entraAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.admin.scss`;
-    const entraFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.frontend.scss`;
+    const entraAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/entra.admin.scss`;
+    const entraFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/entra.frontend.scss`;
     return {
-      'entra.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/entra.settings.admin.js`, entraAdminStyles ],
-      'entra.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/entra.settings.frontend.js`, entraFrontendStyles ],
+      'entra.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/entra.admin.js`, entraAdminStyles ],
+      'entra.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/entra.frontend.js`, entraFrontendStyles ],
     };
   }
   if ( 'onedrive' === name ) {
-    const onedriveAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.admin.scss`;
-    const onedriveFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.frontend.scss`;
+    const onedriveAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/onedrive.admin.scss`;
+    const onedriveFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/onedrive.frontend.scss`;
     return {
       'onedrive.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.settings.admin.js`, onedriveAdminStyles ],
       'onedrive.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.settings.frontend.js`, onedriveFrontendStyles ],
     };
   }
   if ( 'sharepoint' === name ) {
-    const sharepointAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.admin.scss`;
-    const sharepointFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/ui.frontend.scss`;
+    const sharepointAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/sharepoint.admin.scss`;
+    const sharepointFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/sharepoint.frontend.scss`;
     return {
       'sharepoint.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.settings.admin.js`, sharepointAdminStyles ],
       'sharepoint.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.settings.frontend.js`, sharepointFrontendStyles ],
