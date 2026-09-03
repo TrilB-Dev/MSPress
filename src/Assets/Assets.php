@@ -238,15 +238,17 @@ final class Assets {
         }
 
         if ( isset( $assets['styles'] ) && is_string( $assets['styles'] ) ) {
+            $bundle_name = $this->resolve_bundle_name( $assets['styles'] );
             $assets['styles'] = [ [ 
                 'handle' => 'mspress-admin-' . $assets['styles'], 
-                'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.' . $assets['styles'] . '.css' 
+                'src' => MSPRESS_URL . 'src/Assets/dist/css/' . $bundle_name . '.css' 
             ] ];
         }
         if ( isset( $assets['scripts'] ) && is_string( $assets['scripts'] ) ) {
+            $bundle_name = $this->resolve_bundle_name( $assets['scripts'] );
             $assets['scripts'] = [ [ 
                 'handle' => 'mspress-admin-' . $assets['scripts'], 
-                'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.' . $assets['scripts'] . '.js', 
+                'src' => MSPRESS_URL . 'src/Assets/dist/js/' . $bundle_name . '.js', 
                 'deps' => [ 'mspress-bootstrap' ] 
             ] ];
         }
@@ -299,6 +301,23 @@ final class Assets {
      * @param string $file The image path relative to Assets/images.
      * @return string The image URL, or an empty string when the path is invalid.
      */
+    /**
+     * Map a logical bundle name to the compiled asset file name.
+     *
+     * @param string $bundle Logical bundle name.
+     * @return string Compiled bundle file name.
+     */
+    private function resolve_bundle_name( string $bundle ): string {
+        $mapping = [
+            'dashboard' => 'dashboard.admin',
+            'debug' => 'debug.admin',
+            'settings' => 'admin.settings',
+            'plugins' => 'plugins.admin',
+        ];
+
+        return $mapping[ $bundle ] ?? ( $bundle . '.admin' );
+    }
+
     public static function get_image( string $file ): string {
         return ImageHelper::get_image_url( 'core', $file );
     }

@@ -39,19 +39,38 @@ abstract class Manager {
      * @return array<string, array<int, array<string, mixed>>> Asset definition.
      */
     protected function assets( string $bundle ): array {
+        $bundle_name = $this->resolve_bundle_name( $bundle );
+
         return [
             'styles'  => [ [
                 'handle' => 'mspress-admin-' . $bundle,
-                'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.' . $bundle . '.css',
+                'src' => MSPRESS_URL . 'src/Assets/dist/css/' . $bundle_name . '.css',
                 'deps' => [ 'mspress-bootstrap', 'mspress-admin-ui' ],
             ] ],
             'scripts' => [ [
                 'handle' => 'mspress-admin-' . $bundle,
-                'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.' . $bundle . '.js',
+                'src' => MSPRESS_URL . 'src/Assets/dist/js/' . $bundle_name . '.js',
                 'deps' => [ 'mspress-bootstrap', 'mspress-admin-ui' ],
                 'in_footer' => true,
             ] ],
         ];
+    }
+
+    /**
+     * Map the logical bundle name to the compiled asset file name.
+     *
+     * @param string $bundle Logical bundle name.
+     * @return string Compiled bundle file name.
+     */
+    protected function resolve_bundle_name( string $bundle ): string {
+        $mapping = [
+            'dashboard' => 'dashboard.admin',
+            'debug' => 'debug.admin',
+            'settings' => 'admin.settings',
+            'plugins' => 'plugins.admin',
+        ];
+
+        return $mapping[ $bundle ] ?? ( $bundle . '.admin' );
     }
 
     /**

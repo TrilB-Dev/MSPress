@@ -157,7 +157,7 @@ final class SettingsManager extends Manager {
         $settings_assets = $this->assets( 'settings' );
         $settings_assets['scripts'][] = [
             'handle' => 'mspress-admin-plugins',
-            'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.plugins.js',
+            'src' => MSPRESS_URL . 'src/Assets/dist/js/plugins.admin.js',
             'deps' => [ 'mspress-bootstrap' ],
             'in_footer' => true,
         ];
