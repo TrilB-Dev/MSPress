@@ -6,15 +6,29 @@
  */
 namespace MSPress\Includes\MSGraph;
 
+use Http\Promise\FulfilledPromise;
+use Http\Promise\RejectedPromise;
+use Microsoft\Kiota\Abstractions\ApiClientBuilder;
 use Microsoft\Kiota\Abstractions\Authentication\AllowedHostsValidator;
 use Microsoft\Kiota\Abstractions\RequestAdapter;
 use Microsoft\Kiota\Http\GuzzleRequestAdapter;
+use Microsoft\Kiota\Serialization\Json\JsonParseNodeFactory;
+use Microsoft\Kiota\Serialization\Json\JsonSerializationWriterFactory;
 use MSPress\Includes\MSGraph\Kiota\MSPressClient;
-use Http\Promise\FulfilledPromise;
-use Http\Promise\RejectedPromise;
 
 final class GraphClientService {
+    private static bool $kiota_json_factories_registered = false;
     private ?RequestAdapter $requestAdapter = null;
+
+    private static function ensure_kiota_json_factories(): void {
+        if (self::$kiota_json_factories_registered) {
+            return;
+        }
+
+        ApiClientBuilder::registerDefaultSerializer(JsonSerializationWriterFactory::class);
+        ApiClientBuilder::registerDefaultDeserializer(JsonParseNodeFactory::class);
+        self::$kiota_json_factories_registered = true;
+    }
 
     /**
      * Constructor for GraphClientService.
@@ -49,6 +63,8 @@ final class GraphClientService {
      * @return RequestAdapter|null The request adapter or null if token retrieval fails.
      */
     public function create_request_adapter(): ?RequestAdapter {
+        self::ensure_kiota_json_factories();
+
         if ($this->requestAdapter !== null) {
             return $this->requestAdapter;
         }
