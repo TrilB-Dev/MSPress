@@ -10,7 +10,7 @@
         <exclude name="WordPress.NamingConventions.ValidVariableName.InterpolatedVariableNotSnakeCase" />
     </rule>
 	<file>src</file>
-	<file>tests</file>
+	<file>Test</file>
 	<arg name="basepath" value="." />
 	<arg name="colors" />
 	<arg name="parallel" value="4" />
