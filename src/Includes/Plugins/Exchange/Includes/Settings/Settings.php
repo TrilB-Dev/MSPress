@@ -330,11 +330,11 @@ final class Settings {
         if ( 'exchange_connect' !== ( $context['purpose'] ?? '' ) ) {
             return;
         }
+
         $this->save_connected_account( $account );
+
         $redirect_url = admin_url( 'admin.php?page=mspress-settings&tab=exchange-settings&exchange_connected=1' );
-        if ( ! wp_safe_redirect( $redirect_url ) ) {
-            wp_redirect( $redirect_url );
-        }
+        wp_safe_redirect( $redirect_url );
         exit;
     }
 

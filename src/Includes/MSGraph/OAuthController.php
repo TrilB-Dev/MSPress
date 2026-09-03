@@ -62,6 +62,7 @@ final class OAuthController {
 
             $user_data = $oauth_service->handle_oauth_callback( $code, $state );
             do_action( 'mspress_graph_oauth_connected', $user_data );
+
             $email = sanitize_email( $user_data['email'] ?? '' );
 
             if ( $email === '' || ! is_email( $email ) ) {
