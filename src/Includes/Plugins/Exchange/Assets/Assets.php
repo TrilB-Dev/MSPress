@@ -87,12 +87,13 @@ final class Assets {
         $page = RequestHelper::get_key( 'page' );
         $tab = RequestHelper::get_key( 'tab' );
 
+        $is_plugins_page = 'mspress-settings' === $page && 'plugins' === $tab;
         $is_settings = in_array( $page, [ 'mspress-exchange', 'mspress-exchange-settings' ], true )
             || ( 'mspress-settings' === $page && 'exchange-settings' === $tab );
         $is_exchange_page = in_array( $page, [ 'mspress-exchange-email-templates', 'mspress-exchange-route-trace', 'mspress-exchange-sent-log' ], true )
             || ( 'mspress-settings' === $page && in_array( $tab, [ 'exchange-email-templates', 'exchange-trace-route', 'exchange-sent-logs' ], true ) );
 
-        if ( ! $is_settings && ! $is_exchange_page ) {
+        if ( ! $is_plugins_page && ! $is_settings && ! $is_exchange_page ) {
             return $assets;
         }
 
