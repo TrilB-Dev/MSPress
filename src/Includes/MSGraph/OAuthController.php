@@ -62,6 +62,7 @@ final class OAuthController {
 
             $user_data = $oauth_service->handle_oauth_callback( $code, $state );
             do_action( 'mspress_graph_oauth_connected', $user_data );
+            $redirect_target = apply_filters( 'mspress_graph_oauth_redirect', admin_url(), $user_data );
 
             $email = sanitize_email( $user_data['email'] ?? '' );
 
@@ -95,7 +96,7 @@ final class OAuthController {
             wp_set_current_user( $user->ID, $user->user_login );
             wp_set_auth_cookie( $user->ID, true );
             do_action( 'wp_login', $user->user_login, $user );
-            wp_safe_redirect( admin_url() );
+            wp_safe_redirect( $redirect_target );
             exit;
         } catch ( \Throwable $exception ) {
             if ( isset( $oauth_service ) && $oauth_service instanceof OAuthService ) {

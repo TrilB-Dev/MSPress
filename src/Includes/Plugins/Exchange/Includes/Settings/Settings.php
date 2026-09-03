@@ -47,6 +47,7 @@ final class Settings {
         add_action( 'wp_ajax_mspress_exchange_save_profile', [ $this, 'ajax_save_profile' ] );
         add_action( 'admin_post_mspress_exchange_save_settings', [ $this, 'save_admin_settings' ] );
         add_action( 'wp_mail_succeeded', [ $this, 'log_wordpress_mail' ] );
+        add_filter( 'mspress_graph_oauth_redirect', [ $this, 'filter_oauth_redirect' ], 10, 2 );
     }
 
     public function save_admin_settings(): void {
@@ -332,10 +333,15 @@ final class Settings {
         }
 
         $this->save_connected_account( $account );
+    }
 
-        $redirect_url = admin_url( 'admin.php?page=mspress-settings&tab=exchange-settings&exchange_connected=1' );
-        wp_safe_redirect( $redirect_url );
-        exit;
+    public function filter_oauth_redirect( string $redirect_url, array $account ): string {
+        $context = is_array( $account['oauth_context'] ?? null ) ? $account['oauth_context'] : [];
+        if ( 'exchange_connect' === ( $context['purpose'] ?? '' ) ) {
+            return admin_url( 'admin.php?page=mspress-settings&tab=exchange-settings&exchange_connected=1' );
+        }
+
+        return $redirect_url;
     }
 
     public function ajax_directory_mailboxes(): void {
