@@ -80,13 +80,33 @@ class GraphService {
         return home_url( '/ms-oauth-callback', 'https' );
     }
 
+    private static bool $oauth_controller_registered = false;
+
     private function __construct() {
         TlsTransport::register_wordpress_hook();
         $this->credentials = new CredentialService();
         $this->tokenService = new TokenService($this->credentials);
         $this->clientService = new GraphClientService($this->tokenService);
         $this->diagnosticsService = new GraphDiagnostics($this->credentials);
+        $this->register_oauth_controller();
         $this->initializeGraph();
+    }
+
+    private function register_oauth_controller(): void {
+        if ( self::$oauth_controller_registered ) {
+            return;
+        }
+
+        self::$oauth_controller_registered = true;
+
+        if ( did_action( 'init' ) ) {
+            ( new OAuthController() )->register();
+            return;
+        }
+
+        add_action( 'init', static function (): void {
+            ( new OAuthController() )->register();
+        }, 20 );
     }
 
     /**
