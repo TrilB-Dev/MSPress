@@ -8,6 +8,7 @@
  */
 namespace MSPress\Assets;
 
+use MSPress\Includes\Functions\Helpers\LoaderHelper;
 use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\ImageHelper;
@@ -34,9 +35,24 @@ final class Assets {
      * @return void
      */
     public function register(): void {
-        add_filter( 'mspress_base_assets', [ $this, 'default_assets' ], 10, 2 );
-        add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend' ] );
-        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin' ] );
+        ( new LoaderHelper() )->register_component( $this, [
+            [ 
+                'type' => 'filter', 
+                'hook' => 'mspress_base_assets', 
+                'callback' => 'default_assets', 
+                'accepted_args' => 2 
+            ],
+            [ 
+                'type' => 'action', 
+                'hook' => 'wp_enqueue_scripts', 
+                'callback' => 'enqueue_frontend' 
+            ],
+            [ 
+                'type' => 'action', 
+                'hook' => 'admin_enqueue_scripts', 
+                'callback' => 'enqueue_admin' 
+            ],
+        ] )->run();
     }
     /**
      * Registers assets for a specific page.
@@ -48,9 +64,17 @@ final class Assets {
     public function register_page( string $page, array $assets ): void {
         $page = SanitizationHelper::key( $page );
         $this->pages[ $page ] = [
-            'styles' => array_merge( $this->pages[ $page ]['styles'] ?? [], $assets['styles'] ?? [] ),
-            'scripts' => array_merge( $this->pages[ $page ]['scripts'] ?? [], $assets['scripts'] ?? [] ),
-            'enqueue_media' => ( $this->pages[ $page ]['enqueue_media'] ?? false ) || ! empty( $assets['enqueue_media'] ),
+            'styles' => array_merge( 
+                $this->pages[ $page ]['styles'] ?? [], 
+                $assets['styles'] ?? [] 
+            ),
+            'scripts' => array_merge( 
+                $this->pages[ $page ]['scripts'] ?? [], 
+                $assets['scripts'] ?? [] 
+            ),
+            'enqueue_media' => ( 
+                $this->pages[ $page ]['enqueue_media'] ?? false ) || ! empty( $assets['enqueue_media'] 
+            ),
         ];
     }
     /**
@@ -103,11 +127,11 @@ final class Assets {
         if ( 'admin' === $context ) {
             $defaults['styles'][] = [
                 'handle' => 'mspress-admin-ui',
-                'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.ui.css',
+                'src' => MSPRESS_URL . 'src/Assets/dist/css/ui.admin.css',
             ];
             $defaults['scripts'][] = [
                 'handle' => 'mspress-admin-ui',
-                'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.ui.js',
+                'src' => MSPRESS_URL . 'src/Assets/dist/js/ui.admin.js',
                 'deps' => [ 'mspress-bootstrap' ],
                 'in_footer' => true,
             ];
@@ -123,10 +147,20 @@ final class Assets {
      */
     public function enqueue_frontend(): void {
         $registered = $this->pages['mspress'] ?? [];
-        $base = apply_filters( 'mspress_base_assets', [], 'frontend' );
+        $base = apply_filters( 
+            'mspress_base_assets', 
+            [], 
+            'frontend' 
+        );
         $this->enqueue_registered( 'frontend', [
-            'styles'  => array_merge( $base['styles'] ?? [], $registered['styles'] ?? [] ),
-            'scripts' => array_merge( $base['scripts'] ?? [], $registered['scripts'] ?? [] ),
+            'styles'  => array_merge( 
+                $base['styles'] ?? [], 
+                $registered['styles'] ?? [] 
+            ),
+            'scripts' => array_merge( 
+                $base['scripts'] ?? [], 
+                $registered['scripts'] ?? [] 
+            ),
             'enqueue_media' => ! empty( $registered['enqueue_media'] ),
         ] );
     }
@@ -138,12 +172,19 @@ final class Assets {
      */
     public function enqueue_admin( string $hook_suffix ): void {
         $page = RequestHelper::get_key( 'page' );
-        $is_mspress_page = false !== strpos( $hook_suffix, 'mspress' ) || isset( $this->pages[ $page ] );
+        $is_mspress_page = false !== strpos( 
+            $hook_suffix, 
+            'mspress' ) || isset( $this->pages[ $page ] 
+        );
         if ( ! $is_mspress_page ) {
             return;
         }
 
-        $base = apply_filters( 'mspress_base_assets', [], 'admin' );
+        $base = apply_filters( 
+            'mspress_base_assets', 
+            [], 
+            'admin' 
+        );
         $assets = [
             'styles'  => $base['styles'] ?? [],
             'scripts' => $base['scripts'] ?? [],
@@ -152,8 +193,14 @@ final class Assets {
 
         if ( $is_mspress_page ) {
             $registered = $this->pages[ $page ] ?? [];
-            $assets['styles'] = array_merge( $assets['styles'], $registered['styles'] ?? [] );
-            $assets['scripts'] = array_merge( $assets['scripts'], $registered['scripts'] ?? [] );
+            $assets['styles'] = array_merge( 
+                $assets['styles'], 
+                $registered['styles'] ?? [] 
+            );
+            $assets['scripts'] = array_merge( 
+                $assets['scripts'], 
+                $registered['scripts'] ?? [] 
+            );
             $assets['enqueue_media'] = ! empty( $registered['enqueue_media'] );
         }
 
@@ -172,7 +219,11 @@ final class Assets {
      * @return void
      */
     private function enqueue_registered( string $context, array $assets ): void {
-        $assets = apply_filters( 'mspress_' . $context . '_assets', $assets, $context );
+        $assets = apply_filters( 
+            'mspress_' . $context . '_assets', 
+            $assets, 
+            $context 
+        );
         $this->enqueue_bundle( $assets );
     }
     /**
@@ -182,23 +233,46 @@ final class Assets {
      * @return void
      */
     public function enqueue_bundle( array $assets ): void {
-        if ( ! empty( $assets['enqueue_media'] ) && function_exists( 'wp_enqueue_media' ) ) {
-            wp_enqueue_media();
+        if ( ! empty( $assets['enqueue_media'] ) ) {
+            LoaderHelper::enqueue_media();
         }
 
         if ( isset( $assets['styles'] ) && is_string( $assets['styles'] ) ) {
-            $assets['styles'] = [ [ 'handle' => 'mspress-admin-' . $assets['styles'], 'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.' . $assets['styles'] . '.css' ] ];
+            $assets['styles'] = [ [ 
+                'handle' => 'mspress-admin-' . $assets['styles'], 
+                'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.' . $assets['styles'] . '.css' 
+            ] ];
         }
         if ( isset( $assets['scripts'] ) && is_string( $assets['scripts'] ) ) {
-            $assets['scripts'] = [ [ 'handle' => 'mspress-admin-' . $assets['scripts'], 'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.' . $assets['scripts'] . '.js', 'deps' => [ 'mspress-bootstrap' ] ] ];
+            $assets['scripts'] = [ [ 
+                'handle' => 'mspress-admin-' . $assets['scripts'], 
+                'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.' . $assets['scripts'] . '.js', 
+                'deps' => [ 'mspress-bootstrap' ] 
+            ] ];
         }
         foreach ( $assets['styles'] ?? [] as $style ) {
-            wp_enqueue_style( $style['handle'], $style['src'], $style['deps'] ?? [], $style['version'] ?? MSPRESS_VERSION, $style['media'] ?? 'all' );
+            LoaderHelper::enqueue_style( 
+                $style['handle'], 
+                $style['src'], 
+                $style['deps'] ?? [], 
+                $style['version'] ?? MSPRESS_VERSION, 
+                $style['media'] ?? 'all' 
+            );
         }
         foreach ( $assets['scripts'] ?? [] as $script ) {
-            wp_enqueue_script( $script['handle'], $script['src'], $script['deps'] ?? [], $script['version'] ?? MSPRESS_VERSION, $script['in_footer'] ?? true );
+            LoaderHelper::enqueue_script( 
+                $script['handle'], 
+                $script['src'], 
+                $script['deps'] ?? [], 
+                $script['version'] ?? MSPRESS_VERSION, 
+                $script['in_footer'] ?? true 
+            );
             if ( isset( $script['localize']['object_name'], $script['localize']['data'] ) ) {
-                wp_localize_script( $script['handle'], $script['localize']['object_name'], $script['localize']['data'] );
+                LoaderHelper::localize_script( 
+                    $script['handle'], 
+                    $script['localize']['object_name'], 
+                    $script['localize']['data'] 
+                );
             }
         }
         if ( 'mspress-settings' === RequestHelper::get_key( 'page' ) ) {
@@ -210,7 +284,11 @@ final class Assets {
             ];
             foreach ( [ 'mspress-admin-settings', 'mspress-admin-plugins' ] as $handle ) {
                 if ( wp_script_is( $handle, 'enqueued' ) ) {
-                    wp_localize_script( $handle, 'mspressSettingsTabs', $settings_config );
+                    LoaderHelper::localize_script( 
+                        $handle, 
+                        'mspressSettingsTabs', 
+                        $settings_config 
+                    );
                 }
             }
         }

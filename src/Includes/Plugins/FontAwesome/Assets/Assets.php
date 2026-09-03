@@ -75,11 +75,11 @@ final class Assets {
         }
 
         if ( wp_style_is( $handle, 'registered' ) || wp_style_is( $handle, 'enqueued' ) ) {
-            wp_enqueue_style( $handle );
+            LoaderHelper::enqueue_style( $handle );
         }
 
         if ( wp_script_is( $handle, 'registered' ) || wp_script_is( $handle, 'enqueued' ) ) {
-            wp_enqueue_script( $handle );
+            LoaderHelper::enqueue_script( $handle );
         }
     }
 

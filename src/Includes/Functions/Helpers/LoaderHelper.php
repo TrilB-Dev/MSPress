@@ -51,4 +51,61 @@ class LoaderHelper extends WPLoader {
 
         return $this;
     }
+
+    /**
+     * Enqueue a stylesheet through the shared plugin helper layer.
+     *
+     * @param string       $handle Name of the stylesheet.
+     * @param string       $src URL to the stylesheet.
+     * @param array<int, string> $deps Optional dependency handles.
+     * @param string|bool|null $ver Version string.
+     * @param string       $media Media type.
+     * @return void
+     */
+    public static function enqueue_style( string $handle, string $src = '', array $deps = [], $ver = false, string $media = 'all' ): void {
+        if ( function_exists( 'wp_enqueue_style' ) ) {
+            wp_enqueue_style( $handle, $src, $deps, $ver, $media );
+        }
+    }
+
+    /**
+     * Enqueue a script through the shared plugin helper layer.
+     *
+     * @param string $handle Name of the script.
+     * @param string $src URL to the script.
+     * @param array<int, string> $deps Optional dependency handles.
+     * @param string|bool|null $ver Version string.
+     * @param bool $in_footer Whether to enqueue in the footer.
+     * @return void
+     */
+    public static function enqueue_script( string $handle, string $src = '', array $deps = [], $ver = false, bool $in_footer = true ): void {
+        if ( function_exists( 'wp_enqueue_script' ) ) {
+            wp_enqueue_script( $handle, $src, $deps, $ver, $in_footer );
+        }
+    }
+
+    /**
+     * Localize a script through the shared plugin helper layer.
+     *
+     * @param string $handle Script handle.
+     * @param string $object_name JS object name.
+     * @param array|string|int|float|bool|null $data Data to localize.
+     * @return void
+     */
+    public static function localize_script( string $handle, string $object_name, $data ): void {
+        if ( function_exists( 'wp_localize_script' ) ) {
+            wp_localize_script( $handle, $object_name, $data );
+        }
+    }
+
+    /**
+     * Enqueue media library through the shared plugin helper layer.
+     *
+     * @return void
+     */
+    public static function enqueue_media(): void {
+        if ( function_exists( 'wp_enqueue_media' ) ) {
+            wp_enqueue_media();
+        }
+    }
 }
