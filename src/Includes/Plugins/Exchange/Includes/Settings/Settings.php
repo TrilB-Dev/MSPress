@@ -417,7 +417,12 @@ final class Settings {
         if ( ! AjaxHelper::authorized( 'mspress_exchange_settings', 'mspress_settings_plugins_int_edit' ) ) {
             AjaxHelper::unauthorized( __( 'You are not authorized to validate Exchange mailboxes.', 'mspress' ) );
         }
+
         $email = sanitize_email( SanitizationHelper::text( $_POST['email'] ?? '' ) );
+        if ( ! is_string( $email ) || ! preg_match( '/^[^\s@]+@[^\s@]+\.[^\s@]+$/', $email ) ) {
+            wp_send_json_error( [ 'message' => __( 'Enter a valid mailbox email address.', 'mspress' ) ], 400 );
+        }
+
         $graph = $this->get_delegated_graph();
         if ( ! $graph ) {
             wp_send_json_error( [ 'message' => __( 'Reconnect the Microsoft 365 account before validating a mailbox.', 'mspress' ) ], 400 );
