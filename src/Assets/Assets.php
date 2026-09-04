@@ -35,11 +35,13 @@ final class Assets {
      * @return void
      */
     public function register(): void {
-        ( new LoaderHelper() )->register_component( $this, [
+        ( new LoaderHelper() )->register_component( $this, 
+        [
             [ 
                 'type' => 'filter', 
                 'hook' => 'mspress_base_assets', 
                 'callback' => 'default_assets', 
+                'priority' => 90,
                 'accepted_args' => 2 
             ],
             [ 

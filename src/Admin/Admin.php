@@ -69,25 +69,81 @@ final class Admin {
      * @param Assets $assets The Assets instance for managing plugin assets.
      */
     public function __construct( Assets $assets ) {
+        /**
+         * Initialize admin managers and functions.
+         */
         $this->dashboard_manager = new DashboardManager();
+        /**
+         * Initialize the settings manager.
+         */
         $this->settings_manager = new SettingsManager();
+        /**
+         * Initialize the tools manager.
+         */
         $this->tools_manager = new ToolsManager();
+        /**
+         * Initialize the plugin functions.
+         */
         $this->plugin_functions = new FunctionsPlugins();
+        /**
+         * Initialize the settings functions.
+         */
         $this->settings_functions = new FunctionsSettings( $this->plugin_functions );
+        /**
+         * Initialize the loader helper.
+         */
         $this->loader = new LoaderHelper();
+        /**
+         * Register assets for the admin managers.
+         */
         $this->dashboard_manager->register_assets( $assets );
+        /**
+         * Register assets for the settings manager.
+         */
         $this->settings_manager->register_assets( $assets );
+        /**
+         * Register assets for the tools manager.
+         */
         $this->tools_manager->register_assets( $assets );
+        /**
+         * Register assets for the loader helper.
+         */
         $this->loader->register_component( $this, [
-            [ 'type' => 'action', 'hook' => 'admin_menu', 'callback' => 'register_admin_menu' ],
-            [ 'type' => 'action', 'hook' => 'wp_ajax_mspress_load_settings_tab', 'callback' => 'load_settings_tab' ],
+            [ 
+                'type' => 'action',
+                'hook' => 'admin_menu',
+                'callback' => 'register_admin_menu' 
+            ],
+            [ 
+                'type' => 'action',
+                'hook' => 'wp_ajax_mspress_load_settings_tab',
+                'callback' => 'load_settings_tab'
+            ],
         ] );
+        /**
+         * Register actions for the settings functions.
+         */
         $this->loader->register_component( $this->settings_functions, [
-            [ 'type' => 'action', 'hook' => 'admin_init', 'callback' => 'register_settings' ],
+            [ 
+                'type' => 'action',
+                'hook' => 'admin_init',
+                'callback' => 'register_settings'
+            ],
         ] );
+        /**
+         * Register actions for the plugin functions.
+         */
         $this->loader->register_component( $this->plugin_functions, [
-            [ 'type' => 'action', 'hook' => 'wp_ajax_mspress_toggle_plugin', 'callback' => 'toggle_plugin' ],
-            [ 'type' => 'action', 'hook' => 'wp_ajax_mspress_save_plugin_settings', 'callback' => 'save_plugin_settings' ],
+            [ 
+                'type' => 'action',
+                'hook' => 'wp_ajax_mspress_toggle_plugin',
+                'callback' => 'toggle_plugin'
+            ],
+            [ 
+                'type' => 'action',
+                'hook' => 'wp_ajax_mspress_save_plugin_settings',
+                'callback' => 'save_plugin_settings'
+            ],
         ] )->run();
     }
     /**

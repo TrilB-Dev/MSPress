@@ -107,15 +107,19 @@ final class ExchangeSettings {
                             <div data-exchange-import-status role="status" aria-live="polite"></div>
                             <div data-exchange-profile-step-email>
                                 <?php echo FormFieldHelper::floating(
-                                    FormFieldHelper::input( 'exchange_profile_email', '', [
-                                        'type' => 'email',
-                                        'id' => 'mspress-exchange-profile-email',
-                                        'attributes' => [
-                                            'autocomplete' => 'email',
-                                            'required' => true,
-                                            'data-live-validation' => 'email',
-                                        ],
-                                    ] ),
+                                    FormFieldHelper::input( 
+                                        'exchange_profile_email', 
+                                        '', 
+                                        [
+                                            'type' => 'email',
+                                            'id' => 'mspress-exchange-profile-email',
+                                            'attributes' => [
+                                                'autocomplete' => 'email',
+                                                'required' => true,
+                                                'data-live-validation' => 'email',
+                                            ],
+                                        ] 
+                                    ),
                                     __( 'Exchange mailbox address', 'mspress' ),
                                     [
                                         'for' => 'mspress-exchange-profile-email',
