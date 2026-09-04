@@ -100,6 +100,7 @@ final class Assets {
         $assets['styles'][] = [
             'handle' => 'mspress-admin-exchange',
             'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.admin.css',
+            'deps' => [ 'licencepress-bootstrap-select', 'mspress-bootstrap' ],
         ];
 
         $script = 'exchange.settings.admin';

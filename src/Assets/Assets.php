@@ -92,6 +92,7 @@ final class Assets {
                 [
                     'handle' => 'mspress-wp-override',
                     'src' => MSPRESS_URL . 'src/Assets/dist/css/wpoverride.css',
+                    'version' => '1.0.0',
                     'deps' => [ 'forms' ],
                 ],
                 [
@@ -104,9 +105,7 @@ final class Assets {
                     'handle' => 'mspress-bootstrap-select',
                     'src' => MSPRESS_URL . 'src/Assets/dist/css/bootstrap-select.css',
                     'version' => '1.2.2',
-                    'deps' => [
-                        'mspress-bootstrap'
-                        ]
+                    'deps' => [ 'mspress-bootstrap' ]
                 ],
             ],
             'scripts' => [
