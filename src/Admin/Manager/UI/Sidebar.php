@@ -44,7 +44,7 @@ final class Sidebar {
 							<div class="mspress-sidebar-group">
 								<h3 class="mspress-sidebar-group-heading">
 									<button class="mspress-sidebar-link mspress-sidebar-group-link border-0 bg-transparent w-100 text-start <?php echo $expanded ? '' : 'collapsed'; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#mspress-group-<?php echo esc_attr( $key ); ?>" aria-expanded="<?php echo $expanded ? 'true' : 'false'; ?>" aria-controls="mspress-group-<?php echo esc_attr( $key ); ?>">
-										<?php echo self::render_icon_markup( (string) ( $group['icon'] ?? '' ) ); ?><?php echo esc_html( $group['label'] ); ?><span class="ms-auto text-secondary"><?php echo count( $group['items'] ); ?></span>
+										<?php echo self::render_icon_markup( (string) ( $group['icon'] ?? '' ), false, (string) ( $group['icon_class'] ?? '' ) ); ?><?php echo esc_html( $group['label'] ); ?><span class="ms-auto text-secondary"><?php echo count( $group['items'] ); ?></span>
 									</button>
 								</h3>
 								<div id="mspress-group-<?php echo esc_attr( $key ); ?>" class="collapse <?php echo $expanded ? 'show' : ''; ?>">
@@ -64,35 +64,41 @@ final class Sidebar {
 		<?php
 	}
 
-	private static function render_icon_markup( string $icon, bool $with_spacing = false ): string {
-		$icon = trim( $icon );
-		if ( '' === $icon ) {
-			return '';
-		}
+private static function render_icon_markup( string $icon, bool $with_spacing = false, string $custom_class = '' ): string {
+        $icon = trim( $icon );
+        if ( '' === $icon ) {
+            return '';
+        }
 
-		if ( preg_match( '/^(svg|png)\s+(.+)$/i', $icon, $matches ) ) {
-			$resolved = MSIconHelper::get_icon( trim( $matches[2] ), strtolower( $matches[1] ) );
-			if ( '' !== $resolved ) {
-				return sprintf(
-					'<span class="mspress-sidebar-icon mspress-sidebar-icon-image" aria-hidden="true"><img src="%1$s" alt="" loading="lazy"%2$s /></span>',
-					esc_url( $resolved ),
-					$with_spacing ? ' class="me-2"' : ''
-				);
-			}
-		}
+        $extra_classes = array_filter( array_map( 'sanitize_html_class', preg_split( '/\s+/', trim( $custom_class ), -1, PREG_SPLIT_NO_EMPTY ) ?: [] ), static fn ( $class ) => '' !== (string) $class );
+        $class_attr    = '' === $extra_classes ? '' : ' ' . implode( ' ', $extra_classes );
 
-		if ( preg_match( '/^(https?:)?\/\//i', $icon ) || preg_match( '/\.(svg|png|jpg|jpeg|webp)(\?.*)?$/i', $icon ) ) {
-			return sprintf(
-				'<span class="mspress-sidebar-icon mspress-sidebar-icon-image" aria-hidden="true"><img src="%1$s" alt="" loading="lazy"%2$s /></span>',
-				esc_url( $icon ),
-				$with_spacing ? ' class="me-2"' : ''
-			);
-		}
+        if ( preg_match( '/^(svg|png)\s+(.+)$/i', $icon, $matches ) ) {
+            $resolved = MSIconHelper::get_icon( trim( $matches[2] ), strtolower( $matches[1] ) );
+            if ( '' !== $resolved ) {
+                return sprintf(
+                    '<span class="mspress-sidebar-icon mspress-sidebar-icon-image%3$s" aria-hidden="true"><img src="%1$s" alt="" loading="lazy"%2$s /></span>',
+                    esc_url( $resolved ),
+                    $with_spacing ? ' class="me-2"' : '',
+                    esc_attr( $class_attr )
+                );
+            }
+        }
 
-		return sprintf(
-			'<span class="mspress-sidebar-icon" aria-hidden="true"><i class="%1$s%2$s"></i></span>',
-			esc_attr( $icon ),
-			$with_spacing ? ' me-2' : ''
+        if ( preg_match( '/^(https?:)?\/\//i', $icon ) || preg_match( '/\.(svg|png|jpg|jpeg|webp)(\?.*)?$/i', $icon ) ) {
+            return sprintf(
+                '<span class="mspress-sidebar-icon mspress-sidebar-icon-image%3$s" aria-hidden="true"><img src="%1$s" alt="" loading="lazy"%2$s /></span>',
+                esc_url( $icon ),
+                $with_spacing ? ' class="me-2"' : '',
+                esc_attr( $class_attr )
+            );
+        }
+
+        return sprintf(
+            '<span class="mspress-sidebar-icon%3$s" aria-hidden="true"><i class="%1$s%2$s"></i></span>',
+            esc_attr( $icon ),
+            $with_spacing ? ' me-2' : '',
+            esc_attr( $class_attr )
 		);
 	}
 

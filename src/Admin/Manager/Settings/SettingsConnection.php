@@ -51,20 +51,20 @@ final class SettingsConnection {
                     <div class="row g-3">
                         <div class="col-12 col-xl-6">
                             <?php echo FormFieldHelper::label( 'mspress-ms365-tenant-id', __( 'Tenant ID or verified domain', 'mspress' ) ); ?>
-                            <?php echo FormFieldHelper::input( 'mspress_ms365[tenant_id]', $tenant_id, [ 'id' => 'mspress-ms365-tenant-id', 'type' => 'text', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
+                            <?php echo FormFieldHelper::input( 'mspress_ms365[tenant_id]', $tenant_id, [ 'id' => 'mspress-ms365-tenant-id', 'type' => 'text', 'class' => 'w-100', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
                         </div>
                         <div class="col-12 col-xl-6">
                             <?php echo FormFieldHelper::label( 'mspress-ms365-client-id', __( 'Application (client) ID', 'mspress' ) ); ?>
-                            <?php echo FormFieldHelper::input( 'mspress_ms365[client_id]', $client_id, [ 'id' => 'mspress-ms365-client-id', 'type' => 'text', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
+                            <?php echo FormFieldHelper::input( 'mspress_ms365[client_id]', $client_id, [ 'id' => 'mspress-ms365-client-id', 'type' => 'text', 'class' => 'w-100', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
                         </div>
                         <div class="col-12">
                             <?php echo FormFieldHelper::label( 'mspress-ms365-client-secret', __( 'Client secret', 'mspress' ), [ 'description' => __( 'Leave blank to keep the currently stored secret.', 'mspress' ) ] ); ?>
-                            <?php echo FormFieldHelper::input( 'mspress_ms365[client_secret]', '', [ 'id' => 'mspress-ms365-client-secret', 'type' => 'password', 'autocomplete' => 'new-password' ] ); ?>
+                            <?php echo FormFieldHelper::input( 'mspress_ms365[client_secret]', '', [ 'id' => 'mspress-ms365-client-secret', 'type' => 'password', 'class' => 'w-100', 'autocomplete' => 'new-password' ] ); ?>
                         </div>
                         <div class="col-12">
                             <?php echo FormFieldHelper::label( 'mspress-ms365-callback-url', __( 'Browser callback URL', 'mspress' ), [ 'description' => __( 'Add this exact URL as a Web redirect URI in your Microsoft Entra app registration.', 'mspress' ) ] ); ?>
                             <div class="input-group">
-                                <?php echo FormFieldHelper::input( 'mspress_callback_url', $callback_url, [ 'id' => 'mspress-ms365-callback-url', 'type' => 'url', 'readonly' => true, 'class' => 'font-monospace' ] ); ?>
+                                <?php echo FormFieldHelper::input( 'mspress_callback_url', $callback_url, [ 'id' => 'mspress-ms365-callback-url', 'type' => 'url', 'readonly' => true, 'class' => 'font-monospace w-100' ] ); ?>
                                 <a class="button button-secondary" href="<?php echo esc_url( $callback_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Open callback', 'mspress' ); ?></a>
                             </div>
                         </div>

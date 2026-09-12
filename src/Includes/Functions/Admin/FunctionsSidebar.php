@@ -232,7 +232,8 @@ final class FunctionsSidebar {
 					}
 
 					if ( 'group' === ( $definition['type'] ?? '' ) ) {
-						$menus[] = MSASMHelper::define( $definition['label'] ?? '', $definition['slug'] ?? '', $definition['icon'] ?? '', '', $definition['capability'] ?? '' );
+						$group_class = (string) ( $definition['icon_class'] ?? $definition['class'] ?? '' );
+						$menus[] = MSASMHelper::define( $definition['label'] ?? '', $definition['slug'] ?? '', $definition['icon'] ?? '', '', $definition['capability'] ?? '', $group_class );
 						foreach ( $definition['items'] ?? [] as $child ) {
 							if ( is_array( $child ) ) {
 								$menus[] = MSASMHelper::define( $child['label'] ?? '', self::sidebar_slug( $child ), $child['icon'] ?? '', $definition['slug'] ?? '', $child['capability'] ?? '' );
@@ -265,12 +266,13 @@ final class FunctionsSidebar {
 
 	/** @param array<string, array<string, mixed>> $groups @param array<string, mixed> $menu */
 	private static function add_sidebar_group( array &$groups, array $menu ): void {
-		$slug  = self::menu_slug( $menu );
-		$label = (string) ( $menu['name'] ?? '' );
-		$icon  = (string) ( $menu['icon'] ?? '' );
+		$slug       = self::menu_slug( $menu );
+		$label      = (string) ( $menu['name'] ?? '' );
+		$icon       = (string) ( $menu['icon'] ?? '' );
+		$icon_class = (string) ( $menu['icon_class'] ?? $menu['class'] ?? '' );
 
 		if ( '' !== $slug && '' !== $label && '' !== $icon ) {
-			$groups[ $slug ] = [ 'label' => $label, 'icon' => $icon, 'items' => [] ];
+			$groups[ $slug ] = [ 'label' => $label, 'icon' => $icon, 'icon_class' => $icon_class, 'items' => [] ];
 		}
 	}
 

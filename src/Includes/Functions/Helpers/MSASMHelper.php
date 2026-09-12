@@ -24,13 +24,14 @@ final class MSASMHelper {
      * @param string $parent Existing group slug, or empty for a new group.
      * @return array<string, mixed>
      */
-    public static function define( string $name, string $slug, string $icon, string $parent = '', string $capability = '' ): array {
+    public static function define( string $name, string $slug, string $icon, string $parent = '', string $capability = '', string $icon_class = '' ): array {
         return [
             'parent' => sanitize_key( $parent ),
             'name'   => $name,
             'slug'   => self::sanitize_slug( $slug ),
             'icon'   => self::normalize_icon( $icon ),
             'capability' => sanitize_key( $capability ),
+            'icon_class' => self::normalize_icon_class( $icon_class ),
         ];
     }
 
@@ -69,5 +70,22 @@ final class MSASMHelper {
         }
 
         return sanitize_text_field( $icon );
+    }
+
+    private static function normalize_icon_class( string $icon_class ): string {
+        $icon_class = trim( $icon_class );
+        if ( '' === $icon_class ) {
+            return '';
+        }
+
+        $classes = preg_split( '/\s+/', $icon_class, -1, PREG_SPLIT_NO_EMPTY );
+        if ( ! is_array( $classes ) ) {
+            return '';
+        }
+
+        $classes = array_map( 'sanitize_html_class', $classes );
+        $classes = array_filter( $classes, static fn ( $class ): bool => '' !== (string) $class );
+
+        return implode( ' ', $classes );
     }
 }
