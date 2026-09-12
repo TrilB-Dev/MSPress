@@ -3,9 +3,6 @@ const fs = require('fs');
 const { copyFileSync, mkdirSync, readFileSync, writeFileSync } = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const adminStyles = './src/Assets/scss/ui.admin.scss';
-const frontendStyles = './src/Assets/scss/ui.frontend.scss';
-
 class CopyUnprocessedAssetPlugin {
   constructor(patterns) {
     this.patterns = patterns;
@@ -36,81 +33,78 @@ const entries = {
     './src/Assets/js/bootstrap.js',
     './src/Assets/scss/bootstrap.scss',
   ],
-  'bootstrap-select': [
-    './src/Assets/js/bootstrap-select.js',
-    './src/Assets/scss/bootstrap-select.scss',
+  'bootstrap-select-control': './src/Assets/js/msp-bootstrap-select.js',
+  'admin.ui': [
+    './src/Assets/js/ui.admin.js',
+    './src/Assets/js/dashboard.admin.js',
+    './src/Assets/js/settings.admin.js',
+    './src/Assets/js/page.admin.js',
+    './src/Assets/js/ui.frontend.js',
   ],
   'wpoverride': './src/Assets/scss/wpoverride.scss',
-  'ui.admin': [ './src/Assets/js/ui.admin.js', adminStyles ],
-  'dashboard.admin': [ './src/Assets/js/dashboard.admin.js', adminStyles ],
-  'admin.settings': [ './src/Assets/js/settings.admin.js', adminStyles ],
-  'plugins.admin': [ './src/Assets/js/settings.admin.js', adminStyles ],
-  'ui.frontend': [ './src/Assets/js/ui.frontend.js', frontendStyles ],
-  'debug.admin': [ './src/Assets/js/page.admin.js', adminStyles ],
+};
+const fontAwesomeEntries = {
+  'icon-picker': [
+    './src/Includes/Plugins/FontAwesome/Assets/js/fontawesome.icon-picker.js',
+    './src/Includes/Plugins/FontAwesome/Assets/scss/fontawesome.icon-picker.scss',
+  ],
+};
+const tinyMCEEntries = {
+  'tinyMCE': [
+    './src/Includes/Plugins/TinyMCE/Assets/js/tinymce.js',
+    './src/Includes/Plugins/TinyMCE/Assets/scss/tinymce.scss',
+  ],
+};
+const exchangeEntries = {
+  'exchange.admin': [
+    './src/Includes/Plugins/Exchange/Assets/js/exchange.settings.admin.js',
+    './src/Includes/Plugins/Exchange/Assets/scss/exchange.admin.scss',
+  ],
+  'exchange.logs.admin': [
+    './src/Includes/Plugins/Exchange/Assets/js/exchange.logs.admin.js',
+  ],
+  'exchange.trace.admin': [
+    './src/Includes/Plugins/Exchange/Assets/js/exchange.trace.admin.js',
+  ],
+  'exchange.templates.admin': [
+    './src/Includes/Plugins/Exchange/Assets/js/exchange.templates.admin.js',
+  ],
+  'exchange.frontend': [
+    './src/Includes/Plugins/Exchange/Assets/js/exchange.frontend.js',
+    './src/Includes/Plugins/Exchange/Assets/scss/exchange.frontend.scss',
+  ],
+};
+const entraEntries = {
+  'entra.admin': [
+    './src/Includes/Plugins/Entra/Assets/js/entra.admin.js',
+    './src/Includes/Plugins/Entra/Assets/scss/entra.admin.scss',
+  ],
+  'entra.frontend': [
+    './src/Includes/Plugins/Entra/Assets/js/entra.frontend.js',
+    './src/Includes/Plugins/Entra/Assets/scss/entra.frontend.scss',
+  ],
+};
+const onedriveEntries = {
+  'onedrive.admin': [
+    './src/Includes/Plugins/Onedrive/Assets/js/onedrive.admin.js',
+    './src/Includes/Plugins/Onedrive/Assets/scss/onedrive.admin.scss',
+  ],
+  'onedrive.frontend': [
+    './src/Includes/Plugins/Onedrive/Assets/js/onedrive.frontend.js',
+    './src/Includes/Plugins/Onedrive/Assets/scss/onedrive.frontend.scss',
+  ],
+};
+const sharepointEntries = {
+  'sharepoint.admin': [
+    './src/Includes/Plugins/Sharepoint/Assets/js/sharepoint.admin.js',
+    './src/Includes/Plugins/Sharepoint/Assets/scss/sharepoint.admin.scss',
+  ],
+  'sharepoint.frontend': [
+    './src/Includes/Plugins/Sharepoint/Assets/js/sharepoint.frontend.js',
+    './src/Includes/Plugins/Sharepoint/Assets/scss/sharepoint.frontend.scss',
+  ],
 };
 
-const extensionEntries = (pluginName, directoryName) => {
-  const name = pluginName.toLowerCase();
-
-  if ( 'exchange' === name ) {
-    const exchangeAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/exchange.admin.scss`;
-    const exchangeFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/exchange.frontend.scss`;
-    return {
-      'exchange.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.admin.js`, exchangeAdminStyles ],
-      'exchange.logs.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.logs.admin.js`, exchangeAdminStyles ],
-      'exchange.trace.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.trace.admin.js`, exchangeAdminStyles ],
-      'exchange.templates.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.templates.admin.js`, exchangeAdminStyles ],
-      'exchange.settings.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.settings.admin.js`, exchangeAdminStyles ],
-      'exchange.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/exchange.frontend.js`, exchangeFrontendStyles ],
-    };
-  }
-  if ( 'entra' === name ) {
-    const entraAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/entra.admin.scss`;
-    const entraFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/entra.frontend.scss`;
-    return {
-      'entra.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/entra.admin.js`, entraAdminStyles ],
-      'entra.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/entra.frontend.js`, entraFrontendStyles ],
-    };
-  }
-  if ( 'onedrive' === name ) {
-    const onedriveAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/onedrive.admin.scss`;
-    const onedriveFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/onedrive.frontend.scss`;
-    return {
-      'onedrive.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.admin.js`, onedriveAdminStyles ],
-      'onedrive.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/onedrive.frontend.js`, onedriveFrontendStyles ],
-    };
-  }
-  if ( 'sharepoint' === name ) {
-    const sharepointAdminStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/sharepoint.admin.scss`;
-    const sharepointFrontendStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/sharepoint.frontend.scss`;
-    return {
-      'sharepoint.admin': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.admin.js`, sharepointAdminStyles ],
-      'sharepoint.frontend': [ `./src/Includes/Plugins/${directoryName}/Assets/js/sharepoint.frontend.js`, sharepointFrontendStyles ],
-    };
-  }
-  if ( 'fontawesome' === name ) {
-    const fontawesomeIconPickerStyles = `./src/Includes/Plugins/${directoryName}/Assets/scss/fontawesome.icon-picker.scss`;
-    return {
-      'fontawesome.icon-picker': [ `./src/Includes/Plugins/${directoryName}/Assets/js/fontawesome.icon-picker.js`, fontawesomeIconPickerStyles ],
-    };
-  }
-
-  return {
-    [name]: [
-      `./src/Includes/Plugins/${directoryName}/Assets/js/${name}.js`,
-      `./src/Includes/Plugins/${directoryName}/Assets/scss/${name}.scss`,
-    ],
-  };
-};
-
-const extensionBuilds = [
-  [ 'entra', 'Entra' ],
-  [ 'exchange', 'Exchange' ],
-  [ 'onedrive', 'Onedrive' ],
-  [ 'sharepoint', 'Sharepoint' ],
-  [ 'tinymce', 'TinyMCE' ],
-  [ 'fontawesome', 'FontAwesome' ],
-];
 
 const jsDirectory = path.resolve(__dirname, 'src/Assets/js');
 fs.readdirSync(jsDirectory)
@@ -205,9 +199,9 @@ module.exports = [
   },
   {
     ...shared,
-    entry: entries,
+    entry: fontAwesomeEntries,
     output: {
-      path: path.resolve(__dirname, 'src/Assets/dist'),
+      path: path.resolve(__dirname, 'src/Includes/Plugins/FontAwesome/Assets/dist'),
       filename: 'js/[name].js',
       clean: true,
     },
@@ -215,16 +209,64 @@ module.exports = [
       new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
     ],
   },
-  ...extensionBuilds.map(([pluginName, directoryName ]) => ({
+  {
     ...shared,
-    entry: extensionEntries(pluginName, directoryName),
+    entry: tinyMCEEntries,
     output: {
-      path: path.resolve(__dirname, `src/Includes/Plugins/${directoryName}/Assets/dist`),
+      path: path.resolve(__dirname, 'src/Includes/Plugins/TinyMCE/Assets/dist'),
       filename: 'js/[name].js',
       clean: true,
     },
     plugins: [
       new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
     ],
-  })),
+  },
+  {
+    ...shared,
+    entry: exchangeEntries,
+    output: {
+      path: path.resolve(__dirname, 'src/Includes/Plugins/Exchange/Assets/dist'),
+      filename: 'js/[name].js',
+      clean: true,
+    },
+    plugins: [
+      new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
+    ],
+  },
+  {
+    ...shared,
+    entry: entraEntries,
+    output: {
+      path: path.resolve(__dirname, 'src/Includes/Plugins/Entra/Assets/dist'),
+      filename: 'js/[name].js',
+      clean: true,
+    },
+    plugins: [
+      new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
+    ],
+  },
+  {
+    ...shared,
+    entry: onedriveEntries,
+    output: {
+      path: path.resolve(__dirname, 'src/Includes/Plugins/Onedrive/Assets/dist'),
+      filename: 'js/[name].js',
+      clean: true,
+    },
+    plugins: [
+      new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
+    ],
+  },
+  {
+    ...shared,
+    entry: sharepointEntries,
+    output: {
+      path: path.resolve(__dirname, 'src/Includes/Plugins/Sharepoint/Assets/dist'),
+      filename: 'js/[name].js',
+      clean: true,
+    },
+    plugins: [
+      new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
+    ],
+  }
 ];

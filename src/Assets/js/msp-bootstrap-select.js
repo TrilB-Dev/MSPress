@@ -1,5 +1,3 @@
-import Selectpicker from '../../../node_modules/@crestapps/bootstrap-select/dist/js/bootstrap-select.min.js';
-
 const root = document;
 
 const initializeField = (field, options = {}) => {

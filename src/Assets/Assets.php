@@ -103,7 +103,7 @@ final class Assets {
                 ],
                 [
                     'handle' => 'mspress-bootstrap-select',
-                    'src' => MSPRESS_URL . 'src/Assets/dist/css/bootstrap-select.css',
+                    'src' => MSPRESS_URL . 'src/Assets/dist/css/bootstrap-select.min.css',
                     'version' => '1.2.2',
                     'deps' => [ 'mspress-bootstrap' ]
                 ],
@@ -123,9 +123,16 @@ final class Assets {
                 ],
                 [
                     'handle' => 'mspress-bootstrap-select',
-                    'src' => MSPRESS_URL . 'src/Assets/dist/js/bootstrap-select.js',
+                    'src' => MSPRESS_URL . 'src/Assets/dist/js/bootstrap-select.min.js',
                     'version' => '1.2.2',
                     'deps' => [ 'mspress-bootstrap' ],
+                    'in_footer' => true
+                ],
+                [
+                    'handle' => 'mspress-bootstrap-select-control',
+                    'src' => MSPRESS_URL . 'src/Assets/dist/js/msp-bootstrap-select-control.js',
+                    'version' => '1.0.4',
+                    'deps' => [ 'mspress-bootstrap-select' ],
                     'in_footer' => true
                 ],
                 [
