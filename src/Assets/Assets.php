@@ -130,8 +130,8 @@ final class Assets {
                 ],
                 [
                     'handle' => 'mspress-bootstrap-select-control',
-                    'src' => MSPRESS_URL . 'src/Assets/dist/js/msp-bootstrap-select-control.js',
-                    'version' => '1.0.4',
+                    'src' => MSPRESS_URL . 'src/Assets/dist/js/bootstrap-select-control.js',
+                    'version' => '1.0.0',
                     'deps' => [ 'mspress-bootstrap-select' ],
                     'in_footer' => true
                 ],
@@ -148,11 +148,11 @@ final class Assets {
         if ( 'admin' === $context ) {
             $defaults['styles'][] = [
                 'handle' => 'mspress-admin-ui',
-                'src' => MSPRESS_URL . 'src/Assets/dist/css/ui.admin.css',
+                'src' => MSPRESS_URL . 'src/Assets/dist/css/admin.ui.css',
             ];
             $defaults['scripts'][] = [
                 'handle' => 'mspress-admin-ui',
-                'src' => MSPRESS_URL . 'src/Assets/dist/js/ui.admin.js',
+                'src' => MSPRESS_URL . 'src/Assets/dist/js/admin.ui.js',
                 'deps' => [ 'mspress-bootstrap' ],
                 'in_footer' => true,
             ];
@@ -330,13 +330,13 @@ final class Assets {
      */
     private function resolve_bundle_name( string $bundle ): string {
         $mapping = [
-            'dashboard' => 'dashboard.admin',
-            'debug' => 'debug.admin',
-            'settings' => 'admin.settings',
-            'plugins' => 'plugins.admin',
+            'dashboard' => 'admin.ui',
+            'debug' => 'admin.ui',
+            'settings' => 'admin.ui',
+            'plugins' => 'admin.ui',
         ];
 
-        return $mapping[ $bundle ] ?? ( $bundle . '.admin' );
+        return $mapping[ $bundle ] ?? 'admin.ui';
     }
 
     public static function get_image( string $file ): string {
