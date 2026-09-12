@@ -1,5 +1,4 @@
-// Keep WordPress admin form rules from overriding Bootstrap on MSPress screens.
-.mspress-admin,
+// Keep WordPress admin form rules from overriding Bootstrap on WikiPress screens.
 .licencepress-admin {
 	button,
 	input,
@@ -92,7 +91,7 @@
 		margin: 0 0.35rem 0 0;
 		padding: 0;
 		vertical-align: -0.125em;
-		width: auto;
+		width: 2em;
 	}
 
 	input[type='checkbox'] {
@@ -115,7 +114,7 @@
 			border-radius: 2em;
 			height: 1em;
 			margin-left: -2.5em;
-			width: auto;
+			width: 2em;
 		}
 
 		.form-check-input:checked {
