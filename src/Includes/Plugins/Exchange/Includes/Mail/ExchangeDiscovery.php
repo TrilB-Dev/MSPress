@@ -45,14 +45,16 @@ class ExchangeDiscovery {
             }
 
             try {
-                $graph->users()->byUserId( $email )->mailboxSettings()->get()->wait();
+                $graph->users()->byUserId( $mailbox_email )->mailboxSettings()->get()->wait();
             } catch ( \Throwable $settings_exception ) {
                 $settings_message = strtolower( $settings_exception->getMessage() );
-                if ( str_contains( $settings_message, 'forbidden' ) || str_contains( $settings_message, 'unauthorized' ) || str_contains( $settings_message, 'access is denied' ) ) {
-                    LoggerHelper::write_log( 'Exchange mailbox validation accepted mailbox despite mailboxSettings access denial for: ' . $email . ' :: ' . $settings_exception->getMessage() );
-                } else {
-                    LoggerHelper::write_log( 'Exchange mailbox validation saw a non-access issue while checking mailboxSettings for: ' . $email . ' :: ' . $settings_exception->getMessage() );
+                if ( str_contains( $settings_message, 'forbidden' ) || str_contains( $settings_message, 'unauthorized' ) || str_contains( $settings_message, 'access is denied' ) || str_contains( $settings_message, 'not allowed' ) ) {
+                    LoggerHelper::write_log( 'Exchange mailbox validation rejected mailbox because connected account cannot access it for: ' . $email . ' :: ' . $settings_exception->getMessage() );
+                    return [ 'valid' => false, 'reason' => 'access_denied' ];
                 }
+
+                LoggerHelper::write_log( 'Exchange mailbox validation saw a non-access issue while checking mailboxSettings for: ' . $email . ' :: ' . $settings_exception->getMessage() );
+                return [ 'valid' => false, 'reason' => 'not_found' ];
             }
 
             LoggerHelper::write_log( 'Exchange mailbox validation succeeded for: ' . $email );

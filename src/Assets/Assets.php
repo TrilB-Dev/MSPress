@@ -107,6 +107,12 @@ final class Assets {
                     'version' => '1.2.2',
                     'deps' => [ 'mspress-bootstrap' ]
                 ],
+                [
+                    'handle' => 'mspress-bs-country-data',
+                    'src' => MSPRESS_URL . 'src/Assets/dist/css/bs-country-data.min.css',
+                    'version' => '1.0.4',
+                    'deps' => [ 'mspress-bootstrap-select' ]
+                ],
             ],
             'scripts' => [
                 [
@@ -120,6 +126,13 @@ final class Assets {
                     'src' => MSPRESS_URL . 'src/Assets/dist/js/bootstrap-select.js',
                     'version' => '1.2.2',
                     'deps' => [ 'mspress-bootstrap' ],
+                    'in_footer' => true
+                ],
+                [
+                    'handle' => 'mspress-bs-country-data',
+                    'src' => MSPRESS_URL . 'src/Assets/dist/js/bs-country-data.min.js',
+                    'version' => '1.0.4',
+                    'deps' => [ 'mspress-bootstrap-select' ],
                     'in_footer' => true
                 ],
             ],

@@ -9,7 +9,7 @@
 		const email = modalElement?.querySelector('#mspress-exchange-profile-email');
 		const name = modalElement?.querySelector('#mspress-exchange-profile-name');
 		const type = modalElement?.querySelector('#mspress-exchange-profile-type');
-		const status = modalElement?.querySelector('[data-exchange-import-status]');
+		const status = modalElement?.querySelector('[data-exchange-mailbox-status]');
 		const emailStep = modalElement?.querySelector('[data-exchange-profile-step-email]');
 		const detailsStep = modalElement?.querySelector('[data-exchange-profile-step-details]');
 		const nextButton = modalElement?.querySelector('[data-exchange-profile-next]');
@@ -33,12 +33,15 @@
 
 		const setEmailState = (isValid, message = '') => {
 			clearValidationState();
+			status.classList.remove('text-success', 'text-danger');
 			if (isValid) {
 				email.classList.add('is-valid');
 				email.setAttribute('aria-invalid', 'false');
+				status.classList.add('text-success');
 			} else {
 				email.classList.add('is-invalid');
 				email.setAttribute('aria-invalid', 'true');
+				status.classList.add('text-danger');
 			}
 			if (message) {
 				status.textContent = message;
@@ -54,6 +57,8 @@
 			nextButton.classList.add('d-none');
 			saveButton.classList.remove('d-none');
 			saveButton.disabled = false;
+			status.classList.remove('text-danger');
+			status.classList.add('text-success');
 			status.textContent = 'Mailbox validated and ready to save.';
 		};
 
@@ -61,6 +66,7 @@
 			const value = email.value.trim();
 			validatedEmail = '';
 			clearValidationState();
+			status.classList.remove('text-success', 'text-danger');
 			if (!value) {
 				status.textContent = '';
 				nextButton.disabled = true;
@@ -71,6 +77,7 @@
 				nextButton.disabled = true;
 				return;
 			}
+			status.classList.remove('text-success', 'text-danger');
 			status.textContent = 'Checking mailbox access...';
 			nextButton.disabled = true;
 			request('mspress_exchange_validate_mailbox', { email: value })
@@ -105,6 +112,7 @@
 			nextButton.disabled = true;
 			saveButton.classList.add('d-none');
 			saveButton.disabled = true;
+			status.classList.remove('text-success', 'text-danger');
 			status.textContent = '';
 			clearValidationState();
 		};

@@ -104,7 +104,6 @@ final class ExchangeSettings {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?php esc_attr_e( 'Close', 'mspress' ); ?>"></button>
                         </div>
                         <div class="modal-body">
-                            <div data-exchange-import-status role="status" aria-live="polite"></div>
                             <div data-exchange-profile-step-email>
                                 <?php echo FormFieldHelper::floating(
                                     FormFieldHelper::input( 
@@ -126,6 +125,7 @@ final class ExchangeSettings {
                                         'attributes' => [ 'class' => 'mb-3' ],
                                     ]
                                 ); ?>
+                                <div class="form-text mt-2" data-exchange-mailbox-status role="status" aria-live="polite"></div>
                             </div>
                             <div class="d-none" data-exchange-profile-step-details>
                                 <?php echo FormFieldHelper::label( 'mspress-exchange-profile-name', __( 'Profile name', 'mspress' ) ); ?>
