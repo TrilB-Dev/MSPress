@@ -429,7 +429,14 @@ final class Settings {
         }
         $result = ExchangeDiscovery::validate( $graph, $email );
         if ( empty( $result['valid'] ) ) {
-            wp_send_json_error( [ 'message' => 'access_denied' === ( $result['reason'] ?? '' ) ? __( 'The mailbox was found, but the connected account does not have permission to use it. Ensure the account has Send As or Full Access to the mailbox.', 'mspress' ) : __( 'The mailbox address could not be found.', 'mspress' ) ], 400 );
+            $reason = $result['reason'] ?? '';
+            if ( 'token_expired' === $reason ) {
+                wp_send_json_error( [ 'message' => __( 'The connected Microsoft 365 account token expired. Reconnect the account and try again.', 'mspress' ) ], 400 );
+            }
+            if ( 'access_denied' === $reason ) {
+                wp_send_json_error( [ 'message' => __( 'The mailbox was found, but the connected account does not have permission to use it. Ensure the account has Send As or Full Access to the mailbox.', 'mspress' ) ], 400 );
+            }
+            wp_send_json_error( [ 'message' => __( 'The mailbox address could not be found.', 'mspress' ) ], 400 );
         }
         wp_send_json_success( [ 'email' => $result['email'], 'name' => $result['name'] ] );
     }
@@ -473,9 +480,7 @@ final class Settings {
 
     private function get_delegated_graph(): ?Exchange {
         try {
-            $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
-            $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
-            $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
+            $token = $this->resolve_delegated_access_token();
             if ( ! is_string( $token ) || '' === $token ) {
                 return null;
             }
@@ -487,8 +492,74 @@ final class Settings {
             };
             return new Exchange( new GuzzleRequestAdapter( new BaseBearerTokenAuthenticationProvider( $token_provider ), null, null, new \GuzzleHttp\Client( \MSPress\Includes\MSGraph\TlsTransport::guzzle_options() ) ) );
         } catch ( \Throwable $exception ) {
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange delegated Graph creation failed: ' . $exception->getMessage() );
             return null;
         }
+    }
+
+    private function resolve_delegated_access_token(): ?string {
+        $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
+        $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
+        $expires = (int) ( $account['expires'] ?? 0 );
+        $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
+
+        if ( is_string( $token ) && '' !== $token && $expires > time() + 300 ) {
+            return $token;
+        }
+
+        $refresh_token = EncryptionHelper::decrypt( (string) ( $account['refresh_token'] ?? '' ) );
+        if ( ! is_string( $refresh_token ) || '' === $refresh_token ) {
+            return null;
+        }
+
+        $tenant_id = GraphService::get_instance()->get_tenant_id();
+        $client_id = GraphService::get_instance()->get_client_id();
+        $client_secret = GraphService::get_instance()->get_client_secret();
+        if ( empty( $tenant_id ) || empty( $client_id ) || empty( $client_secret ) ) {
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange delegated token refresh skipped: shared MS Graph credentials are unavailable.' );
+            return null;
+        }
+
+        $response = wp_remote_post(
+            'https://login.microsoftonline.com/' . rawurlencode( $tenant_id ) . '/oauth2/v2.0/token',
+            [
+                'timeout' => 30,
+                'body' => [
+                    'grant_type' => 'refresh_token',
+                    'client_id' => $client_id,
+                    'client_secret' => $client_secret,
+                    'refresh_token' => $refresh_token,
+                    'scope' => 'openid profile email offline_access User.Read Mail.Read.Shared Mail.Send.Shared MailboxSettings.Read',
+                ],
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+            ]
+        );
+
+        if ( is_wp_error( $response ) ) {
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange delegated token refresh failed: ' . $response->get_error_message() );
+            return null;
+        }
+
+        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+        if ( ! is_array( $body ) || empty( $body['access_token'] ) ) {
+            $error = wp_remote_retrieve_body( $response );
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange delegated token refresh returned no access token: ' . ( is_string( $error ) ? substr( $error, 0, 500 ) : 'unknown' ) );
+            return null;
+        }
+
+        $new_access = (string) $body['access_token'];
+        $updated = $account;
+        $updated['access_token'] = EncryptionHelper::encrypt( $new_access );
+        $updated['refresh_token'] = EncryptionHelper::encrypt( (string) ( $body['refresh_token'] ?? $refresh_token ) );
+        $updated['expires'] = (int) ( time() + (int) ( $body['expires_in'] ?? 3600 ) );
+        if ( null !== $updated['access_token'] && null !== $updated['refresh_token'] ) {
+            $settings['account'] = $updated;
+            BaseSettings::set_group( 'exchange', $settings );
+        }
+
+        return $new_access;
     }
 
     public function render_profiles( $value ): void {

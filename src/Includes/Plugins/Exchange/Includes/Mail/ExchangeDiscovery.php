@@ -75,7 +75,9 @@ class ExchangeDiscovery {
             ];
         } catch ( \Throwable $exception ) {
             $message = strtolower( $exception->getMessage() );
-            if ( self::is_access_denied_error( $message ) ) {
+            if ( str_contains( $message, 'token' ) || str_contains( $message, 'invalid_grant' ) || str_contains( $message, 'expired' ) || str_contains( $message, '401' ) || str_contains( $message, 'unauthorized' ) ) {
+                $reason = 'token_expired';
+            } elseif ( self::is_access_denied_error( $message ) ) {
                 $reason = 'access_denied';
             } else {
                 $reason = 'not_found';
