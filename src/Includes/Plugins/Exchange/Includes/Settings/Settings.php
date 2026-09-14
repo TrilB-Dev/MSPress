@@ -444,6 +444,9 @@ final class Settings {
             if ( 'token_expired' === $reason ) {
                 wp_send_json_error( [ 'message' => __( 'The connected Microsoft 365 account token expired. Reconnect the account and try again.', 'mspress' ) ], 400 );
             }
+            if ( 'consent_required' === $reason ) {
+                wp_send_json_error( [ 'message' => __( 'Microsoft 365 admin consent is required for this app registration. Grant the required delegated Graph permissions in Azure and try again.', 'mspress' ) ], 400 );
+            }
             if ( 'access_denied' === $reason ) {
                 wp_send_json_error( [ 'message' => __( 'The mailbox exists, but Microsoft Graph denied access to the mailbox settings for the connected account. Confirm the correct Microsoft 365 account is connected and that it has Full Access or Send As permission to the mailbox.', 'mspress' ) ], 400 );
             }

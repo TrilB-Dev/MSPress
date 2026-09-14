@@ -86,7 +86,9 @@ class ExchangeDiscovery {
             ];
         } catch ( \Throwable $exception ) {
             $message = strtolower( $exception->getMessage() );
-            if ( str_contains( $message, 'token' ) || str_contains( $message, 'invalid_grant' ) || str_contains( $message, 'expired' ) || str_contains( $message, '401' ) || str_contains( $message, 'unauthorized' ) ) {
+            if ( str_contains( $message, 'aadsts65001' ) || str_contains( $message, 'admin consent' ) || str_contains( $message, 'has not consented' ) || str_contains( $message, 'consent required' ) ) {
+                $reason = 'consent_required';
+            } elseif ( str_contains( $message, 'token' ) || str_contains( $message, 'invalid_grant' ) || str_contains( $message, 'expired' ) || str_contains( $message, '401' ) || str_contains( $message, 'unauthorized' ) ) {
                 $reason = 'token_expired';
             } elseif ( self::is_access_denied_error( $message ) ) {
                 $reason = 'access_denied';
