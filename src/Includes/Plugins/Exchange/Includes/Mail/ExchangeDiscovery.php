@@ -70,12 +70,15 @@ class ExchangeDiscovery {
             if ( is_array( $mailbox_settings ) && ! empty( $mailbox_settings['error'] ) ) {
                 $error_message = strtolower( (string) $mailbox_settings['error'] );
                 if ( self::is_access_denied_error( $error_message ) ) {
-                    LoggerHelper::write_log( 'Exchange mailbox validation reports Graph access denied while checking mailboxSettings for: ' . $email . ' :: ' . $mailbox_settings['error'] );
-                    return [ 'valid' => false, 'reason' => 'access_denied' ];
+                    LoggerHelper::write_log(
+                        'Exchange mailbox validation found a matching mailbox for: ' . $email .
+                        ' but mailboxSettings access was denied. Address existence check is allowed to continue for now. :: ' .
+                        $mailbox_settings['error']
+                    );
+                } else {
+                    LoggerHelper::write_log( 'Exchange mailbox validation saw a non-access issue while checking mailboxSettings for: ' . $email . ' :: ' . $mailbox_settings['error'] );
+                    return [ 'valid' => false, 'reason' => 'not_found' ];
                 }
-
-                LoggerHelper::write_log( 'Exchange mailbox validation saw a non-access issue while checking mailboxSettings for: ' . $email . ' :: ' . $mailbox_settings['error'] );
-                return [ 'valid' => false, 'reason' => 'not_found' ];
             }
 
             LoggerHelper::write_log( 'Exchange mailbox validation succeeded for: ' . $email );

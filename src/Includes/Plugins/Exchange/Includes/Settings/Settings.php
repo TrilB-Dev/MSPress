@@ -448,7 +448,7 @@ final class Settings {
                 wp_send_json_error( [ 'message' => __( 'Microsoft 365 admin consent is required for this app registration. Grant the required delegated Graph permissions in Azure and try again.', 'mspress' ) ], 400 );
             }
             if ( 'access_denied' === $reason ) {
-                wp_send_json_error( [ 'message' => __( 'The mailbox exists, but Microsoft Graph denied access to the mailbox settings for the connected account. Confirm the correct Microsoft 365 account is connected and that it has Full Access or Send As permission to the mailbox.', 'mspress' ) ], 400 );
+                wp_send_json_success( [ 'email' => $email, 'name' => $email ] );
             }
             wp_send_json_error( [ 'message' => __( 'The mailbox address could not be found.', 'mspress' ) ], 400 );
         }
