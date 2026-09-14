@@ -105,25 +105,23 @@ final class ExchangeSettings {
                         </div>
                         <div class="modal-body">
                             <div data-exchange-profile-step-email>
-                                <?php echo FormFieldHelper::floating(
-                                    FormFieldHelper::input( 
-                                        'exchange_profile_email', 
-                                        '', 
-                                        [
-                                            'type' => 'email',
-                                            'id' => 'mspress-exchange-profile-email',
-                                            'attributes' => [
-                                                'autocomplete' => 'email',
-                                                'required' => true,
-                                                'data-live-validation' => 'email',
-                                            ],
-                                        ] 
-                                    ),
-                                    __( 'Exchange mailbox address', 'mspress' ),
+                                <?php echo FormFieldHelper::label(
+								'mspress-exchange-profile-email',
+								__( 'Exchange Email Address', 'mspress' )
+							); ?>
+                                <?php echo FormFieldHelper::input( 
+                                    'exchange_profile_email', 
+                                    '', 
                                     [
-                                        'for' => 'mspress-exchange-profile-email',
-                                        'attributes' => [ 'class' => 'mb-3' ],
-                                    ]
+                                        'type' => 'email',
+                                        'id' => 'mspress-exchange-profile-email',
+                                        'attributes' => [
+                                            'autocomplete' => 'email',
+                                            'required' => true,
+                                            'data-live-validation' => 'email',
+                                        ],
+                                        'class' => 'form-control w-100',
+                                    ] 
                                 ); ?>
                                 <div class="form-text mt-2" data-exchange-mailbox-status role="status" aria-live="polite"></div>
                             </div>

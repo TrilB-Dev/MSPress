@@ -57,6 +57,7 @@
 			nextButton.classList.add('d-none');
 			saveButton.classList.remove('d-none');
 			saveButton.disabled = false;
+			nextButton.disabled = true;
 			status.classList.remove('text-danger');
 			status.classList.add('text-success');
 			status.textContent = 'Mailbox validated and ready to save.';
@@ -66,20 +67,19 @@
 			const value = email.value.trim();
 			validatedEmail = '';
 			clearValidationState();
+			nextButton.disabled = true;
+			saveButton.disabled = true;
 			status.classList.remove('text-success', 'text-danger');
 			if (!value) {
 				status.textContent = '';
-				nextButton.disabled = true;
 				return;
 			}
 			if (!emailPattern.test(value)) {
 				setEmailState(false, 'Enter a valid email address before continuing.');
-				nextButton.disabled = true;
 				return;
 			}
 			status.classList.remove('text-success', 'text-danger');
 			status.textContent = 'Checking mailbox access...';
-			nextButton.disabled = true;
 			request('mspress_exchange_validate_mailbox', { email: value })
 				.then((response) => {
 					if (!response.success) {
@@ -96,9 +96,8 @@
 					detailsStep.classList.add('d-none');
 					nextButton.classList.remove('d-none');
 					saveButton.classList.add('d-none');
-				})
-				.finally(() => {
 					nextButton.disabled = false;
+					saveButton.disabled = true;
 				});
 		};
 
@@ -117,7 +116,11 @@
 			clearValidationState();
 		};
 
-		addButton.addEventListener('click', () => { reset(); modal.show(); });
+		addButton.addEventListener('click', () => {
+			reset();
+			modal.show();
+			window.setTimeout(() => email.focus(), 100);
+		});
 		email.addEventListener('input', () => {
 			window.clearTimeout(validationTimer);
 			validationTimer = window.setTimeout(() => {
@@ -139,6 +142,8 @@
 			}
 			validateMailboxLive();
 		});
+
+		email.addEventListener('change', validateMailboxLive);
 
 		saveButton.addEventListener('click', () => {
 			if (!validatedEmail || !name.reportValidity()) return;
