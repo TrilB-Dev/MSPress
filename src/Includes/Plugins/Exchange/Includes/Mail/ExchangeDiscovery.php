@@ -184,9 +184,10 @@ class ExchangeDiscovery {
 
     private static function collect_mailbox_candidates( $mailbox ): array {
         $values = [];
+
         foreach ( [
-            $mailbox->getMail() ?? '',
-            $mailbox->getUserPrincipalName() ?? '',
+            self::get_mailbox_value( $mailbox, 'mail' ),
+            self::get_mailbox_value( $mailbox, 'userPrincipalName' ),
         ] as $value ) {
             $email = sanitize_email( (string) $value );
             if ( is_email( $email ) ) {
@@ -194,22 +195,39 @@ class ExchangeDiscovery {
             }
         }
 
-        if ( method_exists( $mailbox, 'getProxyAddresses' ) ) {
-            $proxy_addresses = $mailbox->getProxyAddresses();
-            if ( is_array( $proxy_addresses ) ) {
-                foreach ( $proxy_addresses as $proxy_address ) {
-                    if ( ! is_string( $proxy_address ) ) {
-                        continue;
-                    }
-                    $proxy_email = strtolower( trim( str_ireplace( 'SMTP:', '', $proxy_address ) ) );
-                    if ( is_email( $proxy_email ) ) {
-                        $values[] = $proxy_email;
-                    }
+        $proxy_addresses = self::get_mailbox_value( $mailbox, 'proxyAddresses' );
+        if ( is_array( $proxy_addresses ) ) {
+            foreach ( $proxy_addresses as $proxy_address ) {
+                if ( ! is_string( $proxy_address ) ) {
+                    continue;
+                }
+                $proxy_email = strtolower( trim( str_ireplace( 'SMTP:', '', $proxy_address ) ) );
+                if ( is_email( $proxy_email ) ) {
+                    $values[] = $proxy_email;
                 }
             }
         }
 
         return array_values( array_unique( array_filter( $values ) ) );
+    }
+
+    private static function get_mailbox_value( $mailbox, string $key ) {
+        if ( is_array( $mailbox ) ) {
+            return $mailbox[ $key ] ?? '';
+        }
+
+        if ( is_object( $mailbox ) ) {
+            $method = 'get' . ucfirst( $key );
+            if ( method_exists( $mailbox, $method ) ) {
+                return $mailbox->{$method}();
+            }
+
+            if ( property_exists( $mailbox, $key ) ) {
+                return $mailbox->{$key};
+            }
+        }
+
+        return '';
     }
 
     private static function choose_mailbox_email( string $requested_email, array $candidates ): string {
