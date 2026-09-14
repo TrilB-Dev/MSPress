@@ -103,7 +103,7 @@ final class Assets {
             'deps' => [ 'licencepress-bootstrap-select', 'mspress-bootstrap' ],
         ];
 
-        $script = 'exchange.settings.admin';
+        $script = 'exchange.admin';
         if ( $is_exchange_page ) {
             $script = 'exchange.templates.admin';
 
