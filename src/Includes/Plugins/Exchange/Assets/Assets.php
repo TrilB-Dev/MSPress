@@ -63,14 +63,19 @@ final class Assets {
      * @return array The updated assets with Exchange assets included.
      */
     public function register_frontend_assets( array $assets, string $context = 'frontend' ): array {
+        $frontend_script = MSPRESS_DIR . 'src/Includes/Plugins/Exchange/Assets/dist/js/exchange.frontend.js';
+        $frontend_style = MSPRESS_DIR . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.frontend.css';
+
         $assets['scripts'][] = [
             'handle' => 'mspress-public-exchange',
             'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/js/exchange.frontend.js',
+            'version' => file_exists( $frontend_script ) ? filemtime( $frontend_script ) : MSPRESS_VERSION,
             'in_footer' => true,
         ];
         $assets['styles'][] = [
             'handle' => 'mspress-public-exchange',
             'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.frontend.css',
+            'version' => file_exists( $frontend_style ) ? filemtime( $frontend_style ) : MSPRESS_VERSION,
         ];
 
         return $assets;
@@ -97,9 +102,11 @@ final class Assets {
             return $assets;
         }
 
+        $admin_style_path = MSPRESS_DIR . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.admin.css';
         $assets['styles'][] = [
             'handle' => 'mspress-admin-exchange',
             'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/css/exchange.admin.css',
+            'version' => file_exists( $admin_style_path ) ? filemtime( $admin_style_path ) : MSPRESS_VERSION,
             'deps' => [ 'licencepress-bootstrap-select', 'mspress-bootstrap' ],
         ];
 
@@ -114,9 +121,11 @@ final class Assets {
             }
         }
 
+        $admin_script_path = MSPRESS_DIR . 'src/Includes/Plugins/Exchange/Assets/dist/js/' . $script . '.js';
         $assets['scripts'][] = [
             'handle' => 'mspress-admin-' . $script,
             'src' => MSPRESS_URL . 'src/Includes/Plugins/Exchange/Assets/dist/js/' . $script . '.js',
+            'version' => file_exists( $admin_script_path ) ? filemtime( $admin_script_path ) : MSPRESS_VERSION,
             'deps' => [ 'mspress-bootstrap', 'mspress-bootstrap-select' ],
             'in_footer' => true,
         ];
