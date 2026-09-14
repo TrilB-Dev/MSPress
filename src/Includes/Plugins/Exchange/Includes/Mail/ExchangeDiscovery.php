@@ -8,8 +8,10 @@
  */
 namespace MSPress\Includes\Plugins\Exchange\Includes\Mail;
 
+use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\LoggerHelper;
 use MSPress\Includes\Plugins\Exchange\Includes\Kiota\Exchange;
+use MSPress\Includes\Settings\Settings as BaseSettings;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -22,7 +24,7 @@ class ExchangeDiscovery {
      * @param string $email The email address to discover.
      * @return string|null The discovered Exchange server URL or null if not found.
      */
-    public static function validate( Exchange $graph, string $email ): array {
+    public static function validate( Exchange $graph, string $email, ?string $access_token = null ): array {
         $email = sanitize_email( $email );
         if ( ! is_email( $email ) ) {
             LoggerHelper::write_log( 'Exchange mailbox validation skipped: invalid email address ' . (string) $email );
@@ -32,7 +34,13 @@ class ExchangeDiscovery {
         LoggerHelper::write_log( 'Exchange mailbox validation started for: ' . $email );
 
         try {
-            $mailbox = self::find_mailbox_by_address( $graph, $email );
+            $token = is_string( $access_token ) && '' !== trim( $access_token ) ? $access_token : self::get_delegated_token();
+            if ( ! is_string( $token ) || '' === $token ) {
+                LoggerHelper::write_log( 'Exchange mailbox validation failed: no delegated access token available for ' . $email );
+                return [ 'valid' => false, 'reason' => 'token_expired' ];
+            }
+
+            $mailbox = self::find_mailbox_by_address( $token, $email );
             if ( ! $mailbox ) {
                 LoggerHelper::write_log( 'Exchange mailbox validation returned no mailbox object for: ' . $email );
                 return [ 'valid' => false, 'reason' => 'not_found' ];
@@ -51,16 +59,15 @@ class ExchangeDiscovery {
                 return [ 'valid' => false, 'reason' => 'not_found' ];
             }
 
-            try {
-                $graph->users()->byUserId( $mailbox_email )->mailboxSettings()->get()->wait();
-            } catch ( \Throwable $settings_exception ) {
-                $settings_message = strtolower( $settings_exception->getMessage() );
-                if ( self::is_access_denied_error( $settings_message ) ) {
-                    LoggerHelper::write_log( 'Exchange mailbox validation rejected mailbox because connected account cannot access it for: ' . $email . ' :: ' . $settings_exception->getMessage() );
+            $mailbox_settings = self::fetch_mailbox_settings( $token, $mailbox );
+            if ( is_array( $mailbox_settings ) && ! empty( $mailbox_settings['error'] ) ) {
+                $error_message = strtolower( (string) $mailbox_settings['error'] );
+                if ( self::is_access_denied_error( $error_message ) ) {
+                    LoggerHelper::write_log( 'Exchange mailbox validation rejected mailbox because connected account cannot access it for: ' . $email . ' :: ' . $mailbox_settings['error'] );
                     return [ 'valid' => false, 'reason' => 'access_denied' ];
                 }
 
-                LoggerHelper::write_log( 'Exchange mailbox validation saw a non-access issue while checking mailboxSettings for: ' . $email . ' :: ' . $settings_exception->getMessage() );
+                LoggerHelper::write_log( 'Exchange mailbox validation saw a non-access issue while checking mailboxSettings for: ' . $email . ' :: ' . $mailbox_settings['error'] );
                 return [ 'valid' => false, 'reason' => 'not_found' ];
             }
 
@@ -68,7 +75,7 @@ class ExchangeDiscovery {
             return [
                 'valid' => true,
                 'email' => $mailbox_email,
-                'name' => sanitize_text_field( (string) $mailbox->getDisplayName() ),
+                'name' => sanitize_text_field( (string) ( $mailbox['displayName'] ?? '' ) ),
             ];
         } catch ( \Throwable $exception ) {
             $message = strtolower( $exception->getMessage() );
@@ -84,44 +91,80 @@ class ExchangeDiscovery {
         }
     }
 
-    private static function find_mailbox_by_address( Exchange $graph, string $email ) {
-        $lookup_urls = self::build_mailbox_lookup_urls( $email );
+    private static function find_mailbox_by_address( string $token, string $email ): ?array {
+        foreach ( self::build_mailbox_lookup_urls( $email ) as $lookup_url ) {
+            LoggerHelper::write_log( 'Exchange mailbox lookup attempt: ' . $lookup_url );
+            $response = wp_remote_get(
+                $lookup_url,
+                [
+                    'timeout' => 30,
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $token,
+                        'Accept' => 'application/json',
+                    ],
+                ]
+            );
 
-        foreach ( $lookup_urls as $lookup_url ) {
-            try {
-                LoggerHelper::write_log( 'Exchange mailbox lookup attempt: ' . $lookup_url );
-                $collection = $graph->users()->withUrl( $lookup_url )->get()->wait();
-                if ( ! $collection ) {
-                    LoggerHelper::write_log( 'Exchange mailbox lookup returned empty collection for: ' . $email . ' :: ' . $lookup_url );
-                    continue;
-                }
-
-                if ( method_exists( $collection, 'getValue' ) ) {
-                    $value = $collection->getValue();
-                    LoggerHelper::write_log( 'Exchange mailbox lookup response for ' . $email . ' had ' . ( is_array( $value ) ? count( $value ) : 0 ) . ' candidate(s): ' . $lookup_url );
-                    if ( is_array( $value ) && ! empty( $value ) ) {
-                        return $value[0];
-                    }
-                }
-
-                LoggerHelper::write_log( 'Exchange mailbox lookup response for ' . $email . ' did not expose user values: ' . wp_json_encode( $collection ) );
-            } catch ( \Throwable $lookup_exception ) {
-                LoggerHelper::write_log( 'Exchange mailbox lookup attempt failed for ' . $email . ' :: ' . $lookup_exception->getMessage() . ' :: ' . $lookup_url );
+            if ( is_wp_error( $response ) ) {
+                LoggerHelper::write_log( 'Exchange mailbox lookup attempt failed for ' . $email . ' :: ' . $response->get_error_message() . ' :: ' . $lookup_url );
+                continue;
             }
-        }
 
-        try {
-            LoggerHelper::write_log( 'Exchange mailbox fallback lookup attempt by user id for: ' . $email );
-            $fallback_user = $graph->users()->byUserId( $email )->get()->wait();
-            if ( $fallback_user ) {
-                LoggerHelper::write_log( 'Exchange mailbox fallback lookup by user id succeeded for: ' . $email );
-                return $fallback_user;
+            $status = wp_remote_retrieve_response_code( $response );
+            $body = json_decode( wp_remote_retrieve_body( $response ), true );
+            LoggerHelper::write_log( 'Exchange mailbox lookup response for ' . $email . ' :: status=' . (string) $status . ' :: body=' . wp_json_encode( $body ) );
+
+            if ( 200 !== $status || ! is_array( $body ) || empty( $body['value'] ) ) {
+                continue;
             }
-        } catch ( \Throwable $fallback_exception ) {
-            LoggerHelper::write_log( 'Exchange mailbox fallback lookup by user id failed for ' . $email . ' :: ' . $fallback_exception->getMessage() );
+
+            $value = array_values( array_filter( (array) $body['value'], fn( $entry ) => is_array( $entry ) ) );
+            if ( ! empty( $value ) ) {
+                return $value[0];
+            }
         }
 
         return null;
+    }
+
+    private static function fetch_mailbox_settings( string $token, array $mailbox ): array {
+        $user_id = (string) ( $mailbox['id'] ?? '' );
+        if ( '' === $user_id ) {
+            return [ 'error' => 'not_found' ];
+        }
+
+        $url = 'https://graph.microsoft.com/v1.0/users/' . rawurlencode( $user_id ) . '/mailboxSettings';
+        LoggerHelper::write_log( 'Exchange mailboxSettings lookup: ' . $url );
+        $response = wp_remote_get(
+            $url,
+            [
+                'timeout' => 30,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'Accept' => 'application/json',
+                ],
+            ]
+        );
+
+        if ( is_wp_error( $response ) ) {
+            return [ 'error' => $response->get_error_message() ];
+        }
+
+        $status = wp_remote_retrieve_response_code( $response );
+        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+        if ( 200 === $status ) {
+            return is_array( $body ) ? $body : [ 'ok' => true ];
+        }
+
+        $message = is_array( $body ) ? wp_json_encode( $body ) : wp_remote_retrieve_body( $response );
+        return [ 'error' => $message ?: 'mailboxSettings failed with status ' . (string) $status ];
+    }
+
+    private static function get_delegated_token(): ?string {
+        $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
+        $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
+        $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
+        return is_string( $token ) && '' !== $token ? $token : null;
     }
 
     private static function build_mailbox_lookup_urls( string $email ): array {
@@ -133,7 +176,7 @@ class ExchangeDiscovery {
 
         $urls = [];
         foreach ( $filters as $filter ) {
-            $urls[] = 'https://graph.microsoft.com/v1.0/users?$filter=' . rawurlencode( $filter ) . '&$select=mail,userPrincipalName,displayName,proxyAddresses';
+            $urls[] = 'https://graph.microsoft.com/v1.0/users?$filter=' . rawurlencode( $filter ) . '&$select=mail,userPrincipalName,displayName,proxyAddresses,id';
         }
 
         return $urls;
