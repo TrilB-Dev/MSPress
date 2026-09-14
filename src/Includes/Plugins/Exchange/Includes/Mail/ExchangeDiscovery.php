@@ -31,7 +31,14 @@ class ExchangeDiscovery {
             return [ 'valid' => false, 'reason' => 'invalid_email' ];
         }
 
-        LoggerHelper::write_log( 'Exchange mailbox validation started for: ' . $email );
+        $connected_account = BaseSettings::get_group( 'exchange', [] )['account'] ?? [];
+        $connected_email = sanitize_email( (string) EncryptionHelper::decrypt( (string) ( $connected_account['email'] ?? '' ) ) );
+        LoggerHelper::write_log(
+            'Exchange mailbox validation started: target_email=' . $email .
+            ', connected_email=' . ( is_email( $connected_email ) ? $connected_email : 'unknown' ) .
+            ', token_source=' . ( is_string( $access_token ) && '' !== trim( $access_token ) ? 'explicit' : 'stored' ) .
+            ', scopes=openid profile email offline_access User.Read Mail.Read.Shared Mail.Send.Shared MailboxSettings.Read'
+        );
 
         try {
             $token = is_string( $access_token ) && '' !== trim( $access_token ) ? $access_token : self::get_delegated_token();
@@ -42,7 +49,7 @@ class ExchangeDiscovery {
 
             $mailbox = self::find_mailbox_by_address( $token, $email );
             if ( ! $mailbox ) {
-                LoggerHelper::write_log( 'Exchange mailbox validation returned no mailbox object for: ' . $email );
+                LoggerHelper::write_log( 'Exchange mailbox validation returned no mailbox object for: ' . $email . ', connected_email=' . ( is_email( $connected_email ) ? $connected_email : 'unknown' ) );
                 return [ 'valid' => false, 'reason' => 'not_found' ];
             }
 
@@ -63,7 +70,7 @@ class ExchangeDiscovery {
             if ( is_array( $mailbox_settings ) && ! empty( $mailbox_settings['error'] ) ) {
                 $error_message = strtolower( (string) $mailbox_settings['error'] );
                 if ( self::is_access_denied_error( $error_message ) ) {
-                    LoggerHelper::write_log( 'Exchange mailbox validation rejected mailbox because connected account cannot access it for: ' . $email . ' :: ' . $mailbox_settings['error'] );
+                    LoggerHelper::write_log( 'Exchange mailbox validation reports Graph access denied while checking mailboxSettings for: ' . $email . ' :: ' . $mailbox_settings['error'] );
                     return [ 'valid' => false, 'reason' => 'access_denied' ];
                 }
 
@@ -134,7 +141,13 @@ class ExchangeDiscovery {
         }
 
         $url = 'https://graph.microsoft.com/v1.0/users/' . rawurlencode( $user_id ) . '/mailboxSettings';
-        LoggerHelper::write_log( 'Exchange mailboxSettings lookup: ' . $url );
+        $connected_email = sanitize_email( (string) EncryptionHelper::decrypt( (string) ( BaseSettings::get_group( 'exchange', [] )['account']['email'] ?? '' ) ) );
+        LoggerHelper::write_log(
+            'Exchange mailboxSettings lookup: url=' . $url .
+            ', connected_email=' . ( is_email( $connected_email ) ? $connected_email : 'unknown' ) .
+            ', mailbox_id=' . $user_id .
+            ', token_prefix=' . substr( $token, 0, 20 ) . '...'
+        );
         $response = wp_remote_get(
             $url,
             [

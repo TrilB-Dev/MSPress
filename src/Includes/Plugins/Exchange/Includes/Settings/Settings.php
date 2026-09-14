@@ -257,7 +257,11 @@ final class Settings {
         $email = EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) );
         $connected = is_string( $email ) && is_email( $email );
         $oauth = GraphService::get_instance()->get_oauth_service();
-        $connect_url = $oauth ? $oauth->get_authorization_url( null, [ 'purpose' => 'exchange_connect' ], 'openid profile email offline_access User.Read.All Mail.Read.Shared' ) : '';
+        $connect_url = $oauth ? $oauth->get_authorization_url(
+            null,
+            [ 'purpose' => 'exchange_connect' ],
+            'openid profile email offline_access User.Read Mail.Read.Shared Mail.Send.Shared MailboxSettings.Read'
+        ) : '';
 
         ?>
         <div class="d-flex flex-wrap align-items-center gap-3">
@@ -323,7 +327,14 @@ final class Settings {
         ];
         $settings['sender_profiles'] = $this->add_profile( $settings['sender_profiles'] ?? [], $email, $account['display_name'] ?? '', 'user' );
         $saved = BaseSettings::set_group( 'exchange', $settings );
-        \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log( 'Exchange OAuth persistence completed: saved=' . ( $saved ? 'yes' : 'no' ) );
+        \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log(
+            'Exchange OAuth persistence completed: saved=' . ( $saved ? 'yes' : 'no' ) .
+            ', connected_email=' . $email .
+            ', tenant_id=' . ( $account['tenant_id'] ?? '' ) .
+            ', expires=' . (string) ( $account['expires'] ?? 0 ) .
+            ', access_token_present=' . ( ! empty( $account['access_token'] ) ? 'yes' : 'no' ) .
+            ', refresh_token_present=' . ( ! empty( $account['refresh_token'] ) ? 'yes' : 'no' )
+        );
     }
 
     public function handle_oauth_connected( array $account ): void {
@@ -434,7 +445,7 @@ final class Settings {
                 wp_send_json_error( [ 'message' => __( 'The connected Microsoft 365 account token expired. Reconnect the account and try again.', 'mspress' ) ], 400 );
             }
             if ( 'access_denied' === $reason ) {
-                wp_send_json_error( [ 'message' => __( 'The mailbox was found, but the connected account does not have permission to use it. Ensure the account has Send As or Full Access to the mailbox.', 'mspress' ) ], 400 );
+                wp_send_json_error( [ 'message' => __( 'The mailbox exists, but Microsoft Graph denied access to the mailbox settings for the connected account. Confirm the correct Microsoft 365 account is connected and that it has Full Access or Send As permission to the mailbox.', 'mspress' ) ], 400 );
             }
             wp_send_json_error( [ 'message' => __( 'The mailbox address could not be found.', 'mspress' ) ], 400 );
         }
@@ -501,13 +512,27 @@ final class Settings {
         $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
         $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
         $expires = (int) ( $account['expires'] ?? 0 );
-        $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
+        $encrypted_access = (string) ( $account['access_token'] ?? '' );
+        $token = EncryptionHelper::decrypt( $encrypted_access );
 
         if ( is_string( $token ) && '' !== $token && $expires > time() + 300 ) {
+            \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log(
+                'Exchange delegated token reuse: connected_email=' . (string) EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) ) .
+                ', expires=' . (string) $expires .
+                ', valid_for_seconds=' . (string) ( $expires - time() ) .
+                ', scopes=openid profile email offline_access User.Read Mail.Read.Shared Mail.Send.Shared MailboxSettings.Read'
+            );
             return $token;
         }
 
         $refresh_token = EncryptionHelper::decrypt( (string) ( $account['refresh_token'] ?? '' ) );
+        \MSPress\Includes\Functions\Helpers\LoggerHelper::write_log(
+            'Exchange delegated token refresh needed: connected_email=' . (string) EncryptionHelper::decrypt( (string) ( $account['email'] ?? '' ) ) .
+            ', cached_token_present=' . ( is_string( $token ) && '' !== $token ? 'yes' : 'no' ) .
+            ', refresh_token_present=' . ( is_string( $refresh_token ) && '' !== $refresh_token ? 'yes' : 'no' ) .
+            ', expires=' . (string) $expires .
+            ', scopes=openid profile email offline_access User.Read Mail.Read.Shared Mail.Send.Shared MailboxSettings.Read'
+        );
         if ( ! is_string( $refresh_token ) || '' === $refresh_token ) {
             return null;
         }
