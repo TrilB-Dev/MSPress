@@ -176,8 +176,69 @@ class ExchangeDiscovery {
     private static function get_delegated_token(): ?string {
         $settings = BaseSettings::get_group( 'exchange', [] ) ?? [];
         $account = is_array( $settings['account'] ?? null ) ? $settings['account'] : [];
+        $expires = (int) ( $account['expires'] ?? 0 );
         $token = EncryptionHelper::decrypt( (string) ( $account['access_token'] ?? '' ) );
-        return is_string( $token ) && '' !== $token ? $token : null;
+
+        if ( is_string( $token ) && '' !== $token && $expires > time() + 300 ) {
+            return $token;
+        }
+
+        $refresh_token = EncryptionHelper::decrypt( (string) ( $account['refresh_token'] ?? '' ) );
+        if ( ! is_string( $refresh_token ) || '' === $refresh_token ) {
+            LoggerHelper::write_log( 'Exchange delegated token refresh skipped: no refresh token available for connected account.' );
+            return null;
+        }
+
+        $tenant_id = \MSPress\Includes\MSGraph\GraphService::get_instance()->get_tenant_id();
+        $client_id = \MSPress\Includes\MSGraph\GraphService::get_instance()->get_client_id();
+        $client_secret = \MSPress\Includes\MSGraph\GraphService::get_instance()->get_client_secret();
+
+        if ( empty( $tenant_id ) || empty( $client_id ) || empty( $client_secret ) ) {
+            LoggerHelper::write_log( 'Exchange delegated token refresh skipped: Graph app credentials are not available.' );
+            return null;
+        }
+
+        $response = wp_remote_post(
+            'https://login.microsoftonline.com/' . rawurlencode( $tenant_id ) . '/oauth2/v2.0/token',
+            [
+                'timeout' => 30,
+                'body' => [
+                    'grant_type' => 'refresh_token',
+                    'client_id' => $client_id,
+                    'client_secret' => $client_secret,
+                    'refresh_token' => $refresh_token,
+                    'scope' => 'openid profile email offline_access User.Read Mail.Read.Shared Mail.Send.Shared MailboxSettings.Read',
+                ],
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+            ]
+        );
+
+        if ( is_wp_error( $response ) ) {
+            LoggerHelper::write_log( 'Exchange delegated token refresh failed: ' . $response->get_error_message() );
+            return null;
+        }
+
+        $payload = json_decode( wp_remote_retrieve_body( $response ), true );
+        if ( ! is_array( $payload ) || empty( $payload['access_token'] ) ) {
+            LoggerHelper::write_log( 'Exchange delegated token refresh returned no access token: ' . wp_remote_retrieve_body( $response ) );
+            return null;
+        }
+
+        $new_access = (string) $payload['access_token'];
+        $updated = $account;
+        $updated['access_token'] = EncryptionHelper::encrypt( $new_access );
+        $updated['refresh_token'] = EncryptionHelper::encrypt( (string) ( $payload['refresh_token'] ?? $refresh_token ) );
+        $updated['expires'] = (int) ( time() + (int) ( $payload['expires_in'] ?? 3600 ) );
+
+        if ( null !== $updated['access_token'] && null !== $updated['refresh_token'] ) {
+            $settings['account'] = $updated;
+            BaseSettings::set_group( 'exchange', $settings );
+        }
+
+        LoggerHelper::write_log( 'Exchange delegated token refreshed automatically for connected account.' );
+        return $new_access;
     }
 
     private static function build_mailbox_lookup_urls( string $email ): array {

@@ -436,7 +436,7 @@ final class Settings {
 
         $graph = $this->get_delegated_graph();
         if ( ! $graph ) {
-            wp_send_json_error( [ 'message' => __( 'Reconnect the Microsoft 365 account before validating a mailbox.', 'mspress' ) ], 400 );
+            wp_send_json_error( [ 'message' => __( 'The connected Microsoft 365 account is still being prepared. Please try again in a moment.', 'mspress' ) ], 400 );
         }
         $result = ExchangeDiscovery::validate( $graph, $email );
         if ( empty( $result['valid'] ) ) {
