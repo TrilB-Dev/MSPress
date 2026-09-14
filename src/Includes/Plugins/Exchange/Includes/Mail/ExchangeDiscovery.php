@@ -38,9 +38,19 @@ class ExchangeDiscovery {
                 return [ 'valid' => false, 'reason' => 'not_found' ];
             }
 
-            $mailbox_email = sanitize_email( (string) ( $mailbox->getMail() ?: $mailbox->getUserPrincipalName() ) );
-            if ( strtolower( $mailbox_email ) !== strtolower( $email ) ) {
-                LoggerHelper::write_log( 'Exchange mailbox validation mismatch for: ' . $email . ' -> returned: ' . (string) $mailbox_email );
+            $candidates = array_values( array_filter( [
+                sanitize_email( (string) ( $mailbox->getMail() ?? '' ) ),
+                sanitize_email( (string) ( $mailbox->getUserPrincipalName() ?? '' ) ),
+            ], 'is_email' ) );
+            $mailbox_email = $candidates[0] ?? '';
+
+            if ( '' === $mailbox_email || ! in_array( strtolower( $mailbox_email ), array_map( 'strtolower', $candidates ), true ) ) {
+                LoggerHelper::write_log( 'Exchange mailbox validation mismatch for: ' . $email . ' -> returned: ' . wp_json_encode( $candidates ) );
+                return [ 'valid' => false, 'reason' => 'not_found' ];
+            }
+
+            if ( ! in_array( strtolower( $email ), array_map( 'strtolower', $candidates ), true ) ) {
+                LoggerHelper::write_log( 'Exchange mailbox validation rejected because the returned mailbox does not match the requested address: ' . $email . ' -> ' . implode( ', ', $candidates ) );
                 return [ 'valid' => false, 'reason' => 'not_found' ];
             }
 
@@ -48,7 +58,7 @@ class ExchangeDiscovery {
                 $graph->users()->byUserId( $mailbox_email )->mailboxSettings()->get()->wait();
             } catch ( \Throwable $settings_exception ) {
                 $settings_message = strtolower( $settings_exception->getMessage() );
-                if ( str_contains( $settings_message, 'forbidden' ) || str_contains( $settings_message, 'unauthorized' ) || str_contains( $settings_message, 'access is denied' ) || str_contains( $settings_message, 'not allowed' ) ) {
+                if ( self::is_access_denied_error( $settings_message ) ) {
                     LoggerHelper::write_log( 'Exchange mailbox validation rejected mailbox because connected account cannot access it for: ' . $email . ' :: ' . $settings_exception->getMessage() );
                     return [ 'valid' => false, 'reason' => 'access_denied' ];
                 }
@@ -65,9 +75,63 @@ class ExchangeDiscovery {
             ];
         } catch ( \Throwable $exception ) {
             $message = strtolower( $exception->getMessage() );
-            $reason = str_contains( $message, 'not found' ) || str_contains( $message, '404' ) ? 'not_found' : ( str_contains( $message, 'forbidden' ) || str_contains( $message, 'unauthorized' ) ? 'access_denied' : 'not_found' );
+            if ( self::is_access_denied_error( $message ) ) {
+                $reason = 'access_denied';
+            } else {
+                $reason = 'not_found';
+            }
             LoggerHelper::write_log( 'Exchange mailbox validation failed for: ' . $email . ' :: ' . $exception->getMessage() . ' => ' . $reason );
             return [ 'valid' => false, 'reason' => $reason ];
         }
+    }
+
+    private static function is_access_denied_error( string $message ): bool {
+        $patterns = [
+            'forbidden',
+            'unauthorized',
+            'access is denied',
+            'access denied',
+            'not allowed',
+            'cannot access it',
+            'cannot access the mailbox',
+            'mailbox exists, but the connected account cannot access it',
+            'insufficient privileges',
+            'permission to access mailbox',
+            'send as',
+            'full access',
+            'access to mailbox',
+            'authorization_request_denied',
+            'not authorized to access',
+            'restricted by policy',
+        ];
+
+        foreach ( $patterns as $pattern ) {
+            if ( str_contains( $message, $pattern ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function is_not_found_error( string $message ): bool {
+        $patterns = [
+            'not found',
+            '404',
+            'resource not found',
+            'mailbox not found',
+            'no mailbox',
+            'mailbox does not exist',
+            'user not found',
+            'does not exist',
+        ];
+
+        foreach ( $patterns as $pattern ) {
+            if ( str_contains( $message, $pattern ) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

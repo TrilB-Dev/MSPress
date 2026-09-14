@@ -12,8 +12,8 @@ use MSPress\Admin\Manager\Tools\MSPressReset;
 use MSPress\Admin\Manager\Tools\ImportManager;
 use MSPress\Admin\Manager\Tools\ExportManager;
 use MSPress\Assets\Assets;
-use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\PermissionHelper;
+use MSPress\Includes\Functions\Helpers\RequestHelper;
 
 
 final class ToolsManager extends Manager {
@@ -99,16 +99,18 @@ final class ToolsManager extends Manager {
      * @return void
      */
     public function render(): void {
-        $tool = SanitizationHelper::key( $_GET['tool'] ?? 'debug', 'debug' );
+        $tool = RequestHelper::get_key( 'tool', 'debug' );
         if ( ! in_array( $tool, [ 'debug', 'reset', 'import', 'export' ], true ) ) {
             $tool = 'debug';
         }
+
         $capabilities = [
             'debug' => 'mspress_tools_debug',
             'reset' => 'mspress_tools_reset',
             'import' => 'mspress_tools_import',
             'export' => 'mspress_tools_export',
         ];
+
         if ( ! PermissionHelper::can( $capabilities[ $tool ] ) ) {
             wp_die( esc_html__( 'You are not authorized to access this MSPress tool.', 'mspress' ) );
         }

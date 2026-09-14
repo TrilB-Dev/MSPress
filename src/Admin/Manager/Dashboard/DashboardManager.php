@@ -8,6 +8,7 @@ namespace MSPress\Admin\Manager\Dashboard;
 
 use MSPress\Admin\Manager\Manager;
 use MSPress\Assets\Assets;
+use MSPress\Includes\Functions\Helpers\PermissionHelper;
 use MSPress\Includes\MSGraph\GraphService;
 use MSPress\Includes\Plugins\DashboardProviderInterface;
 use MSPress\Includes\Plugins\Plugins;
@@ -210,7 +211,7 @@ final class DashboardManager extends Manager {
      * @return bool True if the item can be rendered, false otherwise.
      */
     private function can_render( $item ): bool {
-        return is_array( $item ) && ( empty( $item['capability'] ) || current_user_can( $item['capability'] ) );
+        return is_array( $item ) && ( empty( $item['capability'] ) || PermissionHelper::can( (string) $item['capability'] ) );
     }
     /**
      * Register assets for the dashboard page.

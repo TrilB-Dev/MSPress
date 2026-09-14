@@ -10,6 +10,8 @@ namespace MSPress\Admin\Manager\Tools;
 
 use MSPress\Admin\Manager\Manager;
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
+use MSPress\Includes\Functions\Helpers\PermissionHelper;
+use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\MSGraph\GraphService;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -31,8 +33,8 @@ final class DebugManager extends Manager {
      */
     public function render_page_content(): void {
         $diagnostics = null;
-        if ( isset( $_POST['mspress_run_graph_diagnostics'] ) ) {
-            if ( ! current_user_can( 'mspress_tools_debug' ) || ! check_admin_referer( 'mspress_run_graph_diagnostics', 'mspress_graph_diagnostics_nonce' ) ) {
+        if ( RequestHelper::value( $_POST, 'mspress_run_graph_diagnostics', null ) !== null ) {
+            if ( ! PermissionHelper::can( 'mspress_tools_debug' ) || ! check_admin_referer( 'mspress_run_graph_diagnostics', 'mspress_graph_diagnostics_nonce' ) ) {
                 wp_die( esc_html__( 'You are not authorized to run Microsoft Graph diagnostics.', 'mspress' ) );
             }
 

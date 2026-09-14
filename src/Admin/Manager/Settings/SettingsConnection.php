@@ -9,6 +9,8 @@ namespace MSPress\Admin\Manager\Settings;
 use MSPress\Includes\Functions\Helpers\EncryptionHelper;
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
 use MSPress\Includes\Functions\Helpers\MS365ConnectionHelper;
+use MSPress\Includes\Functions\Helpers\PermissionHelper;
+use MSPress\Includes\Functions\Helpers\RequestHelper;
 use MSPress\Includes\Settings\Settings;
 use MSPress\Includes\MSGraph\GraphService;
 
@@ -23,15 +25,15 @@ final class SettingsConnection {
      * @return void
      */
     public function render(): void {
-        if ( 'POST' === strtoupper( (string) ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) ) {
-            if ( isset( $_POST['mspress_connection_save'] ) ) {
+        if ( 'POST' === strtoupper( (string) RequestHelper::value( $_SERVER, 'REQUEST_METHOD', '' ) ) ) {
+            if ( RequestHelper::value( $_POST, 'mspress_connection_save', null ) !== null ) {
                 $this->save();
-            } elseif ( isset( $_POST['mspress_add_encryption_key'] ) ) {
+            } elseif ( RequestHelper::value( $_POST, 'mspress_add_encryption_key', null ) !== null ) {
                 $this->add_encryption_key();
             }
         }
 
-        $can_edit = current_user_can( 'mspress_settings_connection_edit' );
+        $can_edit = PermissionHelper::can( 'mspress_settings_connection_edit' );
         if ( ! EncryptionHelper::has_runtime_key() ) {
             $this->render_missing_key( $can_edit );
             return;
@@ -45,26 +47,91 @@ final class SettingsConnection {
         <?php settings_errors( 'mspress_connection' ); ?>
         <form class="card mspress-settings-form" method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=mspress-settings&tab=connection' ) ); ?>">
             <?php wp_nonce_field( 'mspress_save_connection', 'mspress_connection_nonce' ); ?>
-            <?php echo FormFieldHelper::input( 'mspress_connection_save', '1', [ 'type' => 'hidden' ] ); ?>
+            <?php echo FormFieldHelper::input( 
+                'mspress_connection_save', 
+                '1', 
+                [ 
+                    'type' => 'hidden' 
+                ] 
+            ); ?>
             <div class="card-body">
                 <fieldset <?php disabled( ! $can_edit ); ?>>
                     <div class="row g-3">
                         <div class="col-12 col-xl-6">
-                            <?php echo FormFieldHelper::label( 'mspress-ms365-tenant-id', __( 'Tenant ID or verified domain', 'mspress' ) ); ?>
-                            <?php echo FormFieldHelper::input( 'mspress_ms365[tenant_id]', $tenant_id, [ 'id' => 'mspress-ms365-tenant-id', 'type' => 'text', 'class' => 'w-100', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
+                            <?php echo FormFieldHelper::label( 
+                                'mspress-ms365-tenant-id', 
+                                __( 'Tenant ID or verified domain', 'mspress' ) 
+                            ); ?>
+                            <?php echo FormFieldHelper::input( 
+                                'mspress_ms365[tenant_id]', 
+                                $tenant_id, 
+                                [ 
+                                    'id' => 'mspress-ms365-tenant-id', 
+                                    'type' => 'text', 
+                                    'class' => 'w-100', 
+                                    'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 
+                                    'autocomplete' => 'off' 
+                                    ] 
+                                ); ?>
                         </div>
                         <div class="col-12 col-xl-6">
-                            <?php echo FormFieldHelper::label( 'mspress-ms365-client-id', __( 'Application (client) ID', 'mspress' ) ); ?>
-                            <?php echo FormFieldHelper::input( 'mspress_ms365[client_id]', $client_id, [ 'id' => 'mspress-ms365-client-id', 'type' => 'text', 'class' => 'w-100', 'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 'autocomplete' => 'off' ] ); ?>
+                            <?php echo FormFieldHelper::label( 
+                                'mspress-ms365-client-id', 
+                                __( 
+                                    'Application (client) ID', 
+                                    'mspress' 
+                                ) 
+                            ); ?>
+                            <?php echo FormFieldHelper::input( 
+                                'mspress_ms365[client_id]', 
+                                $client_id, 
+                                [ 
+                                    'id' => 'mspress-ms365-client-id', 
+                                    'type' => 'text', 
+                                    'class' => 'w-100', 
+                                    'placeholder' => __( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'mspress' ), 
+                                    'autocomplete' => 'off' 
+                                ] 
+                            ); ?>
                         </div>
                         <div class="col-12">
-                            <?php echo FormFieldHelper::label( 'mspress-ms365-client-secret', __( 'Client secret', 'mspress' ), [ 'description' => __( 'Leave blank to keep the currently stored secret.', 'mspress' ) ] ); ?>
-                            <?php echo FormFieldHelper::input( 'mspress_ms365[client_secret]', '', [ 'id' => 'mspress-ms365-client-secret', 'type' => 'password', 'class' => 'w-100', 'autocomplete' => 'new-password' ] ); ?>
+                            <?php echo FormFieldHelper::label( 
+                                'mspress-ms365-client-secret', 
+                                __( 'Client secret', 'mspress' ), 
+                                [ 
+                                    'description' => __( 'Leave blank to keep the currently stored secret.', 'mspress' ) 
+                                    ] 
+                                ); ?>
+                            <?php echo FormFieldHelper::input( 
+                                'mspress_ms365[client_secret]', 
+                                '', 
+                                [ 
+                                    'id' => 'mspress-ms365-client-secret', 
+                                    'type' => 'password', 
+                                    'class' => 'w-100', 
+                                    'autocomplete' => 'new-password' 
+                                ] 
+                            ); ?>
                         </div>
                         <div class="col-12">
-                            <?php echo FormFieldHelper::label( 'mspress-ms365-callback-url', __( 'Browser callback URL', 'mspress' ), [ 'description' => __( 'Add this exact URL as a Web redirect URI in your Microsoft Entra app registration.', 'mspress' ) ] ); ?>
+                            <?php echo FormFieldHelper::label( 
+                                'mspress-ms365-callback-url', 
+                                __( 'Browser callback URL', 'mspress' ), 
+                                [ 
+                                    'description' => __( 'Add this exact URL as a Web redirect URI in your Microsoft Entra app registration.', 'mspress' ) 
+                                ] 
+                            ); ?>
                             <div class="input-group">
-                                <?php echo FormFieldHelper::input( 'mspress_callback_url', $callback_url, [ 'id' => 'mspress-ms365-callback-url', 'type' => 'url', 'readonly' => true, 'class' => 'font-monospace w-100' ] ); ?>
+                                <?php echo FormFieldHelper::input( 
+                                    'mspress_callback_url', 
+                                    $callback_url, 
+                                    [ 
+                                        'id' => 'mspress-ms365-callback-url', 
+                                        'type' => 'url', 
+                                        'readonly' => true, 
+                                        'class' => 'font-monospace w-100' 
+                                    ] 
+                                ); ?>
                                 <a class="button button-secondary" href="<?php echo esc_url( $callback_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Open callback', 'mspress' ); ?></a>
                             </div>
                         </div>
@@ -87,11 +154,11 @@ final class SettingsConnection {
      * @return void
      */
     private function save(): void {
-        if ( ! current_user_can( 'mspress_settings_connection_edit' ) || ! check_admin_referer( 'mspress_save_connection', 'mspress_connection_nonce' ) ) {
+        if ( ! PermissionHelper::can( 'mspress_settings_connection_edit' ) || ! check_admin_referer( 'mspress_save_connection', 'mspress_connection_nonce' ) ) {
             wp_die( esc_html__( 'You are not authorized to save the Microsoft Graph connection.', 'mspress' ) );
         }
 
-        $input = isset( $_POST['mspress_ms365'] ) && is_array( $_POST['mspress_ms365'] ) ? wp_unslash( $_POST['mspress_ms365'] ) : [];
+        $input = RequestHelper::array( $_POST, 'mspress_ms365', [] );
         $tenant_id = MS365ConnectionHelper::normalize_tenant_id( sanitize_text_field( (string) ( $input['tenant_id'] ?? '' ) ) );
         $client_id = sanitize_text_field( (string) ( $input['client_id'] ?? '' ) );
         $client_secret = sanitize_text_field( (string) ( $input['client_secret'] ?? '' ) );
@@ -131,7 +198,7 @@ final class SettingsConnection {
      * @return void
      */
     private function add_encryption_key(): void {
-        if ( ! current_user_can( 'mspress_settings_connection_edit' ) || ! check_admin_referer( 'mspress_add_encryption_key', 'mspress_encryption_key_nonce' ) ) {
+        if ( ! PermissionHelper::can( 'mspress_settings_connection_edit' ) || ! check_admin_referer( 'mspress_add_encryption_key', 'mspress_encryption_key_nonce' ) ) {
             wp_die( esc_html__( 'You are not authorized to add the MSPress encryption key.', 'mspress' ) );
         }
 

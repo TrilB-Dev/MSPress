@@ -11,8 +11,10 @@ namespace MSPress\Admin\Manager\Settings;
 use MSPress\Admin\Manager\Manager;
 use MSPress\Assets\Assets;
 use MSPress\Admin\Manager\Settings\SettingsPlugins;
-use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
+use MSPress\Includes\Functions\Helpers\PermissionHelper;
+use MSPress\Includes\Functions\Helpers\RequestHelper;
+use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -77,7 +79,7 @@ final class SettingsManager extends Manager {
      * @return void
      */
     public function render(): void {
-        $tab = SanitizationHelper::key( wp_unslash( $_GET['tab'] ?? 'plugins' ), 'plugins' );
+        $tab = RequestHelper::get_key( 'tab', 'plugins' );
         $tab = $this->normalize_tab( $tab );
         $tab_context = [
             'plugins' => [ 'description' => __( 'View the MSPress plugins installed on this site.', 'mspress' ), 'tooltip' => __( 'Plugin-specific configuration is available from each plugin settings page when provided.', 'mspress' ) ],
@@ -108,7 +110,7 @@ final class SettingsManager extends Manager {
         }
         $can_view = true;
         foreach ( $view_capabilities[ $tab ] ?? [] as $capability ) {
-            if ( ! current_user_can( $capability ) ) {
+            if ( ! PermissionHelper::can( $capability ) ) {
                 $can_view = false;
                 break;
             }

@@ -10,6 +10,7 @@ namespace MSPress\Admin\Manager\UI;
 
 use MSPress\Includes\Functions\Admin\FunctionsSidebar;
 use MSPress\Includes\Functions\Helpers\MSIconHelper;
+use MSPress\Includes\Functions\Helpers\RequestHelper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,7 +26,7 @@ final class Sidebar {
 	 * @return void
 	 */
 	public static function render(): void {
-		$current = sanitize_key( $_GET['page'] ?? 'mspress' );
+		$current = RequestHelper::get_key( 'page', 'mspress' );
 		$groups  = FunctionsSidebar::get_sidebar_groups();
 		?>
 		<aside class="col-12 col-lg-auto mspress-sidebar-column">
@@ -148,7 +149,7 @@ private static function render_icon_markup( string $icon, bool $with_spacing = f
 		}
 
 		foreach ( $query as $key => $value ) {
-			if ( (string) ( $_GET[ $key ] ?? '' ) !== (string) $value ) {
+			if ( RequestHelper::get_text( $key ) !== (string) $value ) {
 				return false;
 			}
 		}

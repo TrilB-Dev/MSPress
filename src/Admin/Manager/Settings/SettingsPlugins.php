@@ -9,6 +9,7 @@
 namespace MSPress\Admin\Manager\Settings;
 
 use MSPress\Includes\Functions\Helpers\FormFieldHelper;
+use MSPress\Includes\Functions\Helpers\PermissionHelper;
 use MSPress\Includes\Functions\Helpers\SanitizationHelper;
 use MSPress\Includes\Settings\Settings;
 use MSPress\Includes\Plugins\Plugins;
@@ -41,7 +42,7 @@ final class SettingsPlugins {
         $capability = SanitizationHelper::key(
             $page['capability'] ?? 'mspress_settings_plugins_int_view'
         );
-        return '' !== $capability && current_user_can( $capability );
+        return '' !== $capability && PermissionHelper::can( $capability );
     }
     /**
      * Render the settings page for the given slug.
@@ -374,7 +375,7 @@ final class SettingsPlugins {
         $capability = $this->is_internal_plugin( $plugin )
             ? 'mspress_settings_plugins_int_view'
             : 'mspress_settings_plugins_ext_view';
-        return current_user_can( $capability );
+        return PermissionHelper::can( $capability );
     }
     /**
      * Check if the current user can edit the settings of a plugin.
@@ -386,7 +387,7 @@ final class SettingsPlugins {
         $capability = $this->is_internal_plugin( $plugin )
             ? 'mspress_settings_plugins_int_edit'
             : 'mspress_settings_plugins_ext_edit';
-        return current_user_can( $capability );
+        return PermissionHelper::can( $capability );
     }
     /**
      * Check if a plugin is an internal MSPress plugin.
