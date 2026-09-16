@@ -13,6 +13,7 @@ namespace MSPress\Includes\Plugins;
 
 use MSPress\Includes\Settings\Settings;
 use MSPress\Includes\Plugins\PluginInterface;
+use MSPress\Includes\Functions\Helpers\LoggerHelper;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -166,6 +167,11 @@ class Plugins {
         if ( $slug === '' ) {
             return;
         }
+
+		if ( preg_match( '/-demo$/', $slug ) === 1 ) {
+			LoggerHelper::write_log( sprintf( 'MSPress plugin %s is ignored because plugin slugs ending in -demo are reserved for demo-only plugins.', $slug ) );
+			return;
+		}
 
         if ( isset( $this->registered_plugins[ $slug ] ) ) {
             return;
